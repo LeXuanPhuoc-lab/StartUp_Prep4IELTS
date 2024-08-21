@@ -1,0 +1,6 @@
+@EXE202_Prep4IELTS_HostAddress = http://localhost:5236
+
+GET {{EXE202_Prep4IELTS_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
