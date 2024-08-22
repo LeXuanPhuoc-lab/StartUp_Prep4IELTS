@@ -7,15 +7,8 @@ using IsolationLevel = System.Transactions.IsolationLevel;
 
 namespace Prep4IELTS.Data;
 
-public class UnitOfWork : IDisposable
+public class UnitOfWork(Prep4IeltsContext unitOfWorkContext) : IDisposable
 {
-    private Prep4IeltsContext _unitOfWorkContext;
-    
-    public UnitOfWork(Prep4IeltsContext unitOfWorkContext)
-    {
-        _unitOfWorkContext = unitOfWorkContext;
-    }
-    
     #region User Management
     private UserRepository _userRepository = null!;
     private SystemRoleRepository _systemRoleRepository = null!;
@@ -53,64 +46,72 @@ public class UnitOfWork : IDisposable
     #region Repositories
     
     public UserRepository UserRepository
-        => _userRepository ??= new (_unitOfWorkContext);
+        => _userRepository ??= new (unitOfWorkContext);
 
     public SystemRoleRepository SystemRoleRepository
-        => _systemRoleRepository ??= new(_unitOfWorkContext);
+        => _systemRoleRepository ??= new(unitOfWorkContext);
     
     public TestRepository TestRepository
-        => _testRepository ??= new(_unitOfWorkContext);
+        => _testRepository ??= new(unitOfWorkContext);
     
     public TestSectionRepository TestSectionRepository
-        => _testSectionRepository ??= new(_unitOfWorkContext);
+        => _testSectionRepository ??= new(unitOfWorkContext);
 
     public TestSectionPartitionRepository TestSectionPartitionRepository
-        => _testSectionPartitionRepository ??= new(_unitOfWorkContext);
+        => _testSectionPartitionRepository ??= new(unitOfWorkContext);
 
     public TestCategoryRepository TestCategoryRepository
-        => _testCategoryRepository ??= new(_unitOfWorkContext);
+        => _testCategoryRepository ??= new(unitOfWorkContext);
 
     public TestHistoryRepository TestHistoryRepository
-        => _testHistoryRepository ??= new(_unitOfWorkContext);
+        => _testHistoryRepository ??= new(unitOfWorkContext);
 
     public PartitionHistoryRepository PartitionHistoryRepository
-        => _partitionHistoryRepository ??= new(_unitOfWorkContext);
+        => _partitionHistoryRepository ??= new(unitOfWorkContext);
 
     public TestGradeRepository TestGradeRepository
-        => _testGradeRepository ??= new(_unitOfWorkContext);
+        => _testGradeRepository ??= new(unitOfWorkContext);
 
     public QuestionRepository QuestionRepository
-        => _questionRepository ??= new(_unitOfWorkContext);
+        => _questionRepository ??= new(unitOfWorkContext);
     
     public QuestionAnswerRepository QuestionAnswerRepository
-        => _questionAnswerRepository ??= new(_unitOfWorkContext);
+        => _questionAnswerRepository ??= new(unitOfWorkContext);
 
     public TagRepository TagRepository
-        => _tagRepository ??= new(_unitOfWorkContext);
+        => _tagRepository ??= new(unitOfWorkContext);
 
     public PartitionTagRepository PartitionTagRepository
-        => _partitionTagRepository ??= new(_unitOfWorkContext);
+        => _partitionTagRepository ??= new(unitOfWorkContext);
         
     public CommentRepository CommentRepository
-        => _commentRepository ??= new(_unitOfWorkContext);
+        => _commentRepository ??= new(unitOfWorkContext);
     
     public FlashcardRepository FlashcardRepository
-        => _flashcardRepository ??= new(_unitOfWorkContext);
+        => _flashcardRepository ??= new(unitOfWorkContext);
     
     public FlashcardDetailRepository FlashcardDetailRepository
-        => _flashcardDetailRepository ??= new(_unitOfWorkContext);
+        => _flashcardDetailRepository ??= new(unitOfWorkContext);
     
     #endregion
     
+    private bool _disposed = false;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                unitOfWorkContext.Dispose();
+            }
+        }
+        _disposed = true;
+    }
+
     public void Dispose()
     {
-        if (_unitOfWorkContext == null) return;
-
-        if (_unitOfWorkContext.Database.GetDbConnection().State == ConnectionState.Open)
-        {
-            _unitOfWorkContext.Database.GetDbConnection().Close();
-        }
-        _unitOfWorkContext.Dispose();
-        _unitOfWorkContext = null!;
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

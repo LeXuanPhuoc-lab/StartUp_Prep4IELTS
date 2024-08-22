@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using Mapster;
-using Prep4IELTS.Business.Interfaces;
+using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Data;
 using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;

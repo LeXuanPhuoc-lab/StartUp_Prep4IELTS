@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;
 
-namespace Prep4IELTS.Business.Interfaces;
+namespace Prep4IELTS.Business.Services.Interfaces;
 
 public interface ITestService
 {
