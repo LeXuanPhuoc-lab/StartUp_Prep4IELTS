@@ -1,7 +1,7 @@
 using System.Net.Mime;
 using EXE202_Prep4IELTS.Extensions;
-using EXE202_Prep4IELTS.Models;
 using Microsoft.AspNetCore.Mvc;
+using Prep4IELTS.Business.Models;
 using Prep4IELTS.Data.Context;
 using Serilog;
 
@@ -23,6 +23,9 @@ builder.Services.AddCors(p => p.AddPolicy("Cors", policy => {
         .AllowAnyHeader()
         .AllowAnyMethod();
 }));
+
+// Configure Mapster
+builder.Services.ConfigureMapster();
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()

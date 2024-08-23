@@ -1,3 +1,8 @@
+using System.Reflection;
+using Mapster;
+using MapsterMapper;
+using Prep4IELTS.Business.Services;
+using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Data;
 using Prep4IELTS.Data.Context;
 
@@ -9,6 +14,9 @@ public static class ServiceCollectionExtensions
     {
         // Configure/Add services 
         services.AddScoped<UnitOfWork>();
+        services.AddScoped<ITestService, TestService>();
+        services.AddScoped<ITestSectionService, TestSectionService>();
+        services.AddScoped<ITestHistoryService, TestHistoryService>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
         return services;
     }
@@ -17,5 +25,21 @@ public static class ServiceCollectionExtensions
     {
         return services.AddSqlServer<Prep4IeltsContext>(
             configuration.GetConnectionString("DefaultConnectionString"));
+    }
+
+    public static IServiceCollection ConfigureMapster(this IServiceCollection services)
+    {
+        TypeAdapterConfig.GlobalSettings.Default
+            .MapToConstructor(true)
+            .PreserveReference(true);
+        // Get Mapster GlobalSettings
+        var typeAdapterConfig = TypeAdapterConfig.GlobalSettings;
+        // Scans the assembly and gets the IRegister, adding the registration to the TypeAdapterConfig
+        typeAdapterConfig.Scan(Assembly.GetExecutingAssembly());
+        // Register the mapper as Singleton service for my application
+        var mapperConfig = new Mapper(typeAdapterConfig);
+        services.AddSingleton<IMapper>(mapperConfig);
+
+        return services;
     }
 }
