@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Prep4IELTS.Data.Entities;
 
@@ -23,7 +24,9 @@ public partial class PartitionHistory
 
     public virtual ICollection<TestGrade> TestGrades { get; set; } = new List<TestGrade>();
 
+    [JsonIgnore]
     public virtual TestHistory TestHistory { get; set; } = null!;
-
+    
+    [JsonIgnore]
     public virtual TestSectionPartition TestSectionPart { get; set; } = null!;
 }

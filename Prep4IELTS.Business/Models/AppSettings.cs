@@ -1,4 +1,4 @@
-namespace EXE202_Prep4IELTS.Models;
+namespace Prep4IELTS.Business.Models;
 
 public class AppSettings
 {

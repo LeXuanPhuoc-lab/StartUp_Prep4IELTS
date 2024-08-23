@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Prep4IELTS.Data.Entities;
 
@@ -22,6 +23,7 @@ public partial class FlashcardDetail
     public string? ImageUrl { get; set; }
 
     public int FlashcardId { get; set; }
-
+    
+    [JsonIgnore]
     public virtual Flashcard Flashcard { get; set; } = null!;
 }

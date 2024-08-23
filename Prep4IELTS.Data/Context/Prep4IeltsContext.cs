@@ -286,6 +286,13 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.TestType)
                 .HasMaxLength(50)
                 .HasColumnName("test_type");
+            entity.Property(e => e.CreateDate)
+                .HasColumnType("datetime")
+                .HasColumnName("create_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("datetime")
+                .HasColumnName("modified_date")
+                .IsRequired(false);
             entity.Property(e => e.TotalEngaged).HasColumnName("total_engaged");
             entity.Property(e => e.TotalQuestion).HasColumnName("total_question");
             entity.Property(e => e.TotalSection).HasColumnName("total_section");

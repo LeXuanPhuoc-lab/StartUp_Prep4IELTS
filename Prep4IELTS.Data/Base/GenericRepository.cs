@@ -1,14 +1,15 @@
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Prep4IELTS.Data.Context;
 
 namespace Prep4IELTS.Data.Base;
 
 public class GenericRepository<TEntity> where TEntity : class
 {
-    private Prep4IeltsContext _dbContext;
-    private DbSet<TEntity> _dbSet;
+    protected Prep4IeltsContext _dbContext;
+    protected DbSet<TEntity> _dbSet;
     
     public GenericRepository(Prep4IeltsContext dbContext)
     {
@@ -36,8 +37,27 @@ public class GenericRepository<TEntity> where TEntity : class
     {
         return await _dbSet.ToListAsync();
     }
+
+    public async Task<TEntity?> FindOneWithConditionAsync(
+        Expression<Func<TEntity, bool>> filter,
+        string? includeProperties = "")
+    {
+        IQueryable<TEntity> query = _dbSet.AsQueryable();
+        query = query.Where(filter);
+
+        if (includeProperties != null)
+        {
+            foreach (var includeProperty in includeProperties.Split(
+                         new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+        }
+
+        return await query.FirstOrDefaultAsync();
+    }
     
-    public IEnumerable<TEntity> FindWithCondition(
+    public async Task<IEnumerable<TEntity>> FindAllWithConditionAsync(
         Expression<Func<TEntity, bool>>? filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         string? includeProperties = "")
@@ -45,9 +65,7 @@ public class GenericRepository<TEntity> where TEntity : class
         IQueryable<TEntity> query = _dbSet.AsQueryable();
 
         if (filter != null)
-        {
             query = query.Where(filter);
-        }
 
         if (includeProperties != null)
         {
@@ -59,31 +77,26 @@ public class GenericRepository<TEntity> where TEntity : class
         }
 
         if (orderBy != null)
-        {
-            return orderBy(query).ToList();
-        }
+            return await orderBy(query).ToListAsync();
         else
-        {
-            return query.ToList();
-        }
+            return await query.ToListAsync();
     }
-    
-    public async Task<IEnumerable<TEntity>> FindWithConditionAsync(
+
+    public async Task<IList<TEntity>> FindAllWithConditionAndThenIncludeAsync(
         Expression<Func<TEntity, bool>>? filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        string? includeProperties = "")
+        List<Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>>? includes = null)
     {
         IQueryable<TEntity> query = _dbSet.AsQueryable();
 
         if (filter != null)
             query = query.Where(filter);
 
-        if (includeProperties != null)
+        if (includes != null)
         {
-            foreach (var includeProperty in includeProperties.Split(
-                         new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var include in includes)
             {
-                query = query.Include(includeProperty);
+                query = include(query);
             }
         }
 
