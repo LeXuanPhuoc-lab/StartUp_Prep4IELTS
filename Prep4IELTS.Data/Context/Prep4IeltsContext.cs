@@ -82,7 +82,7 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.Content).HasColumnName("content");
             entity.Property(e => e.Level).HasColumnName("level");
             entity.Property(e => e.ParentCommentId).HasColumnName("parent_comment_id");
-            entity.Property(e => e.TestId).HasColumnName("test_id");
+            entity.Property(e => e.TestId).HasColumnName("test_id").IsRequired(false);
             entity.Property(e => e.TotalChildNode).HasColumnName("total_child_node");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -174,7 +174,7 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.TestSectionName)
                 .HasMaxLength(50)
                 .HasColumnName("test_section_name");
-            entity.Property(e => e.TestSectionPartId).HasColumnName("test_section_part_id");
+            entity.Property(e => e.TestSectionPartId).HasColumnName("test_section_part_id").IsRequired(false);
             entity.Property(e => e.TotalQuestion).HasColumnName("total_question");
             entity.Property(e => e.TotalRightAnswer).HasColumnName("total_right_answer");
             entity.Property(e => e.TotalSkipAnswer).HasColumnName("total_skip_answer");

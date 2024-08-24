@@ -12,8 +12,8 @@ using Prep4IELTS.Data.Context;
 namespace Prep4IELTS.Data.Migrations
 {
     [DbContext(typeof(Prep4IeltsContext))]
-    [Migration("20240823084159_Initial Database")]
-    partial class InitialDatabase
+    [Migration("20240824031056_Initital Database")]
+    partial class InititalDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,7 +51,7 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("parent_comment_id");
 
-                    b.Property<Guid>("TestId")
+                    b.Property<Guid?>("TestId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("test_id");
 
@@ -200,7 +200,7 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("test_section_name");
 
-                    b.Property<int>("TestSectionPartId")
+                    b.Property<int?>("TestSectionPartId")
                         .HasColumnType("int")
                         .HasColumnName("test_section_part_id");
 
@@ -769,7 +769,6 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.Test", "Test")
                         .WithMany("Comments")
                         .HasForeignKey("TestId")
-                        .IsRequired()
                         .HasConstraintName("FK_Comment_Test");
 
                     b.HasOne("Prep4IELTS.Data.Entities.User", "User")
@@ -818,7 +817,6 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.TestSectionPartition", "TestSectionPart")
                         .WithMany("PartitionHistories")
                         .HasForeignKey("TestSectionPartId")
-                        .IsRequired()
                         .HasConstraintName("FK_PartitionHistory_SectionPartition");
 
                     b.Navigation("TestHistory");

@@ -20,7 +20,7 @@ public partial class PartitionHistory
 
     public int TestHistoryId { get; set; }
 
-    public int TestSectionPartId { get; set; }
+    public int? TestSectionPartId { get; set; }
 
     public virtual ICollection<TestGrade> TestGrades { get; set; } = new List<TestGrade>();
 

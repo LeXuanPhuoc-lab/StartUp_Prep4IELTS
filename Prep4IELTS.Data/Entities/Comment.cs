@@ -18,7 +18,7 @@ public partial class Comment
 
     public Guid UserId { get; set; }
 
-    public Guid TestId { get; set; }
+    public Guid? TestId { get; set; }
 
     public int? ParentCommentId { get; set; }
     

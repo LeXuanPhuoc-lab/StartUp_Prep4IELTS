@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prep4IELTS.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDatabase : Migration
+    public partial class InititalDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -155,7 +155,7 @@ namespace Prep4IELTS.Data.Migrations
                     level = table.Column<int>(type: "int", nullable: false),
                     total_child_node = table.Column<int>(type: "int", nullable: false),
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    test_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    test_id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     parent_comment_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -327,7 +327,7 @@ namespace Prep4IELTS.Data.Migrations
                     total_skip_answer = table.Column<int>(type: "int", nullable: true),
                     total_question = table.Column<int>(type: "int", nullable: false),
                     test_history_id = table.Column<int>(type: "int", nullable: false),
-                    test_section_part_id = table.Column<int>(type: "int", nullable: false)
+                    test_section_part_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
