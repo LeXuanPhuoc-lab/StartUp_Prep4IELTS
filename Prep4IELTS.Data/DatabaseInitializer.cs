@@ -231,7 +231,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
 
         // Get all tag
         var tags = await dbContext.Tags.ToListAsync();
-
+        
+        // Get all users
+        var users = await dbContext.Users.Take(10).ToListAsync();
+                    
+        // Init random
+        var rnd = new Random();
+        
         // Generate list of Test
         List<Test> tests = new()
         {
@@ -290,6 +296,38 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
                 CreateDate = DateTime.Now,
+                Comments = new List<Comment>()
+                {
+                    new()
+                    {
+                        UserId = users[0].UserId,
+                        Content = "30/40, bài Listening này khó thật",
+                        CommentDate = DateTime.Now,
+                        TotalChildNode = 2,
+                        InverseParentComment = new List<Comment>()
+                        {
+                            new()
+                            {
+                                UserId = users[1].UserId,
+                                Content = "Mình cũng 30/40",
+                                CommentDate = DateTime.Now.AddSeconds(1000),
+                            },
+                            new()
+                            {
+                                UserId = users[2].UserId,
+                                Content = "Sao câu 23 đáp án ABC vậy ạ ???",
+                                CommentDate = DateTime.Now.AddDays(1),
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        UserId = users[3].UserId,
+                        Content = "33/40, part 4 hơi khó",
+                        CommentDate = DateTime.Now.AddDays(2),
+                        TotalChildNode = 0
+                    }
+                },
                 TestSections = new List<TestSection>()
                 {
                     new()
@@ -572,14 +610,23 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
     private async Task SeedTestHistoryAsync()
     {
         var rnd = new Random();
-        var users = await dbContext.Users.Take(5).ToListAsync();
+        var users = await dbContext.Users.OrderBy(x => x.Id).Take(5).ToListAsync();
         var tests = await dbContext.Tests.Include(x => x.TestCategory).Take(10).ToListAsync();
-
+        
         List<TestHistory> testHistories = new();
         for (int i = 0; i < 5; i++)
         {
             var rndUser = users[rnd.Next(users.Count)];
             var rndTest = tests[rnd.Next(tests.Count)];
+
+            // if (rndTest.TestTitle.Contains("Listening 1"))
+            // {
+            //     var firstTestSection = await dbContext.TestSections.Where(x => 
+            //         x.TestId.ToString().Equals(rndTest.TestId))
+            //         .Include(x => x.TestSectionPartitions)
+            //         .FirstOrDefaultAsync();
+            // }
+            //
             
             testHistories.Add(new()
             {
@@ -592,6 +639,80 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestId = rndTest.TestId
             });
         }
+        
+        // var listeningTest1 = await dbContext.Tests
+        //     .FirstOrDefaultAsync(x => 
+        //         x.TestTitle.Contains("Listening Test 1"));
+        //
+        //  listeningTest1!.TestHistories.Add(new()
+        //     {
+        //         TakenDate = DateTime.Now.AddDays(rnd.Next(-100,100)),
+        //         TotalCompletionTime = rnd.Next(3600),
+        //         TestType = listeningTest1.TestType,
+        //         IsFull = rnd.Next(0,1) == 1,
+        //         TestCategoryId = listeningTest1.TestCategoryId,
+        //         UserId = users[0].UserId,
+        //         TestId = listeningTest1.TestId,
+        //         PartitionHistories = new List<PartitionHistory>()
+        //         {
+        //             new()
+        //             {
+        //                 TestSectionName = "Recording 1",
+        //                 TotalRightAnswer = 8,
+        //                 TotalWrongAnswer = 2,
+        //                 TotalSkipAnswer = 0,
+        //                 TotalQuestion = 10,
+        //             },
+        //             new()
+        //             {
+        //                 TestSectionName = "Recording 2",
+        //                 TotalRightAnswer = 7,
+        //                 TotalWrongAnswer = 3,
+        //                 TotalSkipAnswer = 0,
+        //                 TotalQuestion = 10
+        //             },
+        //             new()
+        //             {
+        //                 TestSectionName = "Recording 2",
+        //                 TotalRightAnswer = 6,
+        //                 TotalWrongAnswer = 4,
+        //                 TotalSkipAnswer = 0,
+        //                 TotalQuestion = 10
+        //             },
+        //             new()
+        //             {
+        //                 TestSectionName = "Recording 3",
+        //                 TotalRightAnswer = 5,
+        //                 TotalWrongAnswer = 5,
+        //                 TotalSkipAnswer = 0,
+        //                 TotalQuestion = 10
+        //             },
+        //             new()
+        //             {
+        //                 TestSectionName = "Recording 3",
+        //                 TotalRightAnswer = 9,
+        //                 TotalWrongAnswer = 1,
+        //                 TotalSkipAnswer = 0,
+        //                 TotalQuestion = 10
+        //             },
+        //             new()
+        //             {
+        //                 TestSectionName = "Recording 4",
+        //                 TotalRightAnswer = 8,
+        //                 TotalWrongAnswer = 2,
+        //                 TotalSkipAnswer = 0,
+        //                 TotalQuestion = 10
+        //             },
+        //             new()
+        //             {
+        //                 TestSectionName = "Recording 4",
+        //                 TotalRightAnswer = 7,
+        //                 TotalWrongAnswer = 2,
+        //                 TotalSkipAnswer = 1,
+        //                 TotalQuestion = 10
+        //             }
+        //         }
+        //     });
 
         await dbContext.TestHistories.AddRangeAsync(testHistories);
         await dbContext.SaveChangesAsync();

@@ -98,9 +98,10 @@ public class TestController(
     //  Summary:
     //      Get test by id 
     [Route(ApiRoute.Test.GetById, Name = nameof(GetByIdAsync))]
-    public async Task<IActionResult> GetByIdAsync(int id)
+    public async Task<IActionResult> GetByIdAsync(int id, string? userId)
     {
-        // Get by id
+        // TO-DO: Change this to services
+        // Get by id 
         var testDtos = await testService.FindAllWithConditionAndThenIncludeAsync(
             // With condition
             filter: x => x.Id == id, 
@@ -108,10 +109,14 @@ public class TestController(
             includes: new List<Func<IQueryable<Test>, IIncludableQueryable<Test, object>>>()
             {
                 query => query.Include(x => x.Tags),
+                query => query.Include(x => x.Comments)
+                    .ThenInclude(x => x.InverseParentComment),
                 query => query.Include(x => x.TestSections)
                     .ThenInclude(x => x.TestSectionPartitions)
-                    .ThenInclude(x => x.Questions)
-                    .ThenInclude(x => x.QuestionAnswers)
+                    .ThenInclude(x => x.PartitionTag),
+                query => query.Include(x => x.TestHistories
+                        .Where(th => th.UserId.ToString().Equals(userId)))
+                    .ThenInclude(x => x.PartitionHistories)
             });
 
         return !testDtos.Any()
