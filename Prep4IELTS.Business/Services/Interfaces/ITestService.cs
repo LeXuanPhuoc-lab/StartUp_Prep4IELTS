@@ -33,4 +33,8 @@ public interface ITestService
         int? pageIndex, int? pageSize,
         // Include test histories for user (if any)
         string? userId);
+
+    Task<TestDto> FindByIdAsync(int testId, Guid? userId);
+
+    Task<int> CountTotalAsync();
 }

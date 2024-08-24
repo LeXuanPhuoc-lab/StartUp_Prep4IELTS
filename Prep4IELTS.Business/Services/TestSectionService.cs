@@ -10,6 +10,7 @@ namespace Prep4IELTS.Business.Services;
 
 public class TestSectionService(UnitOfWork unitOfWork) : ITestSectionService
 {
+    // Basic
     public async Task<bool> InsertAsync(TestSectionDto testSection)
     {
         await unitOfWork.TestSectionRepository.InsertAsync(testSection.Adapt<TestSection>());
@@ -72,6 +73,14 @@ public class TestSectionService(UnitOfWork unitOfWork) : ITestSectionService
     {
         var testSectionEntities =
             await unitOfWork.TestSectionRepository.FindAllWithConditionAndThenIncludeAsync(filter, orderBy, includes);
+        return testSectionEntities.Adapt<List<TestSectionDto>>();
+    }
+    
+    // Addtional 
+    public async Task<IList<TestSectionDto>> FindAllByTestId(Guid testId)
+    {
+        var testSectionEntities =
+            await unitOfWork.TestSectionRepository.FindAllByTestId(testId);
         return testSectionEntities.Adapt<List<TestSectionDto>>();
     }
 }

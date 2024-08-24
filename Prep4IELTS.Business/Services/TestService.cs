@@ -12,9 +12,9 @@ namespace Prep4IELTS.Business.Services;
 public class TestService(
     UnitOfWork unitOfWork, 
     ITestHistoryService testHistoryService,
-    ICommentService commentService) : ITestService
+    ITestSectionService testSectionService) : ITestService
 {
-    
+    // Basic
     public async Task<bool> InsertAsync(TestDto test)
     {
         await unitOfWork.TestRepository.InsertAsync(test.Adapt<Test>());
@@ -42,14 +42,6 @@ public class TestService(
     public async Task<TestDto> FindAsync(Guid id)
     {
         var testEntity = await unitOfWork.TestRepository.FindAsync(id);
-        
-        // Get all comments by test id
-        var commentDtos = await commentService.GetAllByTestIdAsync(id);
-        
-        // 
-
-        
-        
         return testEntity.Adapt<TestDto>();
     }
 
@@ -121,5 +113,34 @@ public class TestService(
         }
         
         return testEntities.Adapt<List<TestDto>>();
+    }
+    
+    // Additional
+    public async Task<TestDto> FindByIdAsync(int testId, Guid? userId)
+    {
+        var testEntity = await unitOfWork.TestRepository.FindOneWithConditionAsync(
+            filter: x => x.Id == testId,
+            includeProperties: "Tags");
+        if (testEntity == null) return null!; // Not found any match 
+        
+        // Find all test section
+        var testSectionDtos = await testSectionService.FindAllByTestId(testEntity.TestId);
+        if (testSectionDtos.Any()) testEntity.TestSections = testSectionDtos.Adapt<List<TestSection>>();
+        
+        // Find all test history by test and user 
+        IList<TestHistoryDto> testHistoryDtos = null!;
+        if (userId != null)
+        {
+            testHistoryDtos = await testHistoryService.FindAllByTestAndUserAsync(
+                testEntity.TestId, Guid.Parse(userId.ToString()!));
+            if(testHistoryDtos.Any()) testEntity.TestHistories = testHistoryDtos.Adapt<List<TestHistory>>();
+        }
+
+        return testEntity.Adapt<TestDto>();
+    }
+
+    public async Task<int> CountTotalAsync()
+    {
+        return await unitOfWork.TestRepository.CountTotalAsync();
     }
 }

@@ -6,6 +6,7 @@ namespace Prep4IELTS.Business.Services.Interfaces;
 
 public interface ITestHistoryService
 {
+    // Basic
     Task<bool> InsertAsync(TestHistoryDto test);
     Task<bool> RemoveAsync(int id);
     Task UpdateAsync(TestHistoryDto test);
@@ -18,4 +19,7 @@ public interface ITestHistoryService
         Expression<Func<TestHistory, bool>>? filter = null,
         Func<IQueryable<TestHistory>, IOrderedQueryable<TestHistory>>? orderBy = null,
         string? includeProperties = "");
+    
+    // Additional
+    Task<IList<TestHistoryDto>> FindAllByTestAndUserAsync(Guid testId, Guid userId);
 }

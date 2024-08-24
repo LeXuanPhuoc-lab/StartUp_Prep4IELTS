@@ -25,5 +25,8 @@ public interface ITestSectionService
         Expression<Func<TestSection, bool>>? filter = null,
         Func<IQueryable<TestSection>, IOrderedQueryable<TestSection>>? orderBy = null,
         List<Func<IQueryable<TestSection>, IIncludableQueryable<TestSection, object>>>? includes = null);
+    
+    // Additional
+    Task<IList<TestSectionDto>> FindAllByTestId(Guid testId);
 
 }
