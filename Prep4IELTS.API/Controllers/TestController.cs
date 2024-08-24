@@ -20,6 +20,7 @@ namespace EXE202_Prep4IELTS.Controllers;
 [ApiController]
 public class TestController(
     ITestService testService,
+    ITestCategoryService testCategoryService,
     IMapper mapper,
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
 {
@@ -31,12 +32,9 @@ public class TestController(
     public async Task<IActionResult> GetAllTestCategoryAsync()
     {
         // Get all test category
-        var testCategoryEntities = await testService.FindAllAsync();
+        var testCategoryDtos = await testCategoryService.FindAllAsync();
 
-        // Mapping to list of TestCategoryDto 
-        var testCategoryDtoList = mapper.Map<List<TestCategoryDto>>(testCategoryEntities.ToList());
-
-        return !testCategoryDtoList.Any() // Not exist any test category
+        return !testCategoryDtos.Any() // Not exist any test category
             ? NotFound(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status404NotFound,
@@ -45,7 +43,7 @@ public class TestController(
             : Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = testCategoryDtoList
+                Data = testCategoryDtos
             });
     }
 
@@ -53,7 +51,7 @@ public class TestController(
     //      Get all existing tests 
     [Route(ApiRoute.Test.GetAll, Name = nameof(GetAllTestAsync))]
     public async Task<IActionResult> GetAllTestAsync(
-        int? page, string? term, string? userId, string? category)
+        int? page, string? term, string? userId, string? category, int? pageSize)
     {
         // Get all test
         var testDtos = await testService.FindAllWithConditionAndPagingAsync(
@@ -70,12 +68,17 @@ public class TestController(
             // With page index
             pageIndex:page,
             // With page size
-            pageSize:_appSettings.PageSize,
+            pageSize: pageSize ?? _appSettings.PageSize,
             // Include user test histories (if any)
             userId);
-
+        
+        // Total actual tests
+        var actualTotal = await testService.CountTotalAsync();
+        
         // Create paginated detail list 
-        var paginatedDetail = PaginatedDetailList<TestDto>.CreateInstance(testDtos, page ?? 1, _appSettings.PageSize);
+        var paginatedDetail = PaginatedDetailList<TestDto>.CreateInstance(testDtos, 
+            pageIndex: page ?? 1, 
+            actualItem: actualTotal);
 
         return !testDtos.Any() // Not exist any test
             ? NotFound(new BaseResponse()
@@ -100,26 +103,11 @@ public class TestController(
     [Route(ApiRoute.Test.GetById, Name = nameof(GetByIdAsync))]
     public async Task<IActionResult> GetByIdAsync(int id, string? userId)
     {
-        // TO-DO: Change this to services
         // Get by id 
-        var testDtos = await testService.FindAllWithConditionAndThenIncludeAsync(
-            // With condition
-            filter: x => x.Id == id, 
-            orderBy: null,
-            includes: new List<Func<IQueryable<Test>, IIncludableQueryable<Test, object>>>()
-            {
-                query => query.Include(x => x.Tags),
-                query => query.Include(x => x.Comments)
-                    .ThenInclude(x => x.InverseParentComment),
-                query => query.Include(x => x.TestSections)
-                    .ThenInclude(x => x.TestSectionPartitions)
-                    .ThenInclude(x => x.PartitionTag),
-                query => query.Include(x => x.TestHistories
-                        .Where(th => th.UserId.ToString().Equals(userId)))
-                    .ThenInclude(x => x.PartitionHistories)
-            });
+        var testDto = await testService.FindByIdAsync(id, 
+            userId != null ? Guid.Parse(userId) : null!);
 
-        return !testDtos.Any()
+        return testDto == null!
             ? NotFound(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status404NotFound,
@@ -128,7 +116,7 @@ public class TestController(
             : Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = testDtos.First()
+                Data = testDto
             });
     }
 }
