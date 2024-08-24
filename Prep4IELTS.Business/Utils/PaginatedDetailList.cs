@@ -12,12 +12,15 @@ public class PaginatedDetailList<T> : List<T>
         AddRange(items);
     }
     
-    public static PaginatedDetailList<T> CreateInstance(IEnumerable<T> source, int pageIndex, int pageSize)
+    public static PaginatedDetailList<T> CreateInstance(IEnumerable<T> source, int pageIndex, int actualItem)
     {
         // Convert to List
         var items = source.ToList();
-        // Get total page 
-        var totalPage = (int)Math.Ceiling(items.Count / (double)pageSize);
+
+        var totalPage = (int)Math.Ceiling(actualItem / (double)items.Count);
+
+        if (pageIndex < 1 || pageIndex > totalPage) pageIndex = 1;
+            
         // Create paging detail instance
         return new PaginatedDetailList<T>(items, pageIndex, totalPage);
     }

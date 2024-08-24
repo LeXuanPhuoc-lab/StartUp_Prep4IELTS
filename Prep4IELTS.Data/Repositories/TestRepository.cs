@@ -63,4 +63,9 @@ public class TestRepository : GenericRepository<Test>
 
         return result;
     }
+
+    public async Task<int> CountTotalAsync()
+    {
+        return await _dbSet.CountAsync();
+    }
 }

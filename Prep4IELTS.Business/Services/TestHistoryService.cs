@@ -64,4 +64,12 @@ public class TestHistoryService(UnitOfWork unitOfWork) : ITestHistoryService
             await unitOfWork.TestHistoryRepository.FindAllWithConditionAsync(filter, orderBy, includeProperties);
         return testHistoryEntities.Adapt<List<TestHistoryDto>>();
     }
+    
+    // Additional
+    public async Task<IList<TestHistoryDto>> FindAllByTestAndUserAsync(Guid testId, Guid userId)
+    {
+        var testHistoryEntities = 
+            await unitOfWork.TestHistoryRepository.FindAllByTestAndUserAsync(testId, userId);
+        return testHistoryEntities.Adapt<List<TestHistoryDto>>(); 
+    }
 }

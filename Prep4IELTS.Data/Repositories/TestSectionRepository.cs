@@ -14,4 +14,12 @@ public class TestSectionRepository : GenericRepository<TestSection>
         : base(dbContext)
     {
     }
+
+    public async Task<IList<TestSection>> FindAllByTestId(Guid testId)
+    {
+        return await _dbSet.Where(ts => 
+                ts.TestId.ToString().Equals(testId.ToString()))
+            .Include(ts => ts.TestSectionPartitions)
+                .ThenInclude(tsp => tsp.PartitionTag).ToListAsync();
+    }
 }
