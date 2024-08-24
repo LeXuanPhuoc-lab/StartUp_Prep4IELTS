@@ -9,7 +9,10 @@ using Prep4IELTS.Data.Entities;
 
 namespace Prep4IELTS.Business.Services;
 
-public class TestService(UnitOfWork unitOfWork, ITestHistoryService testHistoryService) : ITestService
+public class TestService(
+    UnitOfWork unitOfWork, 
+    ITestHistoryService testHistoryService,
+    ICommentService commentService) : ITestService
 {
     
     public async Task<bool> InsertAsync(TestDto test)
@@ -39,6 +42,14 @@ public class TestService(UnitOfWork unitOfWork, ITestHistoryService testHistoryS
     public async Task<TestDto> FindAsync(Guid id)
     {
         var testEntity = await unitOfWork.TestRepository.FindAsync(id);
+        
+        // Get all comments by test id
+        var commentDtos = await commentService.GetAllByTestIdAsync(id);
+        
+        // 
+
+        
+        
         return testEntity.Adapt<TestDto>();
     }
 

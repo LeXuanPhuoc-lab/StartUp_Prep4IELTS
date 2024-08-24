@@ -8,7 +8,7 @@ namespace Prep4IELTS.Data.Base;
 
 public class GenericRepository<TEntity> where TEntity : class
 {
-    protected Prep4IeltsContext _dbContext;
+    private Prep4IeltsContext _dbContext;
     protected DbSet<TEntity> _dbSet;
     
     public GenericRepository(Prep4IeltsContext dbContext)
