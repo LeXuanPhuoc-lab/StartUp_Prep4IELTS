@@ -34,7 +34,8 @@ public interface ITestService
         // Include test histories for user (if any)
         string? userId);
 
-    Task<TestDto> FindByIdAsync(int testId, Guid? userId);
-
+    Task<TestDto> FindByIdAsync(int id, Guid? userId);
+    Task<IList<TestDto>> FindByIdForPracticeAsync(int id, int[] sectionIds);
+    Task<IList<TestDto>> FindByIdForTestSimulationAsync(int id);
     Task<int> CountTotalAsync();
 }

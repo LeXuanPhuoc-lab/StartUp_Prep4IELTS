@@ -4,5 +4,5 @@ namespace Prep4IELTS.Business.Services.Interfaces;
 
 public interface ICommentService
 {
-    Task<IList<CommentDto>> GetAllByTestIdAsync(Guid testId);
+    Task<IList<CommentDto>> FindAllWithSizeByTestIdAsync(Guid testId, int totalElementSize);
 }
