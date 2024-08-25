@@ -116,10 +116,10 @@ public class TestService(
     }
     
     // Additional
-    public async Task<TestDto> FindByIdAsync(int testId, Guid? userId)
+    public async Task<TestDto> FindByIdAsync(int id, Guid? userId)
     {
         var testEntity = await unitOfWork.TestRepository.FindOneWithConditionAsync(
-            filter: x => x.Id == testId,
+            filter: x => x.Id == id,
             includeProperties: "Tags");
         if (testEntity == null) return null!; // Not found any match 
         
@@ -137,6 +137,18 @@ public class TestService(
         }
 
         return testEntity.Adapt<TestDto>();
+    }
+
+    public async Task<IList<TestDto>> FindByIdForPracticeAsync(int id, int[] sectionIds)
+    {
+        var testEntities = await unitOfWork.TestRepository.FindByIdForPracticeAsync(id, sectionIds);
+        return testEntities.Adapt<List<TestDto>>();
+    }
+
+    public async Task<IList<TestDto>> FindByIdForTestSimulationAsync(int id)
+    {
+        var testEntities = await unitOfWork.TestRepository.FindByIdForTestSimulationAsync(id);
+        return testEntities.Adapt<List<TestDto>>();
     }
 
     public async Task<int> CountTotalAsync()

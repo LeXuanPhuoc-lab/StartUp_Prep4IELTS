@@ -8,11 +8,17 @@ public static class ApiRoute
     {
         public const string GetAll = Base + "/tests";
         public const string GetById = Base + "/tests/{id}";
-        public const string GetByCategory = Base + "/tests/{category}";
+        public const string PracticeById = Base + "/tests/{id}/practice";
+        public const string StartTest = Base + "/tests/{id}/start";
     }
 
     public static class TestCategory
     {
         public const string GetAll = Base + "/test-categories";
+    }
+
+    public static class Comment
+    {
+        public const string GetAllByTestId = Base + "/comments/{testId}";
     }
 }

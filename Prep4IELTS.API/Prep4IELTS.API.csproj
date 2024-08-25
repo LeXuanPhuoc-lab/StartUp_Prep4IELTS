@@ -17,8 +17,4 @@
       <ProjectReference Include="..\Prep4IELTS.Business\Prep4IELTS.Business.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Payloads\Requests\" />
-    </ItemGroup>
-
 </Project>

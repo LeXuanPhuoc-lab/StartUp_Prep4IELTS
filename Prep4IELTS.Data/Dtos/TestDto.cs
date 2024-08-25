@@ -11,6 +11,7 @@ namespace Prep4IELTS.Data.Dtos;
         int? TotalEngaged,
         int TotalQuestion,
         int? TotalSection,
+        DateTime CreateDate, DateTime? ModifiedDate,
         int TestCategoryId, TestCategoryDto TestCategory,
         ICollection<TagDto> Tags,
         ICollection<CommentDto> Comments,

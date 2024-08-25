@@ -248,13 +248,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestType = Enum.TestType.Reading.GetDescription(),
                 TotalQuestion = 40,
                 TotalSection = 4,
-                TotalEngaged = 0,
+                TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Reading.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
             },
             new()
             {
@@ -263,13 +263,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestType = Enum.TestType.Reading.GetDescription(),
                 TotalQuestion = 40,
                 TotalSection = 4,
-                TotalEngaged = 0,
+                TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Reading.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
             },
             new()
             {
@@ -278,13 +278,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestType = Enum.TestType.Reading.GetDescription(),
                 TotalQuestion = 40,
                 TotalSection = 4,
-                TotalEngaged = 0,
+                TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Reading.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
             },
             new()
             {
@@ -293,13 +293,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestType = Enum.TestType.Listening.GetDescription(),
                 TotalQuestion = 40,
                 TotalSection = 4,
-                TotalEngaged = 0,
+                TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now,
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
                 Comments = new List<Comment>()
                 {
                     new()
@@ -307,7 +307,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                         UserId = users[0].UserId,
                         Content = "30/40, bài Listening này khó thật",
                         CommentDate = DateTime.Now,
-                        TotalChildNode = 2,
+                        TotalChildNode = 3,
                         InverseParentComment = new List<Comment>()
                         {
                             new()
@@ -321,6 +321,22 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                 UserId = users[2].UserId,
                                 Content = "Sao câu 23 đáp án ABC vậy ạ ???",
                                 CommentDate = DateTime.Now.AddDays(1),
+                                TotalChildNode = 2,
+                                InverseParentComment = new List<Comment>()
+                                {
+                                    new()
+                                    {
+                                        UserId = users[1].UserId,
+                                        Content = "Mình cũng sai câu này :>>>",
+                                        CommentDate = DateTime.Now.AddSeconds(1000),
+                                    },
+                                    new()
+                                    {
+                                        UserId = users[4].UserId,
+                                        Content = "Coi transcript ở đây: https://pre4ielts.com/tests/transcript",
+                                        CommentDate = DateTime.Now.AddSeconds(1000),
+                                    }
+                                }
                             }
                         }
                     },
@@ -353,7 +369,44 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                     {
                                         QuestionNumber = 1,
                                         QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                        {
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26TH",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26TH JULY",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26TH OF JULY",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "JULY 26",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "JULY 26TH",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26 JULY",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            }
+                                        }
                                     },
                                     new()
                                     {
@@ -384,6 +437,30 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionNumber = 6,
                                         QuestionAnswers = new List<QuestionAnswer>()
                                             { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 7,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 8,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "B", AnswerDisplay = "B" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 9,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 10,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
                                     }
                                 }
                             }
@@ -405,39 +482,33 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                 {
                                     new()
                                     {
-                                        QuestionNumber = 7,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 8,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 9,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "B", AnswerDisplay = "B" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 10,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
                                         QuestionNumber = 11,
                                         QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
                                     },
                                     new()
                                     {
                                         QuestionNumber = 12,
                                         QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 13,
+                                        QuestionAnswers = new List<QuestionAnswer>()
                                             { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 14,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 15,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
                                     }
                                 }
                             },
@@ -449,7 +520,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                 {
                                     new()
                                     {
-                                        QuestionNumber = 13,
+                                        QuestionNumber = 16,
                                         IsMultipleChoice = true,
                                         QuestionDesc = "Multiple Choice 1",
                                         QuestionAnswers = new List<QuestionAnswer>()
@@ -461,7 +532,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                     },
                                     new()
                                     {
-                                        QuestionNumber = 14,
+                                        QuestionNumber = 17,
                                         IsMultipleChoice = true,
                                         QuestionDesc = "Multiple Choice 2",
                                         QuestionAnswers = new List<QuestionAnswer>()
@@ -473,7 +544,31 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                     },
                                     new()
                                     {
-                                        QuestionNumber = 15,
+                                        QuestionNumber = 18,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 3",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = false, AnswerText = "A", AnswerDisplay = "A" },
+                                            new() { IsTrue = false, AnswerText = "B", AnswerDisplay = "B" },
+                                            new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 19,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 3",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = false, AnswerText = "A", AnswerDisplay = "A" },
+                                            new() { IsTrue = false, AnswerText = "B", AnswerDisplay = "B" },
+                                            new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 20,
                                         IsMultipleChoice = true,
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
@@ -499,12 +594,78 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             {
                                 PartitionDesc = "Description for questions",
                                 PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Note/Form Completion" }
+                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 21,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 22,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 23,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 24,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 25,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
                             },
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" }
+                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 26,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 27,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 28,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 29,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 30,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
                             }
                         }
                     },
@@ -520,12 +681,78 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             {
                                 PartitionDesc = "Description for questions",
                                 PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Summary/Flow chart Completion" }
+                                    { PartitionTagDesc = "[Listening] Summary/Flow chart Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 31,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 32,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 33,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 34,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 35,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
                             },
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Matching" }
+                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Matching" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 36,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 37,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 38,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 39,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 40,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
                             }
                         }
                     }
@@ -538,13 +765,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestType = Enum.TestType.Listening.GetDescription(),
                 TotalQuestion = 40,
                 TotalSection = 4,
-                TotalEngaged = 0,
+                TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
             },
             new()
             {
@@ -553,13 +780,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestType = Enum.TestType.Listening.GetDescription(),
                 TotalQuestion = 40,
                 TotalSection = 4,
-                TotalEngaged = 0,
+                TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
             },
             new()
             {
@@ -568,13 +795,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestType = Enum.TestType.Writing.GetDescription(),
                 TotalQuestion = 40,
                 TotalSection = 4,
-                TotalEngaged = 0,
+                TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Writing.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
             },
             new()
             {
@@ -583,13 +810,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestType = Enum.TestType.Writing.GetDescription(),
                 TotalQuestion = 40,
                 TotalSection = 4,
-                TotalEngaged = 0,
+                TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Writing.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
             },
             new()
             {
@@ -598,13 +825,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestType = Enum.TestType.Listening.GetDescription(),
                 TotalQuestion = 40,
                 TotalSection = 4,
-                TotalEngaged = 0,
+                TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
             },
             new()
             {
@@ -613,13 +840,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestType = Enum.TestType.Reading.GetDescription(),
                 TotalQuestion = 40,
                 TotalSection = 4,
-                TotalEngaged = 0,
+                TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Reading.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
             }
         };
 
@@ -665,78 +892,78 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         }
 
         var listeningTest1 = await dbContext.Tests
-            .FirstOrDefaultAsync(x => 
+            .FirstOrDefaultAsync(x =>
                 x.TestTitle.Contains("Listening Test 1"));
-        
-         listeningTest1!.TestHistories.Add(new()
+
+        listeningTest1!.TestHistories.Add(new()
+        {
+            TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+            TotalCompletionTime = rnd.Next(3600),
+            TestType = listeningTest1.TestType,
+            IsFull = rnd.Next(0, 1) == 1,
+            TestCategoryId = listeningTest1.TestCategoryId,
+            UserId = users[0].UserId,
+            TestId = listeningTest1.TestId,
+            PartitionHistories = new List<PartitionHistory>()
             {
-                TakenDate = DateTime.Now.AddDays(rnd.Next(-100,100)),
-                TotalCompletionTime = rnd.Next(3600),
-                TestType = listeningTest1.TestType,
-                IsFull = rnd.Next(0,1) == 1,
-                TestCategoryId = listeningTest1.TestCategoryId,
-                UserId = users[0].UserId,
-                TestId = listeningTest1.TestId,
-                PartitionHistories = new List<PartitionHistory>()
+                new()
                 {
-                    new()
-                    {
-                        TestSectionName = "Recording 1",
-                        TotalRightAnswer = 8,
-                        TotalWrongAnswer = 2,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10,
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 2",
-                        TotalRightAnswer = 7,
-                        TotalWrongAnswer = 3,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 2",
-                        TotalRightAnswer = 6,
-                        TotalWrongAnswer = 4,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 3",
-                        TotalRightAnswer = 5,
-                        TotalWrongAnswer = 5,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 3",
-                        TotalRightAnswer = 9,
-                        TotalWrongAnswer = 1,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 4",
-                        TotalRightAnswer = 8,
-                        TotalWrongAnswer = 2,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 4",
-                        TotalRightAnswer = 7,
-                        TotalWrongAnswer = 2,
-                        TotalSkipAnswer = 1,
-                        TotalQuestion = 10
-                    }
+                    TestSectionName = "Recording 1",
+                    TotalRightAnswer = 8,
+                    TotalWrongAnswer = 2,
+                    TotalSkipAnswer = 0,
+                    TotalQuestion = 10,
+                },
+                new()
+                {
+                    TestSectionName = "Recording 2",
+                    TotalRightAnswer = 7,
+                    TotalWrongAnswer = 3,
+                    TotalSkipAnswer = 0,
+                    TotalQuestion = 10
+                },
+                new()
+                {
+                    TestSectionName = "Recording 2",
+                    TotalRightAnswer = 6,
+                    TotalWrongAnswer = 4,
+                    TotalSkipAnswer = 0,
+                    TotalQuestion = 10
+                },
+                new()
+                {
+                    TestSectionName = "Recording 3",
+                    TotalRightAnswer = 5,
+                    TotalWrongAnswer = 5,
+                    TotalSkipAnswer = 0,
+                    TotalQuestion = 10
+                },
+                new()
+                {
+                    TestSectionName = "Recording 3",
+                    TotalRightAnswer = 9,
+                    TotalWrongAnswer = 1,
+                    TotalSkipAnswer = 0,
+                    TotalQuestion = 10
+                },
+                new()
+                {
+                    TestSectionName = "Recording 4",
+                    TotalRightAnswer = 8,
+                    TotalWrongAnswer = 2,
+                    TotalSkipAnswer = 0,
+                    TotalQuestion = 10
+                },
+                new()
+                {
+                    TestSectionName = "Recording 4",
+                    TotalRightAnswer = 7,
+                    TotalWrongAnswer = 2,
+                    TotalSkipAnswer = 1,
+                    TotalQuestion = 10
                 }
-            });
+            }
+        });
 
         await dbContext.TestHistories.AddRangeAsync(testHistories);
         await dbContext.SaveChangesAsync();

@@ -1,6 +1,7 @@
 using System.Net;
 using System.Web;
 using EXE202_Prep4IELTS.Payloads;
+using EXE202_Prep4IELTS.Payloads.Requests;
 using EXE202_Prep4IELTS.Payloads.Responses;
 using Mapster;
 using MapsterMapper;
@@ -50,34 +51,39 @@ public class TestController(
     //  Summary:
     //      Get all existing tests 
     [Route(ApiRoute.Test.GetAll, Name = nameof(GetAllTestAsync))]
-    public async Task<IActionResult> GetAllTestAsync(
-        int? page, string? term, string? userId, string? category, int? pageSize)
+    public async Task<IActionResult> GetAllTestAsync([FromQuery] TestFilterRequest req)
     {
         // Get all test
         var testDtos = await testService.FindAllWithConditionAndPagingAsync(
             // With conditions
             // Search with test title
-            filter: x => x.TestTitle.Contains(term ?? "") &&
+            filter: x => x.TestTitle.Contains(req.Term ?? "") &&
                  // filter with test category name
-                 (string.IsNullOrEmpty(category) ||
-                  x.TestCategory.TestCategoryName!.Equals(category.Replace("%", " "))),
-            // Order Descending by total engagement
-            orderBy: x => x.OrderByDescending(tst => tst.TotalEngaged),
+                 (string.IsNullOrEmpty(req.Category) ||
+                  x.TestCategory.TestCategoryName!.Equals(req.Category.Replace("%", " "))),
+            orderBy: null,
             // Include Tags
             includeProperties: "Tags",
             // With page index
-            pageIndex:page,
+            pageIndex: req.Page,
             // With page size
-            pageSize: pageSize ?? _appSettings.PageSize,
+            pageSize: req.PageSize ?? _appSettings.PageSize,
             // Include user test histories (if any)
-            userId);
+            userId: req.UserId);
         
         // Total actual tests
         var actualTotal = await testService.CountTotalAsync();
         
+        // Sorting 
+        if(!string.IsNullOrEmpty(req.OrderBy))
+        {
+            var sortingEnumerable = await SortHelper.SortTestByColumnAsync(testDtos, req.OrderBy);
+            testDtos = sortingEnumerable.ToList();
+        }
+        
         // Create paginated detail list 
         var paginatedDetail = PaginatedDetailList<TestDto>.CreateInstance(testDtos, 
-            pageIndex: page ?? 1, 
+            pageIndex: req.Page ?? 1, 
             actualItem: actualTotal);
 
         return !testDtos.Any() // Not exist any test
@@ -101,7 +107,7 @@ public class TestController(
     //  Summary:
     //      Get test by id 
     [Route(ApiRoute.Test.GetById, Name = nameof(GetByIdAsync))]
-    public async Task<IActionResult> GetByIdAsync(int id, string? userId)
+    public async Task<IActionResult> GetByIdAsync([FromRoute] int id, [FromQuery] string? userId)
     {
         // Get by id 
         var testDto = await testService.FindByIdAsync(id, 
@@ -119,4 +125,46 @@ public class TestController(
                 Data = testDto
             });
     }
+    
+    //  Summary:
+    //      Practice test
+    [Route(ApiRoute.Test.PracticeById, Name = nameof(PracticeByIdAsync))]
+    public async Task<IActionResult> PracticeByIdAsync([FromRoute] int id, [FromQuery] int[] section)
+    {
+        var testDtos = await testService.FindByIdForPracticeAsync(id, section);
+        
+        return !testDtos.Any() // Not exist any test
+            ? NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found any tests."
+            })
+            : Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = testDtos
+            });
+    }
+    
+    
+    //  Summary:
+    //      Start test
+    [Route(ApiRoute.Test.StartTest, Name = nameof(StartByIdAsync))]
+    public async Task<IActionResult> StartByIdAsync([FromRoute] int id)
+    {
+        var testDtos = await testService.FindByIdForTestSimulationAsync(id);
+        
+        return !testDtos.Any() // Not exist any test
+            ? NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found any tests."
+            })
+            : Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = testDtos
+            });
+    }
+    
 }

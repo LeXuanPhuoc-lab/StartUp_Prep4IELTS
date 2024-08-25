@@ -7,10 +7,10 @@ namespace Prep4IELTS.Business.Services;
 
 public class CommentService(UnitOfWork unitOfWork) : ICommentService
 {
-    public async Task<IList<CommentDto>> GetAllByTestIdAsync(Guid testId)
+    public async Task<IList<CommentDto>> FindAllWithSizeByTestIdAsync(Guid testId, int totalElementSize)
     {
         var commentEntities =  
-            await unitOfWork.CommentRepository.GetAllByTestIdAsync(testId);
+            await unitOfWork.CommentRepository.FindAllWithSizeByTestIdAsync(testId, totalElementSize);
         return commentEntities.Adapt<List<CommentDto>>();
     }
 }
