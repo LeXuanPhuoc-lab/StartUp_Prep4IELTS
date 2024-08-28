@@ -167,4 +167,23 @@ public class TestController(
             });
     }
     
+    //  Summary:
+    //      Get all answers by test id
+    [HttpGet(ApiRoute.Test.GetAllAnswer, Name = nameof(GetAllAnswerByTestIdAsync))]
+    public async Task<IActionResult> GetAllAnswerByTestIdAsync([FromRoute] int id)
+    {
+        var testDto = await testService.FindByIdAndGetAllAnswerAsync(id);
+        
+        return testDto == null! // Not exist any test
+            ? NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found any tests."
+            })
+            : Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = testDto
+            });  
+    }
 }

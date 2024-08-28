@@ -37,5 +37,6 @@ public interface ITestService
     Task<TestDto> FindByIdAsync(int id, Guid? userId);
     Task<TestDto> FindByIdForPracticeAsync(int id, int[] sectionIds);
     Task<TestDto> FindByIdForTestSimulationAsync(int id);
+    Task<TestDto> FindByIdAndGetAllAnswerAsync(int id);
     Task<int> CountTotalAsync();
 }

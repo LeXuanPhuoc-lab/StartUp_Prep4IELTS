@@ -16,7 +16,9 @@ public class TestHistoryController(
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
 {
     private readonly AppSettings _appSettings = monitor.CurrentValue;
-
+    
+    //  Summary:
+    //      Get all history 
     [HttpGet(ApiRoute.TestHistory.GetAllByUserId, Name = nameof(GetAllHistoryByUserIdAsync))]
     public async Task<IActionResult> GetAllHistoryByUserIdAsync(Guid userId, int? page, int? pageSize)
     {
@@ -47,6 +49,8 @@ public class TestHistoryController(
             });
     }
 
+    //  Summary:
+    //      Get history by id
     [HttpGet(ApiRoute.TestHistory.GetHistoryById, Name = nameof(GetHistoryByIdAsync))]
     public async Task<IActionResult> GetHistoryByIdAsync([FromRoute] int id)
     {
@@ -82,6 +86,8 @@ public class TestHistoryController(
             });
     }
 
+    //  Summary:
+    //      Get detail for particular grade
     [HttpGet(ApiRoute.TestHistory.GetPartitionHistoryWithGradeById, Name = nameof(GetPartitionHistoryWithGradeByIdAsync))]
     public async Task<IActionResult> GetPartitionHistoryWithGradeByIdAsync([FromRoute] int partitionId, [FromRoute] int testGradeId)
     {

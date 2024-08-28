@@ -10,6 +10,7 @@ public static class ApiRoute
         public const string GetById = Base + "/tests/{id}";
         public const string PracticeById = Base + "/tests/{id}/practice";
         public const string StartTest = Base + "/tests/{id}/start";
+        public const string GetAllAnswer = Base + "/tests/{id}/answers";
     }
 
     public static class TestCategory
@@ -23,7 +24,7 @@ public static class ApiRoute
         public const string GetHistoryById = Base + "/test-histories/{id}";
         public const string GetPartitionHistoryWithGradeById = Base + "/test-histories/partitions/{partitionId}/test-grades/{testGradeId}";
     }
-    
+
     public static class Comment
     {
         public const string GetAllByTestId = Base + "/comments/{testId}";

@@ -151,6 +151,12 @@ public class TestService(
         return testEntity.Adapt<TestDto>();
     }
 
+    public async Task<TestDto> FindByIdAndGetAllAnswerAsync(int id)
+    {
+        var testEntity = await unitOfWork.TestRepository.FindByIdAndGetAllAnswerAsync(id);
+        return testEntity.Adapt<TestDto>();
+    }
+
     public async Task<int> CountTotalAsync()
     {
         return await unitOfWork.TestRepository.CountTotalAsync();

@@ -737,9 +737,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 1",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" },
-                                            new() { IsTrue = false, AnswerText = "B", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "C", AnswerDisplay = "C" }
+                                            new() { IsTrue = true, AnswerText = "The Earth revolves around the Sun", AnswerDisplay = "The Earth revolves around the Sun" },
+                                            new() { IsTrue = false, AnswerText = "The Sun revolves around the Earth", AnswerDisplay = "The Sun revolves around the Earth" },
+                                            new() { IsTrue = false, AnswerText = "The Earth is stationary", AnswerDisplay = "The Earth is stationary" }
                                         }
                                     },
                                     new()
@@ -749,9 +749,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 2",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "A", AnswerDisplay = "A" },
-                                            new() { IsTrue = true, AnswerText = "B", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "C", AnswerDisplay = "C" }
+                                            new() { IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius", AnswerDisplay = "Water boils at 50 degrees Celsius" },
+                                            new() { IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius", AnswerDisplay = "Water boils at 100 degrees Celsius" },
+                                            new() { IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius", AnswerDisplay = "Water boils at 150 degrees Celsius" }
                                         }
                                     },
                                     new()
@@ -761,9 +761,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "A", AnswerDisplay = "A" },
-                                            new() { IsTrue = false, AnswerText = "B", AnswerDisplay = "B" },
-                                            new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" }
+                                            new() { IsTrue = false, AnswerText = "The capital of France is Berlin", AnswerDisplay = "The capital of France is Berlin" },
+                                            new() { IsTrue = true, AnswerText = "The capital of France is Paris", AnswerDisplay = "The capital of France is Paris" },
+                                            new() { IsTrue = false, AnswerText = "The capital of France is Madrid", AnswerDisplay = "The capital of France is Madrid" }
                                         }
                                     },
                                     new()
@@ -773,9 +773,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "A", AnswerDisplay = "A" },
-                                            new() { IsTrue = false, AnswerText = "B", AnswerDisplay = "B" },
-                                            new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" }
+                                            new() { IsTrue = true, AnswerText = "Photosynthesis occurs in plants", AnswerDisplay = "Photosynthesis occurs in plants" },
+                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in animals", AnswerDisplay = "Photosynthesis occurs in animals" },
+                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in fungi", AnswerDisplay = "Photosynthesis occurs in fungi" }
                                         }
                                     },
                                     new()
@@ -785,9 +785,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "A", AnswerDisplay = "A" },
-                                            new() { IsTrue = false, AnswerText = "B", AnswerDisplay = "B" },
-                                            new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" }
+                                            new() { IsTrue = false, AnswerText = "The speed of light is 300,000 km/s", AnswerDisplay = "The speed of light is 300,000 km/s" },
+                                            new() { IsTrue = true, AnswerText = "The speed of light is 299,792 km/s", AnswerDisplay = "The speed of light is 299,792 km/s" },
+                                            new() { IsTrue = false, AnswerText = "The speed of light is 150,000 km/s", AnswerDisplay = "The speed of light is 150,000 km/s" }
                                         }
                                     }
                                 }
