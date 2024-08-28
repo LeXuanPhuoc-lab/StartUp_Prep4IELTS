@@ -50,9 +50,9 @@ public class TestHistoryService(UnitOfWork unitOfWork) : ITestHistoryService
         Expression<Func<TestHistory, bool>> filter, 
         string? includeProperties = "")
     {
-        var testHistoryEntities = 
+        var testHistoryEntity = 
             await unitOfWork.TestHistoryRepository.FindOneWithConditionAsync(filter, includeProperties);
-        return testHistoryEntities.Adapt<TestHistoryDto>();
+        return testHistoryEntity.Adapt<TestHistoryDto>();
     }
     
     public async Task<IList<TestHistoryDto>> FindAllWithConditionAsync(
@@ -71,5 +71,19 @@ public class TestHistoryService(UnitOfWork unitOfWork) : ITestHistoryService
         var testHistoryEntities = 
             await unitOfWork.TestHistoryRepository.FindAllByTestAndUserAsync(testId, userId);
         return testHistoryEntities.Adapt<List<TestHistoryDto>>(); 
+    }
+
+    public async Task<IList<TestHistoryDto>> FindAllUserIdAsync(Guid userId)
+    {
+        var testHistoryEntities = 
+            await unitOfWork.TestHistoryRepository.FindAllByUserIdAsync(userId);
+        return testHistoryEntities.Adapt<List<TestHistoryDto>>(); 
+    }
+
+    public async Task<TestHistoryDto> FindByIdWithIncludePartitionAndGrade(int testHistoryId)
+    {
+        var testHistoryEntity = 
+            await unitOfWork.TestHistoryRepository.FindByIdWithIncludePartitionAndGrade(testHistoryId);
+        return testHistoryEntity.Adapt<TestHistoryDto>();
     }
 }

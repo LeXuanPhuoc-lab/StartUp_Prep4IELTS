@@ -17,6 +17,13 @@ public static class ApiRoute
         public const string GetAll = Base + "/test-categories";
     }
 
+    public static class TestHistory
+    {
+        public const string GetAllByUserId = Base + "/test-histories";
+        public const string GetHistoryById = Base + "/test-histories/{id}";
+        public const string GetPartitionHistoryWithGradeById = Base + "/test-histories/partitions/{partitionId}/test-grades/{testGradeId}";
+    }
+    
     public static class Comment
     {
         public const string GetAllByTestId = Base + "/comments/{testId}";

@@ -9,12 +9,12 @@ public record PartitionHistoryDto(
     int? TotalRightAnswer,
     int? TotalWrongAnswer,
     int? TotalSkipAnswer,
+    double? AccuracyRate,
     int TotalQuestion,
-    ICollection<TestGrade> TestGrades)
+    int TestHistoryId,
+    ICollection<TestGradeDto> TestGrades,
+    int TestSectionPartId,
+    TestSectionPartitionDto TestSectionPart)
 {
-    public int TestHistoryId { get; set; }
     [JsonIgnore] public TestHistory TestHistory { get; set; } = null!;
-    
-    public int TestSectionPartId { get; set; }
-    [JsonIgnore] public TestSectionPartitionDto TestSectionPart { get; set; } = null!;
 };

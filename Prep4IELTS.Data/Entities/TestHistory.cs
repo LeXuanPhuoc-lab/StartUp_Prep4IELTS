@@ -33,6 +33,7 @@ public partial class TestHistory
     public Guid TestId { get; set; }
 
     public int TestCategoryId { get; set; }
+    public int? ScoreCalculationId { get; set; }
 
     public virtual ICollection<PartitionHistory> PartitionHistories { get; set; } = new List<PartitionHistory>();
     
@@ -41,4 +42,6 @@ public partial class TestHistory
     public virtual TestCategory TestCategory { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
+
+    public virtual ScoreCalculation ScoreCalculation { get; set; } = null!;
 }

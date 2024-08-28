@@ -22,4 +22,6 @@ public interface ITestHistoryService
     
     // Additional
     Task<IList<TestHistoryDto>> FindAllByTestAndUserAsync(Guid testId, Guid userId);
+    Task<IList<TestHistoryDto>> FindAllUserIdAsync(Guid userId);
+    Task<TestHistoryDto> FindByIdWithIncludePartitionAndGrade(int testHistoryId);
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Logging;
 using Prep4IELTS.Data.Entities;
 
 namespace Prep4IELTS.Data.Context;
@@ -46,9 +47,12 @@ public partial class Prep4IeltsContext : DbContext
     public virtual DbSet<TestSectionPartition> TestSectionPartitions { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+    
+    public virtual DbSet<ScoreCalculation> ScoreCalculations { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(GetConnectionString());
+        => optionsBuilder.UseSqlServer(GetConnectionString(), o 
+            => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
     
     private string GetConnectionString()
     {
@@ -179,6 +183,7 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.TotalRightAnswer).HasColumnName("total_right_answer");
             entity.Property(e => e.TotalSkipAnswer).HasColumnName("total_skip_answer");
             entity.Property(e => e.TotalWrongAnswer).HasColumnName("total_wrong_answer");
+            entity.Property(e => e.AccuracyRate).HasColumnName("accuracy_rate");
 
             entity.HasOne(d => d.TestHistory).WithMany(p => p.PartitionHistories)
                 .HasForeignKey(d => d.TestHistoryId)
@@ -391,6 +396,8 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.TotalSkipAnswer).HasColumnName("total_skip_answer");
             entity.Property(e => e.TotalWrongAnswer).HasColumnName("total_wrong_answer");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.ScoreCalculationId).HasColumnName("score_calculation_id")
+                .IsRequired(false);
 
             entity.HasOne(d => d.TestCategory).WithMany(p => p.TestHistories)
                 .HasForeignKey(d => d.TestCategoryId)
@@ -406,6 +413,11 @@ public partial class Prep4IeltsContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TestHistory_User");
+
+            entity.HasOne(d => d.ScoreCalculation).WithMany(p => p.TestHistories)
+                .HasForeignKey(d => d.ScoreCalculationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TestHistory_ScoreCalculation");
         });
 
         modelBuilder.Entity<TestSection>(entity =>
@@ -513,6 +525,24 @@ public partial class Prep4IeltsContext : DbContext
                 .HasConstraintName("FK_User_Role");
         });
 
+        modelBuilder.Entity<ScoreCalculation>(entity =>
+        {
+            entity.HasKey(x => x.ScoreCalculationId).HasName("PK_ScoreCalculation");
+
+            entity.ToTable("Score_Calculation");
+
+            entity.Property(x => x.ScoreCalculationId).HasColumnName("score_calculation_id");
+            entity.Property(x => x.TestType)
+                .HasMaxLength(50)
+                .HasColumnName("test_type");
+            entity.Property(x => x.FromTotalRight).HasColumnName("from_total_right");
+            entity.Property(x => x.ToTotalRight).HasColumnName("to_total_right");
+            entity.Property(x => x.BandScore)
+                .HasMaxLength(20)
+                .HasColumnName("band_score");
+        });
+        
+        
         OnModelCreatingPartial(modelBuilder);
     }
 

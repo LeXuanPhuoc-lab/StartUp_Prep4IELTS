@@ -32,10 +32,10 @@ public interface ITestService
         string? includeProperties,
         int? pageIndex, int? pageSize,
         // Include test histories for user (if any)
-        string? userId);
+        Guid? userId);
 
     Task<TestDto> FindByIdAsync(int id, Guid? userId);
-    Task<IList<TestDto>> FindByIdForPracticeAsync(int id, int[] sectionIds);
-    Task<IList<TestDto>> FindByIdForTestSimulationAsync(int id);
+    Task<TestDto> FindByIdForPracticeAsync(int id, int[] sectionIds);
+    Task<TestDto> FindByIdForTestSimulationAsync(int id);
     Task<int> CountTotalAsync();
 }
