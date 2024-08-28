@@ -31,12 +31,19 @@ public class TestRepository : GenericRepository<Test>
                          new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 query = query.Include(includeProperty);
+                
+                // Add AsSplitQuery when includes are present
+                query = query.AsSplitQuery();
             }
         }
 
         if (orderBy != null)
         {
             query = orderBy(query);
+        }
+        else
+        {
+            query = query.OrderBy(x => x.Id);
         }
 
         // Check whether pageIndex < 1
@@ -63,7 +70,7 @@ public class TestRepository : GenericRepository<Test>
 
         return result;
     }
-    public async Task<IList<Test>> FindByIdForPracticeAsync(int id, int[] sectionIds)
+    public async Task<Test?> FindByIdForPracticeAsync(int id, int[] sectionIds)
     {
         // Combine 'Include' and 'Select' can be problematic
         // 'Include' primarily used to include related data from other tables, but using it in combination
@@ -157,10 +164,10 @@ public class TestRepository : GenericRepository<Test>
                                 }).ToList()
                             }).ToList()
                     }).ToList()
-            }).ToListAsync();
+            }).FirstOrDefaultAsync();
     }
 
-    public async Task<IList<Test>> FindByIdForTestSimulationAsync(int id)
+    public async Task<Test?> FindByIdForTestSimulationAsync(int id)
     {
         return await _dbSet
             .Where(tst => tst.Id == id)
@@ -211,7 +218,7 @@ public class TestRepository : GenericRepository<Test>
                                 }).ToList()
                             }).ToList()
                     }).ToList()
-            }).ToListAsync();
+            }).FirstOrDefaultAsync();
     }
     
     public async Task<int> CountTotalAsync()

@@ -15,6 +15,7 @@ public partial class PartitionHistory
     public int? TotalWrongAnswer { get; set; }
 
     public int? TotalSkipAnswer { get; set; }
+    public double? AccuracyRate { get; set; }
 
     public int TotalQuestion { get; set; }
 

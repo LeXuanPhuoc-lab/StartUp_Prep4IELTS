@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prep4IELTS.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InititalDatabase : Migration
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,6 +22,22 @@ namespace Prep4IELTS.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PartitionTag", x => x.partition_tag_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Score_Calculation",
+                columns: table => new
+                {
+                    score_calculation_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    from_total_right = table.Column<int>(type: "int", nullable: false),
+                    to_total_right = table.Column<int>(type: "int", nullable: false),
+                    test_type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    band_score = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ScoreCalculation", x => x.score_calculation_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -196,11 +212,17 @@ namespace Prep4IELTS.Data.Migrations
                     band_score = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     test_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    test_category_id = table.Column<int>(type: "int", nullable: false)
+                    test_category_id = table.Column<int>(type: "int", nullable: false),
+                    score_calculation_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TestHistory", x => x.test_history_id);
+                    table.ForeignKey(
+                        name: "FK_TestHistory_ScoreCalculation",
+                        column: x => x.score_calculation_id,
+                        principalTable: "Score_Calculation",
+                        principalColumn: "score_calculation_id");
                     table.ForeignKey(
                         name: "FK_TestHistory_Test",
                         column: x => x.test_id,
@@ -325,6 +347,7 @@ namespace Prep4IELTS.Data.Migrations
                     total_right_answer = table.Column<int>(type: "int", nullable: true),
                     total_wrong_answer = table.Column<int>(type: "int", nullable: true),
                     total_skip_answer = table.Column<int>(type: "int", nullable: true),
+                    accuracy_rate = table.Column<double>(type: "float", nullable: true),
                     total_question = table.Column<int>(type: "int", nullable: false),
                     test_history_id = table.Column<int>(type: "int", nullable: false),
                     test_section_part_id = table.Column<int>(type: "int", nullable: true)
@@ -476,6 +499,11 @@ namespace Prep4IELTS.Data.Migrations
                 column: "question_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Test_History_score_calculation_id",
+                table: "Test_History",
+                column: "score_calculation_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Test_History_test_category_id",
                 table: "Test_History",
                 column: "test_category_id");
@@ -557,6 +585,9 @@ namespace Prep4IELTS.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Test_Section_Partition");
+
+            migrationBuilder.DropTable(
+                name: "Score_Calculation");
 
             migrationBuilder.DropTable(
                 name: "User");

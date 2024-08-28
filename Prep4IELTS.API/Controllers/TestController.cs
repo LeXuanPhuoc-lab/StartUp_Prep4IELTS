@@ -22,14 +22,13 @@ namespace EXE202_Prep4IELTS.Controllers;
 public class TestController(
     ITestService testService,
     ITestCategoryService testCategoryService,
-    IMapper mapper,
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
 {
     private readonly AppSettings _appSettings = monitor.CurrentValue;
 
     //  Summary:
     //      Get all test categories that use to filter test by category
-    [Route(ApiRoute.TestCategory.GetAll, Name = nameof(GetAllTestCategoryAsync))]
+    [HttpGet(ApiRoute.TestCategory.GetAll, Name = nameof(GetAllTestCategoryAsync))]
     public async Task<IActionResult> GetAllTestCategoryAsync()
     {
         // Get all test category
@@ -50,7 +49,7 @@ public class TestController(
 
     //  Summary:
     //      Get all existing tests 
-    [Route(ApiRoute.Test.GetAll, Name = nameof(GetAllTestAsync))]
+    [HttpGet(ApiRoute.Test.GetAll, Name = nameof(GetAllTestAsync))]
     public async Task<IActionResult> GetAllTestAsync([FromQuery] TestFilterRequest req)
     {
         // Get all test
@@ -84,6 +83,7 @@ public class TestController(
         // Create paginated detail list 
         var paginatedDetail = PaginatedDetailList<TestDto>.CreateInstance(testDtos, 
             pageIndex: req.Page ?? 1, 
+            req.PageSize ?? _appSettings.PageSize,
             actualItem: actualTotal);
 
         return !testDtos.Any() // Not exist any test
@@ -106,12 +106,12 @@ public class TestController(
 
     //  Summary:
     //      Get test by id 
-    [Route(ApiRoute.Test.GetById, Name = nameof(GetByIdAsync))]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] int id, [FromQuery] string? userId)
+    [HttpGet(ApiRoute.Test.GetById, Name = nameof(GetTestByIdAsync))]
+    public async Task<IActionResult> GetTestByIdAsync([FromRoute] int id, [FromQuery] Guid? userId)
     {
         // Get by id 
         var testDto = await testService.FindByIdAsync(id, 
-            userId != null ? Guid.Parse(userId) : null!);
+            userId != null! ? userId : null!);
 
         return testDto == null!
             ? NotFound(new BaseResponse()
@@ -128,12 +128,12 @@ public class TestController(
     
     //  Summary:
     //      Practice test
-    [Route(ApiRoute.Test.PracticeById, Name = nameof(PracticeByIdAsync))]
-    public async Task<IActionResult> PracticeByIdAsync([FromRoute] int id, [FromQuery] int[] section)
+    [HttpGet(ApiRoute.Test.PracticeById, Name = nameof(PracticeTestByIdAsync))]
+    public async Task<IActionResult> PracticeTestByIdAsync([FromRoute] int id, [FromQuery] int[] section)
     {
-        var testDtos = await testService.FindByIdForPracticeAsync(id, section);
+        var testDto = await testService.FindByIdForPracticeAsync(id, section);
         
-        return !testDtos.Any() // Not exist any test
+        return testDto == null! // Not exist any test
             ? NotFound(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status404NotFound,
@@ -142,19 +142,19 @@ public class TestController(
             : Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = testDtos
+                Data = testDto
             });
     }
     
     
     //  Summary:
     //      Start test
-    [Route(ApiRoute.Test.StartTest, Name = nameof(StartByIdAsync))]
-    public async Task<IActionResult> StartByIdAsync([FromRoute] int id)
+    [HttpGet(ApiRoute.Test.StartTest, Name = nameof(StartTestByIdAsync))]
+    public async Task<IActionResult> StartTestByIdAsync([FromRoute] int id)
     {
-        var testDtos = await testService.FindByIdForTestSimulationAsync(id);
+        var testDto = await testService.FindByIdForTestSimulationAsync(id);
         
-        return !testDtos.Any() // Not exist any test
+        return testDto == null! // Not exist any test
             ? NotFound(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status404NotFound,
@@ -163,7 +163,7 @@ public class TestController(
             : Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = testDtos
+                Data = testDto
             });
     }
     

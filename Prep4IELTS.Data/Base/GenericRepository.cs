@@ -51,6 +51,9 @@ public class GenericRepository<TEntity> where TEntity : class
                          new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 query = query.Include(includeProperty);
+                
+                // Add AsSplitQuery when includes are present
+                query = query.AsSplitQuery();
             }
         }
 
@@ -73,6 +76,9 @@ public class GenericRepository<TEntity> where TEntity : class
                          new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 query = query.Include(includeProperty);
+                
+                // Add AsSplitQuery when includes are present
+                query = query.AsSplitQuery();
             }
         }
 
@@ -97,6 +103,9 @@ public class GenericRepository<TEntity> where TEntity : class
             foreach (var include in includes)
             {
                 query = include(query);
+                
+                // Add AsSplitQuery when includes are present
+                query = query.AsSplitQuery();
             }
         }
 

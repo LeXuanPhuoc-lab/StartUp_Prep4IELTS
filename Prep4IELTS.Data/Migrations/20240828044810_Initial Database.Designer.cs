@@ -12,8 +12,8 @@ using Prep4IELTS.Data.Context;
 namespace Prep4IELTS.Data.Migrations
 {
     [DbContext(typeof(Prep4IeltsContext))]
-    [Migration("20240824031056_Initital Database")]
-    partial class InititalDatabase
+    [Migration("20240828044810_Initial Database")]
+    partial class InitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -190,6 +190,10 @@ namespace Prep4IELTS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PartitionHistoryId"));
 
+                    b.Property<double?>("AccuracyRate")
+                        .HasColumnType("float")
+                        .HasColumnName("accuracy_rate");
+
                     b.Property<int>("TestHistoryId")
                         .HasColumnType("int")
                         .HasColumnName("test_history_id");
@@ -322,6 +326,41 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("Question_Answer", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.ScoreCalculation", b =>
+                {
+                    b.Property<int>("ScoreCalculationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("score_calculation_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScoreCalculationId"));
+
+                    b.Property<string>("BandScore")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("band_score");
+
+                    b.Property<int>("FromTotalRight")
+                        .HasColumnType("int")
+                        .HasColumnName("from_total_right");
+
+                    b.Property<string>("TestType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("test_type");
+
+                    b.Property<int>("ToTotalRight")
+                        .HasColumnType("int")
+                        .HasColumnName("to_total_right");
+
+                    b.HasKey("ScoreCalculationId")
+                        .HasName("PK_ScoreCalculation");
+
+                    b.ToTable("Score_Calculation", (string)null);
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.SystemRole", b =>
@@ -516,6 +555,10 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("isFull");
 
+                    b.Property<int?>("ScoreCalculationId")
+                        .HasColumnType("int")
+                        .HasColumnName("score_calculation_id");
+
                     b.Property<DateTime>("TakenDate")
                         .HasColumnType("datetime")
                         .HasColumnName("taken_date");
@@ -560,6 +603,8 @@ namespace Prep4IELTS.Data.Migrations
 
                     b.HasKey("TestHistoryId")
                         .HasName("PK_TestHistory");
+
+                    b.HasIndex("ScoreCalculationId");
 
                     b.HasIndex("TestCategoryId");
 
@@ -878,6 +923,11 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.TestHistory", b =>
                 {
+                    b.HasOne("Prep4IELTS.Data.Entities.ScoreCalculation", "ScoreCalculation")
+                        .WithMany("TestHistories")
+                        .HasForeignKey("ScoreCalculationId")
+                        .HasConstraintName("FK_TestHistory_ScoreCalculation");
+
                     b.HasOne("Prep4IELTS.Data.Entities.TestCategory", "TestCategory")
                         .WithMany("TestHistories")
                         .HasForeignKey("TestCategoryId")
@@ -895,6 +945,8 @@ namespace Prep4IELTS.Data.Migrations
                         .HasForeignKey("UserId")
                         .IsRequired()
                         .HasConstraintName("FK_TestHistory_User");
+
+                    b.Navigation("ScoreCalculation");
 
                     b.Navigation("Test");
 
@@ -983,6 +1035,11 @@ namespace Prep4IELTS.Data.Migrations
                     b.Navigation("QuestionAnswers");
 
                     b.Navigation("TestGrades");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.ScoreCalculation", b =>
+                {
+                    b.Navigation("TestHistories");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.SystemRole", b =>

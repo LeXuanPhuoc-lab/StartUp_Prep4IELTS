@@ -86,7 +86,7 @@ public class TestService(
         string? includeProperties, 
         int? pageIndex, int? pageSize, 
         // Include test histories for user (if any)
-        string? userId)
+        Guid? userId)
     {
         var testEntities = 
             await unitOfWork.TestRepository.FindAllWithConditionAndPagingAsync(
@@ -94,7 +94,7 @@ public class TestService(
 
         // Check whether user do the test
         var userTestHistories = await testHistoryService.FindAllWithConditionAsync(
-            th => th.UserId.ToString().Equals(userId!) &&
+            th => th.UserId.Equals(userId) &&
                   testEntities.Select(tst => tst.TestId.ToString()).Contains(th.TestId.ToString()));
 
         if (userTestHistories.Any()) // Check whether exist any test history for user
@@ -139,16 +139,16 @@ public class TestService(
         return testEntity.Adapt<TestDto>();
     }
 
-    public async Task<IList<TestDto>> FindByIdForPracticeAsync(int id, int[] sectionIds)
+    public async Task<TestDto> FindByIdForPracticeAsync(int id, int[] sectionIds)
     {
-        var testEntities = await unitOfWork.TestRepository.FindByIdForPracticeAsync(id, sectionIds);
-        return testEntities.Adapt<List<TestDto>>();
+        var testEntity = await unitOfWork.TestRepository.FindByIdForPracticeAsync(id, sectionIds);
+        return testEntity.Adapt<TestDto>();
     }
 
-    public async Task<IList<TestDto>> FindByIdForTestSimulationAsync(int id)
+    public async Task<TestDto> FindByIdForTestSimulationAsync(int id)
     {
-        var testEntities = await unitOfWork.TestRepository.FindByIdForTestSimulationAsync(id);
-        return testEntities.Adapt<List<TestDto>>();
+        var testEntity = await unitOfWork.TestRepository.FindByIdForTestSimulationAsync(id);
+        return testEntity.Adapt<TestDto>();
     }
 
     public async Task<int> CountTotalAsync()

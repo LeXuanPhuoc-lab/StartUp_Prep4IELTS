@@ -18,7 +18,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITestSectionService, TestSectionService>();
         services.AddScoped<ITestHistoryService, TestHistoryService>();
         services.AddScoped<ITestCategoryService, TestCategoryService>();
-        services.AddScoped<ITagService, TagService>();
+        services.AddScoped<ITestPartitionHistoryService, TestPartitionHistoryService>();
         services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
         return services;
