@@ -70,6 +70,7 @@ public class TestRepository : GenericRepository<Test>
 
         return result;
     }
+    
     public async Task<Test?> FindByIdForPracticeAsync(int id, int[] sectionIds)
     {
         // Combine 'Include' and 'Select' can be problematic
@@ -215,6 +216,49 @@ public class TestRepository : GenericRepository<Test>
                                             QuestionId = qAns.QuestionId
                                         }).ToList()
                                         : null!
+                                }).ToList()
+                            }).ToList()
+                    }).ToList()
+            }).FirstOrDefaultAsync();
+    }
+
+    public async Task<Test?> FindByIdAndGetAllAnswerAsync(int id)
+    {
+        return await _dbSet.Where(x => x.Id == id)
+            .AsSplitQuery()
+            .Select(tst => new Test()
+            {
+                Id = tst.Id,
+                TestId = tst.TestId,
+                TestTitle = tst.TestTitle,
+                TestCategoryId = tst.TestCategoryId,
+                TestSections = tst.TestSections
+                    .Select(ts => new TestSection()
+                    {
+                        TestSectionId = ts.TestSectionId,
+                        TestSectionName = ts.TestSectionName,
+                        // SectionTranscript = ts.SectionTranscript,
+                        TestSectionPartitions = ts.TestSectionPartitions.Select(tsp =>
+                            new TestSectionPartition()
+                            {
+                                TestSectionPartId = tsp.TestSectionPartId,
+                                TestSectionId = tsp.TestSectionId,
+                                PartitionTagId = tsp.PartitionTagId,
+                                Questions = tsp.Questions.Select(qs => new Question()
+                                {
+                                    QuestionId = qs.QuestionId,
+                                    QuestionDesc = qs.QuestionDesc,
+                                    QuestionNumber = qs.QuestionNumber,
+                                    IsMultipleChoice = qs.IsMultipleChoice,
+                                    TestSectionPartId = qs.TestSectionPartId,
+                                    QuestionAnswers = qs.QuestionAnswers.Select(qAns => new QuestionAnswer()
+                                    {
+                                        QuestionAnswerId = qAns.QuestionAnswerId,
+                                        AnswerText = qAns.AnswerText,
+                                        AnswerDisplay = qAns.AnswerDisplay,
+                                        IsTrue = qAns.IsTrue,
+                                        QuestionId = qAns.QuestionId
+                                    }).ToList()
                                 }).ToList()
                             }).ToList()
                     }).ToList()

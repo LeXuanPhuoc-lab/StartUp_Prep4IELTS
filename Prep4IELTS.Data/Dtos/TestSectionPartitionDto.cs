@@ -12,7 +12,7 @@ public record TestSectionPartitionDto(
 {
     public int TestSectionId { get; set; }
     public TestSectionDto TestSection { get; set; } = null!;
-
+    
     [JsonIgnore]
     public ICollection<PartitionHistoryDto> PartitionHistories { get; set; } = new List<PartitionHistoryDto>();
 };

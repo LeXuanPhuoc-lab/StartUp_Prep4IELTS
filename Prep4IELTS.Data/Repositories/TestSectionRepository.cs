@@ -17,9 +17,30 @@ public class TestSectionRepository : GenericRepository<TestSection>
 
     public async Task<IList<TestSection>> FindAllByTestId(Guid testId)
     {
-        return await _dbSet.Where(ts => 
+        // return await _dbSet.AsSplitQuery()
+        //     .Where(ts => 
+        //         ts.TestId.ToString().Equals(testId.ToString()))
+        //     .Include(ts => ts.TestSectionPartitions)
+        //         .ThenInclude(tsp => tsp.PartitionTag).ToListAsync();
+        
+        return await _dbSet.AsSplitQuery()
+            .Where(ts => 
                 ts.TestId.ToString().Equals(testId.ToString()))
-            .Include(ts => ts.TestSectionPartitions)
-                .ThenInclude(tsp => tsp.PartitionTag).ToListAsync();
+            .Select(ts => new TestSection()
+            {
+                TestSectionId = ts.TestSectionId,
+                TestSectionName = ts.TestSectionName,
+                TotalQuestion = ts.TotalQuestion,
+                TestId = ts.TestId,
+                TestSectionPartitions = ts.TestSectionPartitions.Select(tsp => new TestSectionPartition()
+                {
+                    TestSectionPartId = tsp.TestSectionPartId,
+                    IsVerticalLayout = tsp.IsVerticalLayout,
+                    TestSectionId = tsp.TestSectionId,
+                    PartitionTagId = tsp.PartitionTagId,
+                    PartitionTag = tsp.PartitionTag,
+                }).ToList()
+            })
+            .ToListAsync();
     }
 }
