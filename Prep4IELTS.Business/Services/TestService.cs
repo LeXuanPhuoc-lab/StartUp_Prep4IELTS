@@ -1,18 +1,24 @@
 using System.Linq.Expressions;
 using Mapster;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Prep4IELTS.Business.Models;
 using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Data;
 using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;
+using Prep4IELTS.Data.Enum;
+using Prep4IELTS.Data.Extensions;
 
 namespace Prep4IELTS.Business.Services;
 
 public class TestService(
     UnitOfWork unitOfWork, 
     ITestHistoryService testHistoryService,
-    ITestSectionService testSectionService) : ITestService
+    ITestSectionService testSectionService,
+    IQuestionService questionService,
+    IScoreCalculationService scoreCalculationService) : ITestService
 {
     // Basic
     public async Task<bool> InsertAsync(TestDto test)
@@ -157,8 +163,150 @@ public class TestService(
         return testEntity.Adapt<TestDto>();
     }
 
+    public async Task<bool> SubmitTestAsync(int totalCompletionTime, DateTime takenDate, bool isFull, Guid userId, int testId,
+        List<QuestionAnswerSubmissionModel> questionAnswers)
+    {
+        // Get test by id 
+        var testEntities = await unitOfWork.TestRepository.FindAllWithConditionAndThenIncludeAsync(
+            // With conditions
+            filter:x => x.Id == testId,
+            orderBy: null,
+            includes: [
+                query => query.Include(tst => tst.TestSections)
+                    // Then include list of section partitions
+                    .ThenInclude(ts => ts.TestSectionPartitions)
+                        // Then include list of questions
+                        .ThenInclude(tsp => tsp.Questions)
+            ]);
+        // Check exist test 
+        if (!testEntities.Any()) return false;
+
+        // First test found
+        var singleTestEntity = testEntities.First();
+        // Get test section partitions 
+        var sectionPartitions = singleTestEntity.TestSections.SelectMany(ts => 
+            ts.TestSectionPartitions).ToList();
+        // Partition history collection initiation  
+        List<PartitionHistory> partitionHistories = new();
+        // Iterate each section partitions, create partition history
+        foreach (var tsp in sectionPartitions)
+        {
+            // Get section include this partition
+            var sectionHoldPartition = singleTestEntity.TestSections.First(ts =>
+                ts.TestSectionPartitions.Any(tstSectPart => tstSectPart.TestSectionPartId == tsp.TestSectionPartId));
+            
+            // Initiate partition history
+            PartitionHistory partitionHistory = new ();
+            
+            // Get question answers, which have the same id with list of question is partitions
+            var questionAnswersInPartition =
+                questionAnswers.Where(x => 
+                    tsp.Questions.Any(q => q.QuestionId == x.QuestionId))
+                .ToList();
+            
+            // Iterate each question answer, create test grade dto 
+            foreach (var qa in questionAnswersInPartition)
+            {
+                // Get question by id 
+                var questionDto = await questionService.FindQuestionByIdAndWithQuestions(qa.QuestionId);
+                // Check correctness of the selected answer with list of answers 
+                var isSelectedAnswerCorrect =
+                    questionDto.QuestionAnswers.Any(x => 
+                        x.AnswerText.ToUpper().Equals(qa.SelectedAnswer.ToUpper()) && x.IsTrue);
+                // Create grade status whether the selected answer is correct or not 
+                var gradeStatusForRightWrong = isSelectedAnswerCorrect
+                    ? GradeStatus.Correct.GetDescription()
+                    : GradeStatus.Wrong.GetDescription();   
+                // Create right answer text
+                var rightAnswer = questionDto.QuestionAnswers
+                    .Where(ans => ans.IsTrue)
+                    .Select(ans => ans.AnswerDisplay)
+                    .First();
+                // Add new test grade
+                partitionHistory.TestGrades.Add(new TestGrade()
+                {
+                    QuestionId = qa.QuestionId,
+                    InputedAnswer = qa.SelectedAnswer,
+                    // Check if selected answer is not empty
+                    GradeStatus = !string.IsNullOrEmpty(qa.SelectedAnswer) 
+                        // Right/Wrong
+                        ? gradeStatusForRightWrong
+                        // Skip
+                        : GradeStatus.Skip.GetDescription(),
+                    QuestionNumber = questionDto.QuestionNumber,
+                    RightAnswer = rightAnswer
+                });
+            }
+            
+            // Partition history's test grades
+            var pHistoryTestGrades = partitionHistory.TestGrades;
+            // Count total right, wrong, skip, accuracy rate
+            partitionHistory.TotalRightAnswer = 
+                pHistoryTestGrades.Count(x => x.GradeStatus.Equals(GradeStatus.Correct.GetDescription()));
+            partitionHistory.TotalWrongAnswer = 
+                pHistoryTestGrades.Count(x => x.GradeStatus.Equals(GradeStatus.Wrong.GetDescription()));
+            partitionHistory.TotalSkipAnswer = 
+                pHistoryTestGrades.Count(x => x.GradeStatus.Equals(GradeStatus.Skip.GetDescription()));
+            
+            // Other properties
+            // Test section name
+            partitionHistory.TestSectionName = sectionHoldPartition.TestSectionName;
+            // Total question
+            partitionHistory.TotalQuestion = tsp.Questions.Count;
+            partitionHistory.TestSectionPartId = tsp.TestSectionPartId;
+            // Accuracy rate
+            partitionHistory.AccuracyRate = 
+                partitionHistory.TotalRightAnswer / (double)partitionHistory.TotalQuestion;
+            
+            // Add to list of partition history 
+            partitionHistories.Add(partitionHistory);
+        }
+        
+        // Initiate test history 
+        TestHistory testHistory = new()
+        {
+            UserId = userId,
+            TestId = singleTestEntity.TestId,
+            IsFull = isFull,
+            TakenDate = takenDate,
+            TestType = singleTestEntity.TestType,
+            TestCategoryId = singleTestEntity.TestCategoryId,
+            TotalCompletionTime = totalCompletionTime,
+            PartitionHistories = partitionHistories,
+            TotalQuestion = singleTestEntity.TotalQuestion
+        };
+        
+        // Count total right, wrong, skip, accuracy rate for all question in history
+        testHistory.TotalRightAnswer = partitionHistories.Sum(ph => ph.TotalRightAnswer);
+        testHistory.TotalWrongAnswer = partitionHistories.Sum(ph => ph.TotalWrongAnswer);
+        testHistory.TotalSkipAnswer = partitionHistories.Sum(ph => ph.TotalSkipAnswer);
+        // Accuracy rate
+        testHistory.AccuracyRate = 
+            testHistory.TotalRightAnswer / (double)testHistory.TotalQuestion;
+        
+        // Get score calculation
+        var scoreCalculationDto =
+            await scoreCalculationService.GetByTotalRightAnswerAndTestType(testHistory.TotalRightAnswer!.Value,
+                testHistory.TestType);
+        // Update history band score 
+        testHistory.BandScore = scoreCalculationDto.BandScore;
+        testHistory.ScoreCalculationId = scoreCalculationDto.ScoreCalculationId;
+        
+        // Update total engaged in test 
+        singleTestEntity.TotalEngaged += 1;
+        await unitOfWork.TestRepository.UpdateAsync(singleTestEntity);
+        
+        // Add history to DB
+        return await testHistoryService.InsertAsync(testHistory.Adapt<TestHistoryDto>());
+    }
+
     public async Task<int> CountTotalAsync()
     {
         return await unitOfWork.TestRepository.CountTotalAsync();
+    }
+
+    public async Task<bool> IsExistTestAsync(int id)
+    {
+        return await unitOfWork.TestRepository.IsExistTestAsync(id);
     }
 }

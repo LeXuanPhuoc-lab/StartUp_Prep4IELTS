@@ -7,14 +7,15 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure App settings
-builder.Services.Configure<AppSettings>(
-    builder.Configuration.GetSection("AppSettings"));
 
 // Configure DBContext
 builder.Services.ConfigureDbContext(builder.Configuration)
     // Configure application services
     .AddApplicationServices();
+
+// Configure App settings
+builder.Services.EstablishApplicationConfiguration(
+    builder.Configuration, builder.Environment);
     
 // Configure CORS
 builder.Services.AddCors(p => p.AddPolicy("Cors", policy => {

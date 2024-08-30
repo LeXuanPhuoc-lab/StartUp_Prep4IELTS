@@ -1,20 +1,15 @@
-using System.Net;
-using System.Web;
 using EXE202_Prep4IELTS.Payloads;
+using EXE202_Prep4IELTS.Payloads.Filters;
 using EXE202_Prep4IELTS.Payloads.Requests;
 using EXE202_Prep4IELTS.Payloads.Responses;
 using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Options;
 using Prep4IELTS.Business.Models;
 using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Business.Utils;
-using Prep4IELTS.Data;
 using Prep4IELTS.Data.Dtos;
-using Prep4IELTS.Data.Entities;
 
 namespace EXE202_Prep4IELTS.Controllers;
 
@@ -22,6 +17,8 @@ namespace EXE202_Prep4IELTS.Controllers;
 public class TestController(
     ITestService testService,
     ITestCategoryService testCategoryService,
+    IUserService userService,
+    IMapper mapper,
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
 {
     private readonly AppSettings _appSettings = monitor.CurrentValue;
@@ -146,7 +143,6 @@ public class TestController(
             });
     }
     
-    
     //  Summary:
     //      Start test
     [HttpGet(ApiRoute.Test.StartTest, Name = nameof(StartTestByIdAsync))]
@@ -170,9 +166,43 @@ public class TestController(
     //  Summary:
     //      Get all answers by test id
     [HttpGet(ApiRoute.Test.GetAllAnswer, Name = nameof(GetAllAnswerByTestIdAsync))]
-    public async Task<IActionResult> GetAllAnswerByTestIdAsync([FromRoute] int id)
+    public async Task<IActionResult> GetAllAnswerByTestIdAsync([FromRoute] int id, [FromQuery] int[] section)
     {
+        // Get test by id and its answers
         var testDto = await testService.FindByIdAndGetAllAnswerAsync(id);
+
+        // Initiate collection of section with questions response
+        var sectionAnswerRespList = new List<SectionSolutionResponse>();
+        // Loop all section in test to add section name, transcript, questions to section solution resp 
+        foreach (var st in testDto.TestSections)
+        {
+            // Check whether getting answer with particular section
+            if(section.Any() && !section.Contains(st.TestSectionId)) continue; // Skip if section != null && not found in section required
+            
+            // Get all answer for each section
+            var questionAnswers = st.TestSectionPartitions
+                .SelectMany(x => x.Questions.Select(q => new QuestionAnswerDisplayResponse
+                {
+                    QuestionNumber = q.QuestionNumber,
+                    AnswerDisplay = q.QuestionAnswers.First().AnswerDisplay
+                }))
+                .ToList();
+            
+            // Add to section answer response list
+            sectionAnswerRespList.Add(new SectionSolutionResponse()
+            {
+                SectionName = st.TestSectionName,
+                Transcript = st.SectionTranscript ?? string.Empty,
+                QuestionAnswers = questionAnswers
+            });
+        }
+        
+        // Initiate list of question answers for test 
+        var testAnsResp = new TestSolutionResponse()
+        {
+            TestTitle = testDto.TestTitle,
+            Sections = sectionAnswerRespList
+        };
         
         return testDto == null! // Not exist any test
             ? NotFound(new BaseResponse()
@@ -183,7 +213,52 @@ public class TestController(
             : Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = testDto
+                Data = testAnsResp
             });  
+    }
+    
+    //  Summary:
+    //      Test submission
+    [HttpPost(ApiRoute.Test.Submission, Name = nameof(TestSubmissionAsync))]
+    public async Task<IActionResult> TestSubmissionAsync([FromBody] TestSubmissionRequest req)
+    {
+        // Check validation errors
+        if(!ModelState.IsValid) return BadRequest(ModelState);
+        
+        // Check exist test 
+        var isExistTest = await testService.IsExistTestAsync(req.TestId);
+        if (!isExistTest)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any test match id {req.TestId}"
+            });
+        }
+        
+        // Check exist user
+        var isExistUser = await userService.IsExistUserAsync(req.UserId);
+        if (!isExistUser)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any user match id {req.UserId}"
+            });
+        }
+        
+        // Create history for submission
+        var isCreated = await testService.SubmitTestAsync(
+            req.TotalCompletionTime, req.TakenDatetime, req.IsFull,
+            req.UserId, req.TestId, 
+            mapper.Map<List<QuestionAnswerSubmissionModel>>(req.QuestionAnswers));
+        
+        return isCreated 
+            ? Created()
+            : StatusCode(StatusCodes.Status500InternalServerError, new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Failed to create the test submission due to a server error."
+            });
     }
 }

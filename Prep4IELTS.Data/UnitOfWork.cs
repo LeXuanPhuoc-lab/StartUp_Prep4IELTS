@@ -1,9 +1,5 @@
-using System.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Prep4IELTS.Data.Context;
 using Prep4IELTS.Data.Repositories;
-using IsolationLevel = System.Transactions.IsolationLevel;
 
 namespace Prep4IELTS.Data;
 
@@ -41,6 +37,7 @@ public class UnitOfWork(Prep4IeltsContext unitOfWorkContext) : IDisposable
     private CommentRepository _commentRepository = null!;
     private FlashcardRepository _flashcardRepository = null!;
     private FlashcardDetailRepository _flashcardDetailRepository = null!;
+    private ScoreCalculationRepository _scoreCalculationRepostiroy = null!;
     #endregion
 
     #region Repositories
@@ -92,6 +89,9 @@ public class UnitOfWork(Prep4IeltsContext unitOfWorkContext) : IDisposable
     
     public FlashcardDetailRepository FlashcardDetailRepository
         => _flashcardDetailRepository ??= new(unitOfWorkContext);
+    
+    public ScoreCalculationRepository ScoreCalculationRepository
+        => _scoreCalculationRepostiroy ??= new(unitOfWorkContext);
     
     #endregion
     

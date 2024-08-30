@@ -85,7 +85,7 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
                     TotalRightAnswer = ph.TotalRightAnswer,
                     TotalWrongAnswer = ph.TotalWrongAnswer,
                     TotalSkipAnswer = ph.TotalSkipAnswer,
-                    AccuracyRate = th.AccuracyRate,
+                    AccuracyRate = ph.AccuracyRate,
                     TotalQuestion = ph.TotalQuestion,
                     TestHistoryId = ph.TestHistoryId,
                     TestSectionPartId = ph.TestSectionPartId,
