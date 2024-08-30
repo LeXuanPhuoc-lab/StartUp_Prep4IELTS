@@ -983,7 +983,416 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                TestSections = new List<TestSection>()
+                {
+                    new()
+                    {
+                        TestSectionName = "Recording 1",
+                        AudioResourceUrl = "http://example.com/audio1.mp3",
+                        TotalQuestion = 10,
+                        SectionTranscript = "This section includes various passages...",
+                        TestSectionPartitions = new List<TestSectionPartition>()
+                        {
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag()
+                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 1,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26TH",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26TH JULY",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26TH OF JULY",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "JULY 26",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "JULY 26TH",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26 JULY",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 2,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 3,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "B", AnswerDisplay = "B" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 4,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 5,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 6,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 7,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 8,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "B", AnswerDisplay = "B" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 9,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 10,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 2",
+                        AudioResourceUrl = "http://example.com/audio2.mp3",
+                        TotalQuestion = 10,
+                        SectionTranscript = "This section will test your listening skills...",
+                        TestSectionPartitions = new List<TestSectionPartition>()
+                        {
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 11,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 12,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 13,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 14,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 15,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            },
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Multiple Choice" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 16,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 1",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = true, AnswerText = "The Earth revolves around the Sun", AnswerDisplay = "The Earth revolves around the Sun" },
+                                            new() { IsTrue = false, AnswerText = "The Sun revolves around the Earth", AnswerDisplay = "The Sun revolves around the Earth" },
+                                            new() { IsTrue = false, AnswerText = "The Earth is stationary", AnswerDisplay = "The Earth is stationary" }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 17,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 2",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius", AnswerDisplay = "Water boils at 50 degrees Celsius" },
+                                            new() { IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius", AnswerDisplay = "Water boils at 100 degrees Celsius" },
+                                            new() { IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius", AnswerDisplay = "Water boils at 150 degrees Celsius" }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 18,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 3",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = false, AnswerText = "The capital of France is Berlin", AnswerDisplay = "The capital of France is Berlin" },
+                                            new() { IsTrue = true, AnswerText = "The capital of France is Paris", AnswerDisplay = "The capital of France is Paris" },
+                                            new() { IsTrue = false, AnswerText = "The capital of France is Madrid", AnswerDisplay = "The capital of France is Madrid" }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 19,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 3",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = true, AnswerText = "Photosynthesis occurs in plants", AnswerDisplay = "Photosynthesis occurs in plants" },
+                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in animals", AnswerDisplay = "Photosynthesis occurs in animals" },
+                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in fungi", AnswerDisplay = "Photosynthesis occurs in fungi" }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 20,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 3",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = false, AnswerText = "The speed of light is 300,000 km/s", AnswerDisplay = "The speed of light is 300,000 km/s" },
+                                            new() { IsTrue = true, AnswerText = "The speed of light is 299,792 km/s", AnswerDisplay = "The speed of light is 299,792 km/s" },
+                                            new() { IsTrue = false, AnswerText = "The speed of light is 150,000 km/s", AnswerDisplay = "The speed of light is 150,000 km/s" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 3",
+                        AudioResourceUrl = "http://example.com/audio3.mp3",
+                        TotalQuestion = 10,
+                        SectionTranscript = "Focus on grammar rules and vocabulary usage...",
+                        TestSectionPartitions = new List<TestSectionPartition>()
+                        {
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag()
+                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 21,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 22,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 23,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 24,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 25,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            },
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 26,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 27,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 28,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 29,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 30,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 4",
+                        AudioResourceUrl = "http://example.com/audio4.mp3",
+                        TotalQuestion = 10,
+                        SectionTranscript = "This section requires you to write essays...",
+                        TestSectionPartitions = new List<TestSectionPartition>()
+                        {
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag()
+                                    { PartitionTagDesc = "[Listening] Summary/Flow chart Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 31,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 32,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 33,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 34,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 35,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            },
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Matching" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 36,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 37,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 38,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 39,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 40,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
             new()
             {
@@ -998,7 +1407,416 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                TestSections = new List<TestSection>()
+                {
+                    new()
+                    {
+                        TestSectionName = "Recording 1",
+                        AudioResourceUrl = "http://example.com/audio1.mp3",
+                        TotalQuestion = 10,
+                        SectionTranscript = "This section includes various passages...",
+                        TestSectionPartitions = new List<TestSectionPartition>()
+                        {
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag()
+                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 1,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26TH",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26TH JULY",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26TH OF JULY",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "JULY 26",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "JULY 26TH",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true,
+                                                AnswerText = "26 JULY",
+                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 2,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 3,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "B", AnswerDisplay = "B" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 4,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 5,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 6,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 7,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 8,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "B", AnswerDisplay = "B" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 9,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 10,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 2",
+                        AudioResourceUrl = "http://example.com/audio2.mp3",
+                        TotalQuestion = 10,
+                        SectionTranscript = "This section will test your listening skills...",
+                        TestSectionPartitions = new List<TestSectionPartition>()
+                        {
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 11,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 12,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 13,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 14,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 15,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            },
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Multiple Choice" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 16,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 1",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = true, AnswerText = "The Earth revolves around the Sun", AnswerDisplay = "The Earth revolves around the Sun" },
+                                            new() { IsTrue = false, AnswerText = "The Sun revolves around the Earth", AnswerDisplay = "The Sun revolves around the Earth" },
+                                            new() { IsTrue = false, AnswerText = "The Earth is stationary", AnswerDisplay = "The Earth is stationary" }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 17,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 2",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius", AnswerDisplay = "Water boils at 50 degrees Celsius" },
+                                            new() { IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius", AnswerDisplay = "Water boils at 100 degrees Celsius" },
+                                            new() { IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius", AnswerDisplay = "Water boils at 150 degrees Celsius" }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 18,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 3",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = false, AnswerText = "The capital of France is Berlin", AnswerDisplay = "The capital of France is Berlin" },
+                                            new() { IsTrue = true, AnswerText = "The capital of France is Paris", AnswerDisplay = "The capital of France is Paris" },
+                                            new() { IsTrue = false, AnswerText = "The capital of France is Madrid", AnswerDisplay = "The capital of France is Madrid" }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 19,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 3",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = true, AnswerText = "Photosynthesis occurs in plants", AnswerDisplay = "Photosynthesis occurs in plants" },
+                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in animals", AnswerDisplay = "Photosynthesis occurs in animals" },
+                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in fungi", AnswerDisplay = "Photosynthesis occurs in fungi" }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 20,
+                                        IsMultipleChoice = true,
+                                        QuestionDesc = "Multiple Choice 3",
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new() { IsTrue = false, AnswerText = "The speed of light is 300,000 km/s", AnswerDisplay = "The speed of light is 300,000 km/s" },
+                                            new() { IsTrue = true, AnswerText = "The speed of light is 299,792 km/s", AnswerDisplay = "The speed of light is 299,792 km/s" },
+                                            new() { IsTrue = false, AnswerText = "The speed of light is 150,000 km/s", AnswerDisplay = "The speed of light is 150,000 km/s" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 3",
+                        AudioResourceUrl = "http://example.com/audio3.mp3",
+                        TotalQuestion = 10,
+                        SectionTranscript = "Focus on grammar rules and vocabulary usage...",
+                        TestSectionPartitions = new List<TestSectionPartition>()
+                        {
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag()
+                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 21,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 22,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 23,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 24,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 25,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            },
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 26,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 27,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 28,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 29,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 30,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 4",
+                        AudioResourceUrl = "http://example.com/audio4.mp3",
+                        TotalQuestion = 10,
+                        SectionTranscript = "This section requires you to write essays...",
+                        TestSectionPartitions = new List<TestSectionPartition>()
+                        {
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag()
+                                    { PartitionTagDesc = "[Listening] Summary/Flow chart Completion" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 31,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 32,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 33,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 34,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 35,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            },
+                            new()
+                            {
+                                PartitionDesc = "Description for questions",
+                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Matching" },
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 36,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 37,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 38,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 39,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 40,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
             new()
             {

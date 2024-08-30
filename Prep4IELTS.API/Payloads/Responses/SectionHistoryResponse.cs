@@ -29,7 +29,8 @@ public static class PartitionHistoryResponseExtension
         };
         // Update accuracy rate
         var totalRightAnswer = sectionHistoryResponse.TotalRightAnswer;
-        sectionHistoryResponse.AccuracyRate = totalRightAnswer / (double)totalQuestion;
+        var totalPartitionQuestion = partitionHistories.SelectMany(x => x.TestGrades).Count();
+        sectionHistoryResponse.AccuracyRate = totalRightAnswer / (double)totalPartitionQuestion;
 
         return sectionHistoryResponse;
     }

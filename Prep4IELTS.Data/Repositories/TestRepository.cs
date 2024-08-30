@@ -224,7 +224,7 @@ public class TestRepository : GenericRepository<Test>
 
     public async Task<Test?> FindByIdAndGetAllAnswerAsync(int id)
     {
-        return await _dbSet.Where(x => x.Id == id)
+        var test =  await _dbSet.Where(x => x.Id == id)
             .AsSplitQuery()
             .Select(tst => new Test()
             {
@@ -251,22 +251,46 @@ public class TestRepository : GenericRepository<Test>
                                     QuestionNumber = qs.QuestionNumber,
                                     IsMultipleChoice = qs.IsMultipleChoice,
                                     TestSectionPartId = qs.TestSectionPartId,
-                                    QuestionAnswers = qs.QuestionAnswers.Select(qAns => new QuestionAnswer()
-                                    {
-                                        QuestionAnswerId = qAns.QuestionAnswerId,
-                                        AnswerText = qAns.AnswerText,
-                                        AnswerDisplay = qAns.AnswerDisplay,
-                                        IsTrue = qAns.IsTrue,
-                                        QuestionId = qAns.QuestionId
-                                    }).ToList()
+                                    QuestionAnswers = qs.QuestionAnswers
+                                        .Where(qAns => qAns.IsTrue)
+                                        .Select(qAns => new QuestionAnswer()
+                                            {
+                                                QuestionAnswerId = qAns.QuestionAnswerId,
+                                                AnswerText = qAns.AnswerText,
+                                                AnswerDisplay = qAns.AnswerDisplay,
+                                                IsTrue = qAns.IsTrue,
+                                                QuestionId = qAns.QuestionId
+                                            }).ToList()
                                 }).ToList()
                             }).ToList()
                     }).ToList()
             }).FirstOrDefaultAsync();
+
+        if (test == null) return null!;
+        var testSectionParts = test.TestSections
+            .SelectMany(x => x.TestSectionPartitions)
+            .ToList();
+
+        foreach (var tsp in testSectionParts)
+        {
+            foreach (var q in tsp.Questions)
+            {
+                q.QuestionAnswers = q.QuestionAnswers
+                    .GroupBy(qa => qa.AnswerDisplay)
+                    .Select(g => g.First())
+                    .ToList();
+            }
+        }
+        return test;
     }
-    
+
     public async Task<int> CountTotalAsync()
     {
         return await _dbSet.CountAsync();
+    }
+
+    public async Task<bool> IsExistTestAsync(int id)
+    {
+        return await _dbSet.AnyAsync(x => x.Id == id);
     }
 }

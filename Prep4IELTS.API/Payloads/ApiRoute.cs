@@ -11,6 +11,7 @@ public static class ApiRoute
         public const string PracticeById = Base + "/tests/{id}/practice";
         public const string StartTest = Base + "/tests/{id}/start";
         public const string GetAllAnswer = Base + "/tests/{id}/answers";
+        public const string Submission = Base + "/tests/submission";
     }
 
     public static class TestCategory
@@ -28,5 +29,12 @@ public static class ApiRoute
     public static class Comment
     {
         public const string GetAllByTestId = Base + "/comments/{testId}";
+    }
+
+    public static class Payment
+    {
+        public const string CreatePaymentWithMethod = Base + "/payment/create";
+        public const string MomoReturn = Base + "/payment/momo-return";
+        public const string MomoIpn = Base + "/payment/momo-ipn";
     }
 }

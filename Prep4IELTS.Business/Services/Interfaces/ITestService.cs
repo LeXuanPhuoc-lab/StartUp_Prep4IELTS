@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Query;
+using Prep4IELTS.Business.Models;
 using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;
 
@@ -38,5 +39,9 @@ public interface ITestService
     Task<TestDto> FindByIdForPracticeAsync(int id, int[] sectionIds);
     Task<TestDto> FindByIdForTestSimulationAsync(int id);
     Task<TestDto> FindByIdAndGetAllAnswerAsync(int id);
+    Task<bool> SubmitTestAsync(int totalCompletionTime, DateTime takenDate, 
+        bool isFull, Guid userId, 
+        int testId, List<QuestionAnswerSubmissionModel> questionAnswers);
     Task<int> CountTotalAsync();
+    Task<bool> IsExistTestAsync(int id);
 }

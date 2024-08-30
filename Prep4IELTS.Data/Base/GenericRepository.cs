@@ -154,7 +154,33 @@ public class GenericRepository<TEntity> where TEntity : class
     public async Task UpdateAsync(TEntity entityToUpdate, bool saveChanges = false)
     {
         _dbSet.Attach(entityToUpdate);
+
+        // Set the entity state to Modified
         _dbContext.Entry(entityToUpdate).State = EntityState.Modified;
+        
+        // Get primary key property name 
+        var keyProperties = _dbContext.Model.FindEntityType(typeof(TEntity))?.GetProperties();
+        
+        // Handle identity columns and primary keys
+        if (keyProperties != null)
+        {
+            foreach (var property in keyProperties)
+            {
+                var propertyEntry = _dbContext.Entry(entityToUpdate).Property(property.Name);
+
+                // Exclude primary key properties from being modified
+                if (property.IsKey())
+                {
+                    propertyEntry.IsModified = false;
+                }
+
+                // Exclude identity columns (auto-increment) from being modified
+                if (property.ValueGenerated == Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd)
+                {
+                    propertyEntry.IsModified = false;
+                }
+            }
+        }
 
         if (saveChanges) await SaveChangeAsync();
     }

@@ -1,4 +1,4 @@
-namespace EXE202_Prep4IELTS.Payloads.Requests;
+namespace EXE202_Prep4IELTS.Payloads.Filters;
 
 public class TestFilterRequest
 {

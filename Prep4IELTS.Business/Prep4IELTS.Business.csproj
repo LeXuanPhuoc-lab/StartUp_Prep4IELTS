@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Prep4IELTS.Data\Prep4IELTS.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Constracts\" />
+    </ItemGroup>
+
 </Project>

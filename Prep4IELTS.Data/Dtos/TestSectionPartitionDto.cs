@@ -11,6 +11,7 @@ public record TestSectionPartitionDto(
     ICollection<QuestionDto> Questions)
 {
     public int TestSectionId { get; set; }
+    [JsonIgnore]
     public TestSectionDto TestSection { get; set; } = null!;
     
     [JsonIgnore]
