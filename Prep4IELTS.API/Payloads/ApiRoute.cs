@@ -4,6 +4,11 @@ public static class ApiRoute
 {
     private const string Base = "api";
 
+    public static class User
+    {
+        public const string WhoAmI = Base + "/users/who-am-i";
+    }
+
     public static class Test
     {
         public const string GetAll = Base + "/tests";
@@ -23,7 +28,9 @@ public static class ApiRoute
     {
         public const string GetAllByUserId = Base + "/test-histories";
         public const string GetHistoryById = Base + "/test-histories/{id}";
-        public const string GetPartitionHistoryWithGradeById = Base + "/test-histories/partitions/{partitionId}/test-grades/{testGradeId}";
+
+        public const string GetPartitionHistoryWithGradeById =
+            Base + "/test-histories/partitions/{partitionId}/test-grades/{testGradeId}";
     }
 
     public static class Comment

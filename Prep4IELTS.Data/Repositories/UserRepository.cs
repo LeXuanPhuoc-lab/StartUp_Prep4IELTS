@@ -7,7 +7,7 @@ namespace Prep4IELTS.Data.Repositories;
 
 public class UserRepository : GenericRepository<User>
 {
-    public UserRepository(Prep4IeltsContext dbContext) 
+    public UserRepository(Prep4IeltsContext dbContext)
         : base(dbContext)
     {
     }
@@ -15,5 +15,13 @@ public class UserRepository : GenericRepository<User>
     public async Task<bool> IsExistUserAsync(Guid userId)
     {
         return await _dbSet.AnyAsync(x => x.UserId.Equals(userId));
+    }
+
+    public async Task<User?> GetUserByClerkId(string clerkId)
+    {
+        return await _dbSet
+            .Where(u => u.ClerkId == clerkId)
+            .Include(u => u.Role)
+            .SingleOrDefaultAsync();
     }
 }
