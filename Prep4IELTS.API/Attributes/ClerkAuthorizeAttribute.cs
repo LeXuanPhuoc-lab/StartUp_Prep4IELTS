@@ -14,9 +14,6 @@ public class ClerkAuthorizeAttribute : Attribute, IActionFilter
         //user sẽ được tìm thấy nếu token hợp lệ và user tồn tại trong DB sau khi đã chạy ClerkAuthMiddleware đã được config trong pipeline ở Program
         var user = (UserDto?)context.HttpContext.Items["User"];
 
-        Console.WriteLine(Require);
-        Console.WriteLine(Roles);
-
         if (user == null)
         {
             if (!Require) return; //không bắt buộc có user (token)
