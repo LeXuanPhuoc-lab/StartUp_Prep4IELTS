@@ -289,8 +289,8 @@ public class TestService(
             await scoreCalculationService.GetByTotalRightAnswerAndTestType(testHistory.TotalRightAnswer!.Value,
                 testHistory.TestType);
         // Update history band score 
-        testHistory.BandScore = scoreCalculationDto.BandScore;
-        testHistory.ScoreCalculationId = scoreCalculationDto.ScoreCalculationId;
+        testHistory.BandScore = "5.5" ;
+        testHistory.ScoreCalculationId = 1;
         
         // Update total engaged in test 
         singleTestEntity.TotalEngaged += 1;
