@@ -14,7 +14,8 @@ public interface ITestSectionService
     Task<TestSectionDto> FindAsync(int id);
     Task<IList<TestSectionDto>> FindAllAsync();
     Task<TestSectionDto> FindOneWithConditionAsync(
-        Expression<Func<TestSection, bool>> filter,
+        Expression<Func<TestSection, bool>>? filter,
+        Func<IQueryable<TestSection>, IOrderedQueryable<TestSection>>? orderBy = null, 
         string? includeProperties = "");
     Task<IList<TestSectionDto>> FindAllWithConditionAsync(
         Expression<Func<TestSection, bool>>? filter = null,

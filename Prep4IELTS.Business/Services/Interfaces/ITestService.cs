@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Query;
 using Prep4IELTS.Business.Models;
 using Prep4IELTS.Data.Dtos;
@@ -10,12 +11,14 @@ public interface ITestService
 {
     // Basic
     Task<bool> InsertAsync(TestDto test);
+    Task<bool> InsertAsync(TestDto test, List<int>? tagIds);
     Task<bool> RemoveAsync(Guid id);
     Task UpdateAsync(TestDto test);
     Task<TestDto> FindAsync(Guid id);
     Task<IList<TestDto>> FindAllAsync();
     Task<TestDto> FindOneWithConditionAsync(
         Expression<Func<Test, bool>> filter,
+        Func<IQueryable<Test>, IOrderedQueryable<Test>>? orderBy = null, 
         string? includeProperties = "");
     Task<IList<TestDto>> FindAllWithConditionAsync(
         Expression<Func<Test, bool>>? filter = null,

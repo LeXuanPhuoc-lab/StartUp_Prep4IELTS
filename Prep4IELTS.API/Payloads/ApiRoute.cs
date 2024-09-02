@@ -6,12 +6,17 @@ public static class ApiRoute
 
     public static class Test
     {
+        // [HTTP GET]
         public const string GetAll = Base + "/tests";
         public const string GetById = Base + "/tests/{id}";
+        public const string GetAllAnswer = Base + "/tests/{id}/answers";
+        public const string GetCreateTestDetail = Base + "/tests/create/detail";
         public const string PracticeById = Base + "/tests/{id}/practice";
         public const string StartTest = Base + "/tests/{id}/start";
-        public const string GetAllAnswer = Base + "/tests/{id}/answers";
+        
+        // [HTTP POST]
         public const string Submission = Base + "/tests/submission";
+        public const string Create = Base + "/tests/create";
     }
 
     public static class TestCategory
@@ -34,7 +39,22 @@ public static class ApiRoute
     public static class Payment
     {
         public const string CreatePaymentWithMethod = Base + "/payment/create";
+        
+        // MOMO
+        public const string GetMomoPaymentMethods = Base + "/payment/momo-methods";
+        public const string CheckTransactionStatus = Base + "/payment/momo/transaction-status/{orderId}";
+        public const string Confirm = Base + "/payment/momo/confirm";
+        public const string InitiateTransaction = Base + "/payment/momo/initiate-transaction";
         public const string MomoReturn = Base + "/payment/momo-return";
         public const string MomoIpn = Base + "/payment/momo-ipn";
+    }
+
+    public static class Resource
+    {
+        public const string UploadImage = Base + "/resources/image/upload";
+        public const string UploadAudio = Base + "/resources/audio/upload";
+        public const string UpdateImage = Base + "/resources/image/update";
+        public const string UpdateAudio = Base + "/resources/audio/update";
+        public const string Delete = Base + "/resources/delete";
     }
 }

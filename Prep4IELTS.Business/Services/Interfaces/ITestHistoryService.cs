@@ -13,7 +13,8 @@ public interface ITestHistoryService
     Task<TestHistoryDto> FindAsync(int id);
     Task<IList<TestHistoryDto>> FindAllAsync();
     Task<TestHistoryDto> FindOneWithConditionAsync(
-        Expression<Func<TestHistory, bool>> filter,
+        Expression<Func<TestHistory, bool>>? filter,
+        Func<IQueryable<TestHistory>, IOrderedQueryable<TestHistory>>? orderBy = null,
         string? includeProperties = "");
     Task<IList<TestHistoryDto>> FindAllWithConditionAsync(
         Expression<Func<TestHistory, bool>>? filter = null,

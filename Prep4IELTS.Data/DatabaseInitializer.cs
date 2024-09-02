@@ -20,22 +20,25 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
     {
         try
         {
-            // Check whether database exist
+            // Check whether the database exists and can be connected to
             if (!await dbContext.Database.CanConnectAsync())
             {
-                // Perform migration database
+                // Check for applied migrations
+                var appliedMigrations = await dbContext.Database.GetAppliedMigrationsAsync();
+                if (appliedMigrations.Any())
+                {
+                    Console.WriteLine("Migrations have been applied.");
+                    return;
+                }
+
+                // Perform migration if necessary
                 await dbContext.Database.MigrateAsync();
+                Console.WriteLine("Database initialized successfully");
             }
-
-            // Check for applied migrations
-            var appliedMigrations = await dbContext.Database.GetAppliedMigrationsAsync();
-            if (appliedMigrations.Any())
+            else
             {
-                Console.WriteLine("Migrations have been applied.");
-                return;
+                Console.WriteLine("Database cannot be connected to.");
             }
-
-            Console.WriteLine("Database initialized successfully");
         }
         catch (Exception ex)
         {
@@ -315,8 +318,26 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
     //      Seeding user
     private async Task SeedUserAsync()
     {
+        var rnd = new Random();
+        List<SystemRole> roles = await dbContext.SystemRoles.ToListAsync();
+        
         List<User> users = new()
         {
+            new User
+            {
+                UserId = Guid.Parse("ee3da1ec-e2d1-458c-b6c9-23e76727da8d"),
+                ClerkId = "user_2ksTPdbJa8xQxojVQtM5FSPb5s1",
+                FirstName = "Admin",
+                LastName = "Prep4Ielts",
+                Email = "admin.prep4ielts@gmail.com",
+                DateOfBirth = new DateTime(1990, 5, 15),
+                Phone = "0978112391",
+                IsActive = true,
+                CreateDate = DateTime.Now,
+                TestTakenDate = DateTime.Now.AddDays(-30),
+                TargetScore = "8.0",
+                RoleId = roles.First(x => x.RoleName!.Equals(Enum.SystemRole.Admin.GetDescription())).RoleId
+            },
             new User
             {
                 ClerkId = Guid.NewGuid().ToString(),
@@ -328,7 +349,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 IsActive = true,
                 CreateDate = DateTime.Now,
                 TestTakenDate = DateTime.Now.AddDays(-30),
-                TargetScore = "8.0"
+                TargetScore = "8.0",
+                RoleId = roles[rnd.Next(roles.Count())].RoleId
             },
             new User
             {
@@ -341,7 +363,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 IsActive = false,
                 CreateDate = DateTime.Now.AddMonths(-3),
                 TestTakenDate = DateTime.Now.AddDays(-60),
-                TargetScore = "6.0"
+                TargetScore = "6.0",
+                RoleId = roles[rnd.Next(roles.Count())].RoleId
             },
             new User
             {
@@ -354,7 +377,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 IsActive = true,
                 CreateDate = DateTime.Now.AddMonths(-6),
                 TestTakenDate = DateTime.Now.AddDays(-15),
-                TargetScore = "5.5"
+                TargetScore = "5.5",
+                RoleId = roles[rnd.Next(roles.Count())].RoleId
             },
             new User
             {
@@ -367,7 +391,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 IsActive = true,
                 CreateDate = DateTime.Now.AddMonths(-12),
                 TestTakenDate = DateTime.Now.AddDays(-90),
-                TargetScore = "6.5"
+                TargetScore = "6.5",
+                RoleId = roles[rnd.Next(roles.Count())].RoleId
             },
             new User
             {
@@ -380,7 +405,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 IsActive = false,
                 CreateDate = DateTime.Now.AddYears(-1),
                 TestTakenDate = DateTime.Now.AddDays(-45),
-                TargetScore = "7.5"
+                TargetScore = "7.5",
+                RoleId = roles[rnd.Next(roles.Count())].RoleId
             }
         };
 
@@ -455,6 +481,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         {
             new()
             {
+                TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Reading Test 1",
                 Duration = 2400,
                 TestType = Enum.TestType.Reading.GetDescription(),
@@ -470,6 +497,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             },
             new()
             {
+                TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Reading Test 2",
                 Duration = 2400,
                 TestType = Enum.TestType.Reading.GetDescription(),
@@ -485,6 +513,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             },
             new()
             {
+                TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Reading Test 3",
                 Duration = 2400,
                 TestType = Enum.TestType.Reading.GetDescription(),
@@ -500,6 +529,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             },
             new()
             {
+                TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Listening Test 1",
                 Duration = 2400,
                 TestType = Enum.TestType.Listening.GetDescription(),
@@ -565,7 +595,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 1",
-                        AudioResourceUrl = "http://example.com/audio1.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio1.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "This section includes various passages...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -681,7 +715,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 2",
-                        AudioResourceUrl = "http://example.com/audio2.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio2.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "This section will test your listening skills...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -797,7 +835,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 3",
-                        AudioResourceUrl = "http://example.com/audio3.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio3.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "Focus on grammar rules and vocabulary usage...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -884,7 +926,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 4",
-                        AudioResourceUrl = "http://example.com/audio4.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio4.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "This section requires you to write essays...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -972,6 +1018,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             },
             new()
             {
+                TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Listening Test 2",
                 Duration = 2400,
                 TestType = Enum.TestType.Listening.GetDescription(),
@@ -989,7 +1036,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 1",
-                        AudioResourceUrl = "http://example.com/audio1.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio1.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "This section includes various passages...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -1105,7 +1156,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 2",
-                        AudioResourceUrl = "http://example.com/audio2.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio2.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "This section will test your listening skills...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -1221,7 +1276,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 3",
-                        AudioResourceUrl = "http://example.com/audio3.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio3.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "Focus on grammar rules and vocabulary usage...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -1308,7 +1367,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 4",
-                        AudioResourceUrl = "http://example.com/audio4.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio4.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "This section requires you to write essays...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -1396,6 +1459,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             },
             new()
             {
+                TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Listening Test 3",
                 Duration = 2400,
                 TestType = Enum.TestType.Listening.GetDescription(),
@@ -1413,7 +1477,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 1",
-                        AudioResourceUrl = "http://example.com/audio1.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio1.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "This section includes various passages...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -1529,7 +1597,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 2",
-                        AudioResourceUrl = "http://example.com/audio2.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio2.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "This section will test your listening skills...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -1645,7 +1717,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 3",
-                        AudioResourceUrl = "http://example.com/audio3.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio3.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "Focus on grammar rules and vocabulary usage...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -1732,7 +1808,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         TestSectionName = "Recording 4",
-                        AudioResourceUrl = "http://example.com/audio4.mp3",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "http://example.com/audio4.mp3",
+                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                        },
                         TotalQuestion = 10,
                         SectionTranscript = "This section requires you to write essays...",
                         TestSectionPartitions = new List<TestSectionPartition>()
@@ -1820,6 +1900,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             },
             new()
             {
+                TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Writing Test 1",
                 Duration = 2400,
                 TestType = Enum.TestType.Writing.GetDescription(),
@@ -1835,6 +1916,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             },
             new()
             {
+                TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Writing Test 2",
                 Duration = 2400,
                 TestType = Enum.TestType.Writing.GetDescription(),
@@ -1850,6 +1932,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             },
             new()
             {
+                TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Listening Test 4",
                 Duration = 2400,
                 TestType = Enum.TestType.Listening.GetDescription(),
@@ -1865,6 +1948,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             },
             new()
             {
+                TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Reading Test 4",
                 Duration = 2400,
                 TestType = Enum.TestType.Reading.GetDescription(),
@@ -1919,7 +2003,12 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TestCategoryId = rndTest.TestCategoryId,
                 UserId = rndUser.UserId,
                 TestId = rndTest.TestId,
-                BandScore = rndBandScore.BandScore
+                BandScore = rndBandScore.BandScore,
+                TotalRightAnswer = rnd.Next(0, 10),
+                TotalSkipAnswer = rnd.Next(0, 10),
+                TotalWrongAnswer = rnd.Next(0, 10),
+                AccuracyRate = 0.375,
+                TotalQuestion = 40
             });
         }
 

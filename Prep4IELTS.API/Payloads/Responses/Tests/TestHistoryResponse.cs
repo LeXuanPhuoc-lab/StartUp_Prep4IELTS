@@ -1,6 +1,6 @@
 using Prep4IELTS.Data.Dtos;
 
-namespace EXE202_Prep4IELTS.Payloads.Responses;
+namespace EXE202_Prep4IELTS.Payloads.Responses.Tests;
 
 public class TestHistoryResponse
 {

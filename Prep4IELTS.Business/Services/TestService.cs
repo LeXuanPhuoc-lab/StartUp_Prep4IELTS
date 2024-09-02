@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Mapster;
 using MapsterMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Prep4IELTS.Business.Models;
@@ -24,7 +25,36 @@ public class TestService(
     public async Task<bool> InsertAsync(TestDto test)
     {
         await unitOfWork.TestRepository.InsertAsync(test.Adapt<Test>());
-        return await unitOfWork.TestRepository.SaveChangeWithTransactionAsync() > 0;
+        return await unitOfWork.TestRepository.SaveChangeAsync() > 0;
+    }
+
+    public async Task<bool> InsertAsync(TestDto test, List<int>? tagIds)
+    {
+        await unitOfWork.TestRepository.InsertAsync(test.Adapt<Test>());
+        var isCreateSuccess = await unitOfWork.TestRepository.SaveChangeAsync() > 0;
+
+        if (isCreateSuccess)
+        {
+            // Get created test 
+            var testEntity =
+                await unitOfWork.TestRepository.FindOneWithConditionAsync(null, orderBy: tst => 
+                    tst.OrderByDescending(x => x.Id));
+
+            if (testEntity != null && 
+                tagIds != null && tagIds.Any())
+            {
+                var isAddTagForTestSuccess = await unitOfWork.TestRepository.InsertTagsForTestAsync(testEntity.Id, tagIds);
+
+                if (!isAddTagForTestSuccess) isCreateSuccess = false;
+            }
+        }
+
+        return isCreateSuccess;
+    }
+
+    public async Task<bool> InsertReadingTestAsync(TestDto test)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<bool> RemoveAsync(Guid id)
@@ -58,11 +88,13 @@ public class TestService(
     }
     
     public async Task<TestDto> FindOneWithConditionAsync(
-        Expression<Func<Test, bool>> filter, 
+        Expression<Func<Test, bool>>? filter, 
+        Func<IQueryable<Test>, IOrderedQueryable<Test>>? orderBy = null, 
         string? includeProperties = "")
     {
         var testEntities = 
-            await unitOfWork.TestRepository.FindOneWithConditionAsync(filter, includeProperties);
+            await unitOfWork.TestRepository.FindOneWithConditionAsync(
+                filter:filter, includeProperties: includeProperties);
         return testEntities.Adapt<TestDto>();
     }
     
@@ -289,8 +321,15 @@ public class TestService(
             await scoreCalculationService.GetByTotalRightAnswerAndTestType(testHistory.TotalRightAnswer!.Value,
                 testHistory.TestType);
         // Update history band score 
-        testHistory.BandScore = scoreCalculationDto.BandScore;
-        testHistory.ScoreCalculationId = scoreCalculationDto.ScoreCalculationId;
+        if (scoreCalculationDto != null!)
+        {
+            testHistory.BandScore = scoreCalculationDto.BandScore;
+            testHistory.ScoreCalculationId = scoreCalculationDto.ScoreCalculationId;
+        }
+        else
+        {
+            testHistory.BandScore = "0";
+        }
         
         // Update total engaged in test 
         singleTestEntity.TotalEngaged += 1;

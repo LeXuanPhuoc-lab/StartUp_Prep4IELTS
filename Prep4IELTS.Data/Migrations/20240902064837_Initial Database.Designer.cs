@@ -12,7 +12,7 @@ using Prep4IELTS.Data.Context;
 namespace Prep4IELTS.Data.Migrations
 {
     [DbContext(typeof(Prep4IeltsContext))]
-    [Migration("20240828044810_Initial Database")]
+    [Migration("20240902064837_Initial Database")]
     partial class InitialDatabase
     {
         /// <inheritdoc />
@@ -24,6 +24,45 @@ namespace Prep4IELTS.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.CloudResource", b =>
+                {
+                    b.Property<int>("CloudResourceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("cloud_resource_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CloudResourceId"));
+
+                    b.Property<int?>("Bytes")
+                        .HasColumnType("int")
+                        .HasColumnName("bytes");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("create_date");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("modified_date");
+
+                    b.Property<string>("PublicId")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("public_id");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2048)")
+                        .HasColumnName("url");
+
+                    b.HasKey("CloudResourceId")
+                        .HasName("PK_CloudResource");
+
+                    b.ToTable("Cloud_Resource", (string)null);
+                });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.Comment", b =>
                 {
@@ -410,6 +449,11 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnName("test_id")
                         .HasDefaultValueSql("(newsequentialid())");
 
+                    b.Property<string>("CreateBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("create_by");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime")
                         .HasColumnName("create_date");
@@ -624,11 +668,9 @@ namespace Prep4IELTS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TestSectionId"));
 
-                    b.Property<string>("AudioResourceUrl")
-                        .HasMaxLength(2048)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(2048)")
-                        .HasColumnName("audio_resource_url");
+                    b.Property<int?>("CloudResourceId")
+                        .HasColumnType("int")
+                        .HasColumnName("cloud_resource_id");
 
                     b.Property<string>("ReadingDesc")
                         .HasColumnType("nvarchar(max)")
@@ -655,6 +697,8 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasKey("TestSectionId")
                         .HasName("PK_TestSection");
 
+                    b.HasIndex("CloudResourceId");
+
                     b.HasIndex("TestId");
 
                     b.ToTable("Test_Section", (string)null);
@@ -669,6 +713,10 @@ namespace Prep4IELTS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TestSectionPartId"));
 
+                    b.Property<int?>("CloudResourceId")
+                        .HasColumnType("int")
+                        .HasColumnName("cloud_resource_id");
+
                     b.Property<bool>("IsVerticalLayout")
                         .HasColumnType("bit")
                         .HasColumnName("is_vertical_layout");
@@ -676,12 +724,6 @@ namespace Prep4IELTS.Data.Migrations
                     b.Property<string>("PartitionDesc")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("partition_desc");
-
-                    b.Property<string>("PartitionImage")
-                        .HasMaxLength(2048)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(2048)")
-                        .HasColumnName("partition_image");
 
                     b.Property<int>("PartitionTagId")
                         .HasColumnType("int")
@@ -693,6 +735,8 @@ namespace Prep4IELTS.Data.Migrations
 
                     b.HasKey("TestSectionPartId")
                         .HasName("PK_TestSectionPartition");
+
+                    b.HasIndex("CloudResourceId");
 
                     b.HasIndex("PartitionTagId");
 
@@ -957,17 +1001,29 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.TestSection", b =>
                 {
+                    b.HasOne("Prep4IELTS.Data.Entities.CloudResource", "CloudResource")
+                        .WithMany("TestSections")
+                        .HasForeignKey("CloudResourceId")
+                        .HasConstraintName("FK_TestSection_CloudResource");
+
                     b.HasOne("Prep4IELTS.Data.Entities.Test", "Test")
                         .WithMany("TestSections")
                         .HasForeignKey("TestId")
                         .IsRequired()
                         .HasConstraintName("FK_TestSection_Test");
 
+                    b.Navigation("CloudResource");
+
                     b.Navigation("Test");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.TestSectionPartition", b =>
                 {
+                    b.HasOne("Prep4IELTS.Data.Entities.CloudResource", "CloudResource")
+                        .WithMany("TestSectionPartitions")
+                        .HasForeignKey("CloudResourceId")
+                        .HasConstraintName("FK_TestSectionPartition_CloudResource");
+
                     b.HasOne("Prep4IELTS.Data.Entities.PartitionTag", "PartitionTag")
                         .WithMany("TestSectionPartitions")
                         .HasForeignKey("PartitionTagId")
@@ -979,6 +1035,8 @@ namespace Prep4IELTS.Data.Migrations
                         .HasForeignKey("TestSectionId")
                         .IsRequired()
                         .HasConstraintName("FK_TestSectionPartition_TestSection");
+
+                    b.Navigation("CloudResource");
 
                     b.Navigation("PartitionTag");
 
@@ -1000,7 +1058,6 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagId")
-                        .IsRequired()
                         .HasConstraintName("FK_TestTag_Tag");
 
                     b.HasOne("Prep4IELTS.Data.Entities.Test", null)
@@ -1008,6 +1065,13 @@ namespace Prep4IELTS.Data.Migrations
                         .HasForeignKey("TestId")
                         .IsRequired()
                         .HasConstraintName("FK_TestTag_Test");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.CloudResource", b =>
+                {
+                    b.Navigation("TestSectionPartitions");
+
+                    b.Navigation("TestSections");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.Comment", b =>

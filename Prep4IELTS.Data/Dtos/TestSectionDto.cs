@@ -6,9 +6,9 @@ public record TestSectionDto(
     int TestSectionId,
     string TestSectionName,
     string? ReadingDesc,
-    string? AudioResourceUrl,
     int TotalQuestion,
     string? SectionTranscript,
+    int? CloudResourceId, CloudResourceDto CloudResource,
     ICollection<TestSectionPartitionDto> TestSectionPartitions)
 {
     public Guid TestId{ get; set; }

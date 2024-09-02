@@ -58,7 +58,7 @@ public partial class Prep4IeltsContext : DbContext
     {
         IConfigurationBuilder builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
 
         string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? null!;
@@ -298,6 +298,9 @@ public partial class Prep4IeltsContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("modified_date")
                 .IsRequired(false);
+            entity.Property(e => e.CreateBy)
+                .HasMaxLength(255)
+                .HasColumnName("create_by");
             entity.Property(e => e.TotalEngaged).HasColumnName("total_engaged");
             entity.Property(e => e.TotalQuestion).HasColumnName("total_question");
             entity.Property(e => e.TotalSection).HasColumnName("total_section");
@@ -313,7 +316,8 @@ public partial class Prep4IeltsContext : DbContext
                     r => r.HasOne<Tag>().WithMany()
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_TestTag_Tag"),
+                        .HasConstraintName("FK_TestTag_Tag")
+                        .IsRequired(false),
                     l => l.HasOne<Test>().WithMany()
                         .HasForeignKey("TestId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
@@ -419,7 +423,30 @@ public partial class Prep4IeltsContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TestHistory_ScoreCalculation");
         });
-
+        
+        modelBuilder.Entity<CloudResource>(entity =>
+        {
+            entity.HasKey(e => e.CloudResourceId).HasName("PK_CloudResource");
+         
+            entity.ToTable("Cloud_Resource");
+            
+            entity.Property(x => x.CloudResourceId).HasColumnName("cloud_resource_id");
+            entity.Property(e => e.PublicId)
+                .HasMaxLength(255)
+                .HasColumnName("public_id");
+            entity.Property(e => e.Url)
+                .HasMaxLength(2048)
+                .IsUnicode(false)
+                .HasColumnName("url");
+            entity.Property(e => e.Bytes).HasColumnName("bytes");
+            entity.Property(e => e.CreateDate)
+                .HasColumnType("datetime")
+                .HasColumnName("create_date");
+            entity.Property(e => e.ModifiedDate)
+                .HasColumnType("datetime")
+                .HasColumnName("modified_date");
+        });
+        
         modelBuilder.Entity<TestSection>(entity =>
         {
             entity.HasKey(e => e.TestSectionId).HasName("PK_TestSection");
@@ -427,13 +454,10 @@ public partial class Prep4IeltsContext : DbContext
             entity.ToTable("Test_Section");
 
             entity.Property(e => e.TestSectionId).HasColumnName("test_section_id");
-            entity.Property(e => e.AudioResourceUrl)
-                .HasMaxLength(2048)
-                .IsUnicode(false)
-                .HasColumnName("audio_resource_url");
             entity.Property(e => e.ReadingDesc).HasColumnName("reading_desc");
             entity.Property(e => e.SectionTranscript).HasColumnName("section_transcript");
             entity.Property(e => e.TestId).HasColumnName("test_id");
+            entity.Property(e => e.CloudResourceId).HasColumnName("cloud_resource_id");
             entity.Property(e => e.TestSectionName)
                 .HasMaxLength(50)
                 .HasColumnName("test_section_name");
@@ -443,6 +467,11 @@ public partial class Prep4IeltsContext : DbContext
                 .HasForeignKey(d => d.TestId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TestSection_Test");
+            
+            entity.HasOne(d => d.CloudResource).WithMany(p => p.TestSections)
+                .HasForeignKey(d => d.CloudResourceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TestSection_CloudResource");
         });
 
         modelBuilder.Entity<TestSectionPartition>(entity =>
@@ -454,12 +483,13 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.TestSectionPartId).HasColumnName("test_section_part_id");
             entity.Property(e => e.IsVerticalLayout).HasColumnName("is_vertical_layout");
             entity.Property(e => e.PartitionDesc).HasColumnName("partition_desc");
-            entity.Property(e => e.PartitionImage)
-                .HasMaxLength(2048)
-                .IsUnicode(false)
-                .HasColumnName("partition_image");
+            // entity.Property(e => e.PartitionImage)
+            //     .HasMaxLength(2048)
+            //     .IsUnicode(false)
+            //     .HasColumnName("partition_image");
             entity.Property(e => e.PartitionTagId).HasColumnName("partition_tag_id");
             entity.Property(e => e.TestSectionId).HasColumnName("test_section_id");
+            entity.Property(e => e.CloudResourceId).HasColumnName("cloud_resource_id");
 
             entity.HasOne(d => d.PartitionTag).WithMany(p => p.TestSectionPartitions)
                 .HasForeignKey(d => d.PartitionTagId)
@@ -470,6 +500,11 @@ public partial class Prep4IeltsContext : DbContext
                 .HasForeignKey(d => d.TestSectionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TestSectionPartition_TestSection");
+            
+            entity.HasOne(d => d.CloudResource).WithMany(p => p.TestSectionPartitions)
+                .HasForeignKey(d => d.CloudResourceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TestSectionPartition_CloudResource");
         });
 
         modelBuilder.Entity<User>(entity =>
