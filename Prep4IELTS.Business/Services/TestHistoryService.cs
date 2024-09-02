@@ -47,11 +47,12 @@ public class TestHistoryService(UnitOfWork unitOfWork) : ITestHistoryService
     }
     
     public async Task<TestHistoryDto> FindOneWithConditionAsync(
-        Expression<Func<TestHistory, bool>> filter, 
+        Expression<Func<TestHistory, bool>>? filter, 
+        Func<IQueryable<TestHistory>, IOrderedQueryable<TestHistory>>? orderBy = null, 
         string? includeProperties = "")
     {
         var testHistoryEntity = 
-            await unitOfWork.TestHistoryRepository.FindOneWithConditionAsync(filter, includeProperties);
+            await unitOfWork.TestHistoryRepository.FindOneWithConditionAsync(filter, null, includeProperties);
         return testHistoryEntity.Adapt<TestHistoryDto>();
     }
     

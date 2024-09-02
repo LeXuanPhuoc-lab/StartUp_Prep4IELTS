@@ -12,6 +12,23 @@ namespace Prep4IELTS.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Cloud_Resource",
+                columns: table => new
+                {
+                    cloud_resource_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    public_id = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    url = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: false),
+                    bytes = table.Column<int>(type: "int", nullable: true),
+                    create_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    modified_date = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CloudResource", x => x.cloud_resource_id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Partition_Tag",
                 columns: table => new
                 {
@@ -124,7 +141,8 @@ namespace Prep4IELTS.Data.Migrations
                     total_section = table.Column<int>(type: "int", nullable: true),
                     test_category_id = table.Column<int>(type: "int", nullable: false),
                     create_date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    modified_date = table.Column<DateTime>(type: "datetime", nullable: true)
+                    modified_date = table.Column<DateTime>(type: "datetime", nullable: true),
+                    create_by = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -248,14 +266,19 @@ namespace Prep4IELTS.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     test_section_name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     reading_desc = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    audio_resource_url = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: true),
                     total_question = table.Column<int>(type: "int", nullable: false),
                     section_transcript = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    test_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    test_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    cloud_resource_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TestSection", x => x.test_section_id);
+                    table.ForeignKey(
+                        name: "FK_TestSection_CloudResource",
+                        column: x => x.cloud_resource_id,
+                        principalTable: "Cloud_Resource",
+                        principalColumn: "cloud_resource_id");
                     table.ForeignKey(
                         name: "FK_TestSection_Test",
                         column: x => x.test_id,
@@ -318,13 +341,18 @@ namespace Prep4IELTS.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     partition_desc = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     is_vertical_layout = table.Column<bool>(type: "bit", nullable: false),
-                    partition_image = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: true),
                     test_section_id = table.Column<int>(type: "int", nullable: false),
-                    partition_tag_id = table.Column<int>(type: "int", nullable: false)
+                    partition_tag_id = table.Column<int>(type: "int", nullable: false),
+                    cloud_resource_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TestSectionPartition", x => x.test_section_part_id);
+                    table.ForeignKey(
+                        name: "FK_TestSectionPartition_CloudResource",
+                        column: x => x.cloud_resource_id,
+                        principalTable: "Cloud_Resource",
+                        principalColumn: "cloud_resource_id");
                     table.ForeignKey(
                         name: "FK_TestSectionPartition_Tag",
                         column: x => x.partition_tag_id,
@@ -519,9 +547,19 @@ namespace Prep4IELTS.Data.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Test_Section_cloud_resource_id",
+                table: "Test_Section",
+                column: "cloud_resource_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Test_Section_test_id",
                 table: "Test_Section",
                 column: "test_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Test_Section_Partition_cloud_resource_id",
+                table: "Test_Section_Partition",
+                column: "cloud_resource_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Test_Section_Partition_partition_tag_id",
@@ -600,6 +638,9 @@ namespace Prep4IELTS.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "System_Role");
+
+            migrationBuilder.DropTable(
+                name: "Cloud_Resource");
 
             migrationBuilder.DropTable(
                 name: "Test");

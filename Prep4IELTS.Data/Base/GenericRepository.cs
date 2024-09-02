@@ -16,6 +16,15 @@ public class GenericRepository<TEntity> where TEntity : class
         _dbContext = dbContext;
         _dbSet = _dbContext.Set<TEntity>();
     }
+
+    protected Prep4IeltsContext DbContext
+    {
+        get
+        {
+            if (_dbContext == null!) return new Prep4IeltsContext();
+            return _dbContext;
+        }
+    }
     
     #region Retrieve operation
     public TEntity? Find(params object[] keyValues)
@@ -39,11 +48,14 @@ public class GenericRepository<TEntity> where TEntity : class
     }
 
     public async Task<TEntity?> FindOneWithConditionAsync(
-        Expression<Func<TEntity, bool>> filter,
+        Expression<Func<TEntity, bool>>? filter,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         string? includeProperties = "")
     {
         IQueryable<TEntity> query = _dbSet.AsQueryable();
-        query = query.Where(filter);
+        
+        if(filter != null)
+            query = query.Where(filter);
 
         if (includeProperties != null)
         {
@@ -56,8 +68,11 @@ public class GenericRepository<TEntity> where TEntity : class
                 query = query.AsSplitQuery();
             }
         }
-
-        return await query.FirstOrDefaultAsync();
+        
+        if (orderBy != null)
+            return await orderBy(query).FirstOrDefaultAsync();
+        else
+            return await query.FirstOrDefaultAsync();
     }
     
     public async Task<IEnumerable<TEntity>> FindAllWithConditionAsync(

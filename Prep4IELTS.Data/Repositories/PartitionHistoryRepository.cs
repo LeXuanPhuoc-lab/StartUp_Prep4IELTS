@@ -8,7 +8,7 @@ namespace Prep4IELTS.Data.Repositories;
 
 public class PartitionHistoryRepository : GenericRepository<PartitionHistory>
 {
-    public PartitionHistoryRepository(Prep4IeltsContext dbContext) 
+    public PartitionHistoryRepository(Prep4IeltsContext dbContext)
         : base(dbContext)
     {
     }
@@ -27,14 +27,35 @@ public class PartitionHistoryRepository : GenericRepository<PartitionHistory>
                 {
                     TestSectionPartId = ph.TestSectionPart.TestSectionPartId,
                     PartitionDesc = ph.TestSectionPart.PartitionDesc,
-                    PartitionImage = ph.TestSectionPart.PartitionImage,
+                    CloudResource = ph.TestSectionPart.CloudResource != null!
+                        ? new CloudResource()
+                        {
+                            CloudResourceId = ph.TestSectionPart.CloudResource.CloudResourceId,
+                            PublicId = ph.TestSectionPart.CloudResource.PublicId,
+                            Url = ph.TestSectionPart.CloudResource.Url,
+                            Bytes = ph.TestSectionPart.CloudResource.Bytes,
+                            CreateDate = ph.TestSectionPart.CloudResource.CreateDate,
+                            ModifiedDate = ph.TestSectionPart.CloudResource.ModifiedDate
+                        }
+                        : null!,
                     TestSectionId = ph.TestSectionPart.TestSectionId,
                     TestSection = new TestSection()
                     {
                         TestSectionId = ph.TestSectionPart.TestSection.TestSectionId,
                         // TestSectionName = ph.TestSectionPart.TestSection.TestSectionName,
                         ReadingDesc = ph.TestSectionPart.TestSection.ReadingDesc,
-                        AudioResourceUrl = ph.TestSectionPart.TestSection.AudioResourceUrl,
+                        // AudioResourceUrl = ph.TestSectionPart.TestSection.AudioResourceUrl,
+                        CloudResource = ph.TestSectionPart.TestSection.CloudResource != null!
+                            ? new CloudResource()
+                            {
+                                CloudResourceId = ph.TestSectionPart.TestSection.CloudResource.CloudResourceId,
+                                PublicId = ph.TestSectionPart.TestSection.CloudResource.PublicId,
+                                Url = ph.TestSectionPart.TestSection.CloudResource.Url,
+                                Bytes = ph.TestSectionPart.TestSection.CloudResource.Bytes,
+                                CreateDate = ph.TestSectionPart.TestSection.CloudResource.CreateDate,
+                                ModifiedDate = ph.TestSectionPart.TestSection.CloudResource.ModifiedDate
+                            }
+                            : null!,
                         SectionTranscript = ph.TestSectionPart.TestSection.SectionTranscript,
                         // Test = new Test()
                         // {
@@ -56,15 +77,17 @@ public class PartitionHistoryRepository : GenericRepository<PartitionHistory>
                         InputedAnswer = tg.InputedAnswer,
                         QuestionId = tg.QuestionId,
                         PartitionHistoryId = tg.PartitionHistoryId,
-                        Question = tg.Question.IsMultipleChoice ? new Question()
-                        {
-                            QuestionId = tg.Question.QuestionId,
-                            QuestionDesc = tg.Question.QuestionDesc,
-                            QuestionNumber = tg.Question.QuestionNumber,
-                            IsMultipleChoice = tg.Question.IsMultipleChoice,
-                            TestSectionPartId = tg.Question.TestSectionPartId,
-                            QuestionAnswers = tg.Question.QuestionAnswers
-                        } : null!,
+                        Question = tg.Question.IsMultipleChoice
+                            ? new Question()
+                            {
+                                QuestionId = tg.Question.QuestionId,
+                                QuestionDesc = tg.Question.QuestionDesc,
+                                QuestionNumber = tg.Question.QuestionNumber,
+                                IsMultipleChoice = tg.Question.IsMultipleChoice,
+                                TestSectionPartId = tg.Question.TestSectionPartId,
+                                QuestionAnswers = tg.Question.QuestionAnswers
+                            }
+                            : null!,
                     })
                     .ToList()
             }).FirstOrDefaultAsync();

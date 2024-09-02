@@ -48,11 +48,12 @@ public class TestSectionService(UnitOfWork unitOfWork) : ITestSectionService
     }
     
     public async Task<TestSectionDto> FindOneWithConditionAsync(
-        Expression<Func<TestSection, bool>> filter, 
+        Expression<Func<TestSection, bool>>? filter, 
+        Func<IQueryable<TestSection>, IOrderedQueryable<TestSection>>? orderBy = null, 
         string? includeProperties = "")
     {
         var testSectionEntities = 
-            await unitOfWork.TestSectionRepository.FindOneWithConditionAsync(filter, includeProperties);
+            await unitOfWork.TestSectionRepository.FindOneWithConditionAsync(filter, null, includeProperties);
         return testSectionEntities.Adapt<TestSectionDto>();
     }
     

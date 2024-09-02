@@ -16,6 +16,9 @@ builder.Services.ConfigureDbContext(builder.Configuration)
 // Configure App settings
 builder.Services.EstablishApplicationConfiguration(
     builder.Configuration, builder.Environment);
+
+// Configure Cloudinary
+builder.Services.ConfigureCloudinary();
     
 // Configure CORS
 builder.Services.AddCors(p => p.AddPolicy("Cors", policy => {

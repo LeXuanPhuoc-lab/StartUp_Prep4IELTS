@@ -1,15 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using EXE202_Prep4IELTS.Payloads.Responses;
+using EXE202_Prep4IELTS.Payloads.Responses.Payments;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Prep4IELTS.Business.Constants;
+using Prep4IELTS.Business.Models;
 using Prep4IELTS.Business.Utils;
-using Serilog;
 
-namespace EXE202_Prep4IELTS.Payloads.Requests;
+namespace EXE202_Prep4IELTS.Payloads.Requests.Payments;
 
 public class MomoOneTimePaymentRequest
 {
@@ -17,11 +16,13 @@ public class MomoOneTimePaymentRequest
     [MaxLength(length: 50, ErrorMessage = "PartnerCode must smaller than 50 chars")]
     public string PartnerCode { get; set; } = string.Empty;   
     
-    // public string? SubPartnerCode { get; set; } = string.Empty;   
     
-    // public string? StoreName { get; set; } = string.Empty;   
+    public string? PartnerName { get; set; } = string.Empty;   
     
-    // public string? StoreId { get; set; } = string.Empty;   
+    public string? SubPartnerCode { get; set; } = string.Empty;   
+    
+    
+    public string? StoreId { get; set; } = string.Empty;   
     
     [Required]
     [MaxLength(length: 50, ErrorMessage = "RequestId must smaller than 50 chars")]
@@ -37,7 +38,7 @@ public class MomoOneTimePaymentRequest
     [MaxLength(length: 200, ErrorMessage = "RequestId must smaller than 200 chars")]
     public string OrderInfo { get; set; } = string.Empty;   
     
-    // public string? OrderGroupId { get; set; } = string.Empty;   
+    public string? OrderGroupId { get; set; } = string.Empty;   
     
     [Required]
     public string RedirectUrl { get; set; } = string.Empty;   
@@ -55,11 +56,13 @@ public class MomoOneTimePaymentRequest
     // public object? DeliveryInfo { get; set; } = null!;
     
     public object? UserInfo { get; set; } = null!;
-    
-    // [MaxLength(length: 1000, ErrorMessage = "ReferenceId must smaller than 1000 chars")]
-    // public string? ReferenceId { get; set; } = null!;
 
-    // public bool? AutoCapture { get; set; }
+    public List<MomoPaymentItem> Items = new();
+    
+    [MaxLength(length: 1000, ErrorMessage = "ReferenceId must smaller than 1000 chars")]
+    public string? ReferenceId { get; set; } = null!;
+
+    public bool? AutoCapture { get; set; }
 
     [Required] public string Lang { get; set; } = string.Empty;
 
@@ -75,46 +78,50 @@ public static class MomoOneTimePaymentRequestExtension
             $"accessKey={accessKey}&amount={req.Amount}&extraData={req.ExtraData}" +
             $"&ipnUrl={req.IpnUrl}&orderId={req.OrderId}&orderInfo={req.OrderInfo}" +
             $"&partnerCode={req.PartnerCode}&redirectUrl={req.RedirectUrl}&requestId={req.RequestId}&requestType={req.RequestType}";
-        req.Signature = HashHelper.HmacSHA256(rawSignature, secretKey);
+        req.Signature = HashHelper.HmacSha256(rawSignature, secretKey);
         await Task.CompletedTask;
+        // await Task.FromResult(req.Signature = HashHelper.HmacSHA256(rawSignature, secretKey));
     }
 
-    public static async Task<(bool, string?, MomoOneTimePaymentWithUrlResponse?)> GetUrlAsync(this MomoOneTimePaymentRequest req, string paymentUrl)
+    public static async Task<(bool, string?, MomoOneTimePaymentResponse?)> GetUrlAsync(this MomoOneTimePaymentRequest req, string paymentUrl)
     {
+        // Initiate HttpClient
         using HttpClient httpClient = new();
-        var reqData = JsonConvert.SerializeObject(req, new JsonSerializerSettings()
+        // Convert request data to type of JSON
+        var requestData = JsonConvert.SerializeObject(req, new JsonSerializerSettings()
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
             Formatting = Formatting.Indented
         });
-        var reqContent = new StringContent(reqData, Encoding.UTF8, "application/json");
-
-        var createPaymentUrlRes = await httpClient.PostAsync(paymentUrl, reqContent);
-        var contents = createPaymentUrlRes.Content.ReadAsStringAsync().Result;
-        Log.Information(contents + "");
-
+        // Initiate string content with serialized request data, encoding and media type
+        var requestContent = new StringContent(
+            content: requestData,
+            encoding: Encoding.UTF8,
+            mediaType:"application/json");
+        // Execute POST request with uri and request content
+        var createPaymentUrlRes = await httpClient.PostAsync(
+            requestUri: paymentUrl, 
+            content: requestContent);
+        
+        // Response content
+        var content = createPaymentUrlRes.Content.ReadAsStringAsync().Result;
+        var responseData = JsonConvert.DeserializeObject<MomoOneTimePaymentResponse>(content);
+        // Check for response content not found 
+        if (responseData == null) return (false, "Request to server failed. Not found any response data", null!);
+        
         // [MomoResultCode](https://developers.momo.vn/v3/docs/payment/api/result-handling/resultcode/)
         if (createPaymentUrlRes.IsSuccessStatusCode)
         {
-            var responseContext = await createPaymentUrlRes.Content.ReadAsStringAsync();
-            var responseData = JsonConvert.DeserializeObject<MomoOneTimePaymentWithUrlResponse>(responseContext);
-
-            if (responseData == null) return (false, "Request to server failed. Not found any response data", responseData);
-            
             // Check result code status 
             if (responseData.ResultCode.ToString()
-                    .Equals(MomoResultCodeConstants.Successful))
+                    .Equals(MomoResultCodeConstants.Successful)) 
             {
-                return (true, responseData.PayUrl, responseData);
+                return (true, string.Empty, responseData);
             }
-            else
-            {
-                return (false, responseData.Message, responseData);
-            }
+            
+            return (false, responseData.Message, responseData);
         }
-        else
-        {
-            return (false, createPaymentUrlRes.ReasonPhrase, null!);
-        }
+        
+        return (false, responseData.Message, null!);
     }
 }

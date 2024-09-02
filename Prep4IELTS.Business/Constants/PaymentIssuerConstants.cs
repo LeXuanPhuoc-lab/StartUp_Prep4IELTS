@@ -1,6 +1,6 @@
 namespace Prep4IELTS.Business.Constants;
 
-public static class PaymentMethodConstants
+public static class PaymentIssuerConstants
 {
     public const string Momo = "Momo";
 }

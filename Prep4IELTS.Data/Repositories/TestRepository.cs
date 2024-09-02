@@ -13,6 +13,23 @@ public class TestRepository : GenericRepository<Test>
     {
     }
 
+    public async Task<bool> InsertTagsForTestAsync(int id, List<int> tagIds)
+    {
+        var testEntity = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+        if (testEntity == null) return false;
+
+        foreach (var tagId in tagIds)
+        {
+            var tagEntity = await DbContext.Tags.FirstOrDefaultAsync(tg => tg.TagId == tagId);
+            if (tagEntity != null)
+            {
+                testEntity.Tags.Add(tagEntity);
+            }
+        }
+
+        return await SaveChangeWithTransactionAsync() > 0;
+    }
+
     public async Task<IEnumerable<Test>> FindAllWithConditionAndPagingAsync(
         Expression<Func<Test, bool>>? filter,
         Func<IQueryable<Test>, IOrderedQueryable<Test>>? orderBy,
@@ -31,7 +48,7 @@ public class TestRepository : GenericRepository<Test>
                          new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 query = query.Include(includeProperty);
-                
+
                 // Add AsSplitQuery when includes are present
                 query = query.AsSplitQuery();
             }
@@ -70,7 +87,7 @@ public class TestRepository : GenericRepository<Test>
 
         return result;
     }
-    
+
     public async Task<Test?> FindByIdForPracticeAsync(int id, int[] sectionIds)
     {
         // Combine 'Include' and 'Select' can be problematic
@@ -135,7 +152,18 @@ public class TestRepository : GenericRepository<Test>
                         TestSectionId = ts.TestSectionId,
                         TestSectionName = ts.TestSectionName,
                         ReadingDesc = ts.ReadingDesc,
-                        AudioResourceUrl = ts.AudioResourceUrl,
+                        // AudioResourceUrl = ts.AudioResourceUrl,
+                        CloudResource = ts.CloudResource != null!
+                            ? new CloudResource()
+                            {
+                                CloudResourceId = ts.CloudResource.CloudResourceId,
+                                PublicId = ts.CloudResource.PublicId,
+                                Url = ts.CloudResource.Url,
+                                Bytes = ts.CloudResource.Bytes,
+                                CreateDate = ts.CloudResource.CreateDate,
+                                ModifiedDate = ts.CloudResource.ModifiedDate
+                            }
+                            : null!,
                         TotalQuestion = ts.TotalQuestion,
                         TestSectionPartitions = ts.TestSectionPartitions.Select(tsp =>
                             new TestSectionPartition()
@@ -143,7 +171,17 @@ public class TestRepository : GenericRepository<Test>
                                 TestSectionPartId = tsp.TestSectionPartId,
                                 PartitionDesc = tsp.PartitionDesc,
                                 IsVerticalLayout = tsp.IsVerticalLayout,
-                                PartitionImage = tsp.PartitionImage,
+                                CloudResource = tsp.CloudResource != null!
+                                    ? new CloudResource()
+                                    {
+                                        CloudResourceId = tsp.CloudResource.CloudResourceId,
+                                        PublicId = tsp.CloudResource.PublicId,
+                                        Url = tsp.CloudResource.Url,
+                                        Bytes = tsp.CloudResource.Bytes,
+                                        CreateDate = tsp.CloudResource.CreateDate,
+                                        ModifiedDate = tsp.CloudResource.ModifiedDate
+                                    }
+                                    : null!,
                                 TestSectionId = tsp.TestSectionId,
                                 PartitionTagId = tsp.PartitionTagId,
                                 Questions = tsp.Questions.Select(qs => new Question()
@@ -189,7 +227,18 @@ public class TestRepository : GenericRepository<Test>
                         TestSectionId = ts.TestSectionId,
                         TestSectionName = ts.TestSectionName,
                         ReadingDesc = ts.ReadingDesc,
-                        AudioResourceUrl = ts.AudioResourceUrl,
+                        // AudioResourceUrl = ts.AudioResourceUrl,
+                        CloudResource = ts.CloudResource != null!
+                            ? new CloudResource()
+                            {
+                                CloudResourceId = ts.CloudResource.CloudResourceId,
+                                PublicId = ts.CloudResource.PublicId,
+                                Url = ts.CloudResource.Url,
+                                Bytes = ts.CloudResource.Bytes,
+                                CreateDate = ts.CloudResource.CreateDate,
+                                ModifiedDate = ts.CloudResource.ModifiedDate
+                            }
+                            : null!,
                         TotalQuestion = ts.TotalQuestion,
                         TestSectionPartitions = ts.TestSectionPartitions.Select(tsp =>
                             new TestSectionPartition()
@@ -197,7 +246,18 @@ public class TestRepository : GenericRepository<Test>
                                 TestSectionPartId = tsp.TestSectionPartId,
                                 PartitionDesc = tsp.PartitionDesc,
                                 IsVerticalLayout = tsp.IsVerticalLayout,
-                                PartitionImage = tsp.PartitionImage,
+                                // PartitionImage = tsp.PartitionImage,
+                                CloudResource = tsp.CloudResource != null!
+                                    ? new CloudResource()
+                                    {
+                                        CloudResourceId = tsp.CloudResource.CloudResourceId,
+                                        PublicId = tsp.CloudResource.PublicId,
+                                        Url = tsp.CloudResource.Url,
+                                        Bytes = tsp.CloudResource.Bytes,
+                                        CreateDate = tsp.CloudResource.CreateDate,
+                                        ModifiedDate = tsp.CloudResource.ModifiedDate
+                                    }
+                                    : null!,
                                 TestSectionId = tsp.TestSectionId,
                                 PartitionTagId = tsp.PartitionTagId,
                                 Questions = tsp.Questions.Select(qs => new Question()
@@ -224,7 +284,7 @@ public class TestRepository : GenericRepository<Test>
 
     public async Task<Test?> FindByIdAndGetAllAnswerAsync(int id)
     {
-        var test =  await _dbSet.Where(x => x.Id == id)
+        var test = await _dbSet.Where(x => x.Id == id)
             .AsSplitQuery()
             .Select(tst => new Test()
             {
@@ -254,13 +314,13 @@ public class TestRepository : GenericRepository<Test>
                                     QuestionAnswers = qs.QuestionAnswers
                                         .Where(qAns => qAns.IsTrue)
                                         .Select(qAns => new QuestionAnswer()
-                                            {
-                                                QuestionAnswerId = qAns.QuestionAnswerId,
-                                                AnswerText = qAns.AnswerText,
-                                                AnswerDisplay = qAns.AnswerDisplay,
-                                                IsTrue = qAns.IsTrue,
-                                                QuestionId = qAns.QuestionId
-                                            }).ToList()
+                                        {
+                                            QuestionAnswerId = qAns.QuestionAnswerId,
+                                            AnswerText = qAns.AnswerText,
+                                            AnswerDisplay = qAns.AnswerDisplay,
+                                            IsTrue = qAns.IsTrue,
+                                            QuestionId = qAns.QuestionId
+                                        }).ToList()
                                 }).ToList()
                             }).ToList()
                     }).ToList()
@@ -281,6 +341,7 @@ public class TestRepository : GenericRepository<Test>
                     .ToList();
             }
         }
+
         return test;
     }
 

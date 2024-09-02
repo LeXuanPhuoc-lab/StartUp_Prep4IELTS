@@ -1,5 +1,8 @@
 using System.Reflection;
+using CloudinaryDotNet;
+using dotenv.net;
 using EXE202_Prep4IELTS.Payloads.Requests;
+using EXE202_Prep4IELTS.Payloads.Requests.Tests;
 using Mapster;
 using MapsterMapper;
 using Prep4IELTS.Business.Constants;
@@ -8,7 +11,9 @@ using Prep4IELTS.Business.Services;
 using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Data;
 using Prep4IELTS.Data.Context;
-using Prep4IELTS.Data.Extensions;
+using Prep4IELTS.Data.Dtos;
+using Prep4IELTS.Data.Entities;
+using Serilog;
 
 namespace EXE202_Prep4IELTS.Extensions;
 
@@ -27,7 +32,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IQuestionService, QuestionService>();
         services.AddScoped<IScoreCalculationService, ScoreCalculationService>();
+        services.AddScoped<ITagService, TagService>();
+        services.AddScoped<IPartitionTagService, PartitionTagService>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
+        services.AddScoped<ICloudinaryService, CloudinaryService>();
         
         // Register IHttpContextAccessor 
         services.AddHttpContextAccessor();
@@ -53,6 +61,13 @@ public static class ServiceCollectionExtensions
         
         // Additional mapping custom from API to Business layer
         typeAdapterConfig.NewConfig<QuestionAnswerSubmissionRequest, QuestionAnswerSubmissionModel>();
+        typeAdapterConfig.NewConfig<CreateTestRequest, Test>();
+        typeAdapterConfig.NewConfig<CreateTestSectionRequest, TestSection>();
+        typeAdapterConfig.NewConfig<CreateTestSectionPartitionRequest, TestSectionPartition>();
+        typeAdapterConfig.NewConfig<CreateQuestionRequest, Question>();
+        typeAdapterConfig.NewConfig<CreateQuestionAnswerRequest, QuestionAnswer>();
+        typeAdapterConfig.NewConfig<CloudResourceRequest, CloudResource>();
+        
         
         // Register the mapper as Singleton service for my application
         var mapperConfig = new Mapper(typeAdapterConfig);
@@ -61,6 +76,19 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection ConfigureCloudinary(this IServiceCollection services)
+    {
+        DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+        Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"))
+        {
+            Api = { Secure = true }
+        };
+
+        services.AddSingleton(cloudinary);
+
+        return services;
+    }
+    
     public static IServiceCollection EstablishApplicationConfiguration(this IServiceCollection services, 
         IConfiguration configuration,
         IWebHostEnvironment env)
@@ -68,25 +96,32 @@ public static class ServiceCollectionExtensions
         // Configure App settings
         services.Configure<AppSettings>(
             configuration.GetSection("AppSettings"));
-        
+
         // Configure Momo
         var momoConfigSection = configuration.GetSection("Momo");
         var momoConfig = momoConfigSection.Get<MomoConfiguration>();
         if (env.IsDevelopment() && momoConfig != null) // Is development environment
         {
-            var returnUrl = "http://localhost:7000/api/payment/momo-return";
+            // var returnUrl = "http://localhost:7000/api/payment/momo-return";
+            var payGate = "https://test-payment.momo.vn";
             var ipnUrl = "http://localhost:7000/api/payment/momo-ipn";
-            var paymentUrl = "https://test-payment.momo.vn/v2/gateway/api/create";
+            var paymentUrl = $"{payGate}/v2/gateway/api/create";
+            var checkTransactionStatusUrl = $"{payGate}/v2/gateway/api/query";
+            var paymentConfirmUrl = $"{payGate}/v2/gateway/api/confirm";
+            var initiateTransactionUrl = $"{payGate}/v2/gateway/api/create";
 
             services.Configure<MomoConfiguration>(options =>
             {
                 options.AccessKey = momoConfig.AccessKey;
                 options.SecretKey = momoConfig.SecretKey;
                 options.PaymentUrl = paymentUrl;
-                options.ReturnUrl = returnUrl;
+                options.CheckTransactionUrl = checkTransactionStatusUrl;
+                options.PaymentConfirmUrl = paymentConfirmUrl;
+                options.InitiateTransactionUrl = initiateTransactionUrl;
+                // options.ReturnUrl = returnUrl;
                 options.IpnUrl = ipnUrl;
                 options.PartnerCode = momoConfig.PartnerCode;
-                options.PaymentMethodName = PaymentMethodConstants.Momo;
+                options.PaymentMethodName = PaymentIssuerConstants.Momo;
             });
         }
         

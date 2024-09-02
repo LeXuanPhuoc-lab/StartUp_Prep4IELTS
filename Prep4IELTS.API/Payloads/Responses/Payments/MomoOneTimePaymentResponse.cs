@@ -1,8 +1,6 @@
-using System.ComponentModel.DataAnnotations;
+namespace EXE202_Prep4IELTS.Payloads.Responses.Payments;
 
-namespace EXE202_Prep4IELTS.Payloads.Responses;
-
-public class MomoOneTimePaymentWithUrlResponse
+public class MomoOneTimePaymentResponse
 {
     public string PartnerCode { get; set; } = string.Empty;   
     public string RequestId { get; set; } = string.Empty;   
