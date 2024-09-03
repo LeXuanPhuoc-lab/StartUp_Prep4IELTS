@@ -15,6 +15,7 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
     public async Task<IEnumerable<TestHistory>> FindAllByTestAndUserAsync(Guid testId, Guid userId)
     {
         return await _dbSet
+            .AsSplitQuery()
             .Where(x =>
                 x.TestId.ToString().Equals(testId.ToString()) &&
                 x.UserId.ToString().Equals(userId.ToString()))
@@ -32,7 +33,17 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
                 TestType = th.TestType,
                 BandScore = th.BandScore,
                 UserId = th.UserId,
-                TestId = th.TestId
+                TestId = th.TestId,
+                PartitionHistories = th.PartitionHistories.Select(ph => new PartitionHistory()
+                {
+                   PartitionHistoryId = ph.PartitionHistoryId,
+                   TestSectionName = ph.TestSectionName,
+                   TestSectionPart = new TestSectionPartition()
+                   {
+                       TestSectionPartId = ph.TestSectionPart.TestSectionPartId,
+                       PartitionTag = ph.TestSectionPart.PartitionTag,
+                   }
+                }).ToList()
             }).ToListAsync();
     }
 
@@ -78,6 +89,11 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
                 BandScore = th.BandScore,
                 UserId = th.UserId,
                 TestId = th.TestId,
+                Test = new Test()
+                {
+                    TestId = th.Test.TestId,
+                    TestTitle = th.Test.TestTitle
+                },
                 PartitionHistories = th.PartitionHistories.Select(ph => new PartitionHistory()
                 {
                     PartitionHistoryId = ph.PartitionHistoryId,

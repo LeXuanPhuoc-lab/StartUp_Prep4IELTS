@@ -26,7 +26,9 @@ public partial class Test
     
     public DateTime CreateDate { get; set; }
     
-    public DateTime? ModifiedDate { get; set; }    
+    public DateTime? ModifiedDate { get; set; }
+
+    public string? CreateBy { get; set; } = string.Empty;
     
     [JsonIgnore]
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();

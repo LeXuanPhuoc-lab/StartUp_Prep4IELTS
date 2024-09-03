@@ -6,8 +6,8 @@ public record TestSectionPartitionDto(
     int TestSectionPartId,
     string? PartitionDesc,
     bool IsVerticalLayout,
-    string? PartitionImage,
     int PartitionTagId, PartitionTagDto PartitionTag,
+    int? CloudResourceId, CloudResourceDto CloudResource,
     ICollection<QuestionDto> Questions)
 {
     public int TestSectionId { get; set; }

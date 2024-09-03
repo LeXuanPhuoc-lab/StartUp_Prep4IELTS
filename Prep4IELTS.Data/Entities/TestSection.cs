@@ -10,18 +10,21 @@ public partial class TestSection
 
     public string TestSectionName { get; set; } = null!;
 
-    public string? ReadingDesc { get; set; }
+    public string? ReadingDesc { get; set; } 
 
-    public string? AudioResourceUrl { get; set; }
+    // public string? AudioResourceUrl { get; set; }
 
     public int TotalQuestion { get; set; }
 
     public string? SectionTranscript { get; set; }
 
     public Guid TestId { get; set; }
+    
+    public int? CloudResourceId { get; set; }
 
     [JsonIgnore]
     public virtual Test Test { get; set; } = null!;
-    
+
+    public virtual CloudResource CloudResource { get; set; } = null!;
     public virtual ICollection<TestSectionPartition> TestSectionPartitions { get; set; } = new List<TestSectionPartition>();
 }
