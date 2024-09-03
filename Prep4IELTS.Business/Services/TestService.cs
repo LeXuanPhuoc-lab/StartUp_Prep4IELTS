@@ -320,6 +320,7 @@ public class TestService(
         var scoreCalculationDto =
             await scoreCalculationService.GetByTotalRightAnswerAndTestType(testHistory.TotalRightAnswer!.Value,
                 testHistory.TestType);
+        
         // Update history band score 
         if (scoreCalculationDto != null!)
         {

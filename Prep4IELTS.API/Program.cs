@@ -1,8 +1,7 @@
 using System.Net.Mime;
 using EXE202_Prep4IELTS.Extensions;
+using EXE202_Prep4IELTS.Middlewares;
 using Microsoft.AspNetCore.Mvc;
-using Prep4IELTS.Business.Models;
-using Prep4IELTS.Data.Context;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +20,8 @@ builder.Services.EstablishApplicationConfiguration(
 builder.Services.ConfigureCloudinary();
     
 // Configure CORS
-builder.Services.AddCors(p => p.AddPolicy("Cors", policy => {
+builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
+{
     // allow all with any header, method
     policy.WithOrigins("*")
         .AllowAnyHeader()
@@ -58,7 +58,7 @@ builder.Services.AddControllers()
     })
     .AddXmlSerializerFormatters();
 
-builder.Services.AddAuthentication();
+builder.Services.AddClerkConfigure();
 
 var app = builder.Build();
 
@@ -69,6 +69,7 @@ app.ConfigureExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseCors("Cors");
+app.UseMiddleware<ClerkAuthMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
