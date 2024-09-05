@@ -66,7 +66,7 @@ public class TestRepository : GenericRepository<Test>
         // Check whether pageIndex < 1
         if (!pageIndex.HasValue || pageIndex.Value < 1) pageIndex = 1;
         // Check whether pageSize < 1
-        if (!pageSize.HasValue || pageIndex.Value < 1) pageSize = 10;
+        if (!pageSize.HasValue || pageSize.Value < 1) pageSize = 10;
 
         // Count offset
         var skipOffset = (pageIndex.Value - 1) * pageSize.Value;

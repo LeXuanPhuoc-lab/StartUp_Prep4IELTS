@@ -10,8 +10,8 @@ public record TestGradeDto(
     string InputedAnswer)
 {
     public int QuestionId { get; set; }
-    [JsonIgnore] private QuestionDto Question { get; set; } = null!;
+    public QuestionDto Question { get; set; } = null!;
     
     public int PartitionHistoryId { get; set; }
-    [JsonIgnore] private PartitionHistoryDto PartitionHistory { get; set; } = null!;
+    [JsonIgnore] public PartitionHistoryDto PartitionHistory { get; set; } = null!;
 };

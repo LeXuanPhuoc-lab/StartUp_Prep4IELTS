@@ -336,7 +336,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 CreateDate = DateTime.Now,
                 TestTakenDate = DateTime.Now.AddDays(-30),
                 TargetScore = "8.0",
-                RoleId = roles.First(x => x.RoleName!.Equals(Enum.SystemRole.Admin.GetDescription())).RoleId
+                RoleId = roles.First(x => x.RoleName!.Equals(Enum.SystemRole.Staff.GetDescription())).RoleId
             },
             new User
             {
@@ -775,9 +775,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 1",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "The Earth revolves around the Sun", AnswerDisplay = "The Earth revolves around the Sun" },
-                                            new() { IsTrue = false, AnswerText = "The Sun revolves around the Earth", AnswerDisplay = "The Sun revolves around the Earth" },
-                                            new() { IsTrue = false, AnswerText = "The Earth is stationary", AnswerDisplay = "The Earth is stationary" }
+                                            new() { IsTrue = true, AnswerText = "The Earth revolves around the Sun", AnswerDisplay = "A" },
+                                            new() { IsTrue = false, AnswerText = "The Sun revolves around the Earth", AnswerDisplay = "B" },
+                                            new() { IsTrue = false, AnswerText = "The Earth is stationary", AnswerDisplay = "C" }
                                         }
                                     },
                                     new()
@@ -787,9 +787,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 2",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius", AnswerDisplay = "Water boils at 50 degrees Celsius" },
-                                            new() { IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius", AnswerDisplay = "Water boils at 100 degrees Celsius" },
-                                            new() { IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius", AnswerDisplay = "Water boils at 150 degrees Celsius" }
+                                            new() { IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius", AnswerDisplay = "A" },
+                                            new() { IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius", AnswerDisplay = "B" },
+                                            new() { IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius", AnswerDisplay = "C" }
                                         }
                                     },
                                     new()
@@ -799,9 +799,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "The capital of France is Berlin", AnswerDisplay = "The capital of France is Berlin" },
-                                            new() { IsTrue = true, AnswerText = "The capital of France is Paris", AnswerDisplay = "The capital of France is Paris" },
-                                            new() { IsTrue = false, AnswerText = "The capital of France is Madrid", AnswerDisplay = "The capital of France is Madrid" }
+                                            new() { IsTrue = false, AnswerText = "The capital of France is Berlin", AnswerDisplay = "A" },
+                                            new() { IsTrue = true, AnswerText = "The capital of France is Paris", AnswerDisplay = "B" },
+                                            new() { IsTrue = false, AnswerText = "The capital of France is Madrid", AnswerDisplay = "C" }
                                         }
                                     },
                                     new()
@@ -811,9 +811,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "Photosynthesis occurs in plants", AnswerDisplay = "Photosynthesis occurs in plants" },
-                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in animals", AnswerDisplay = "Photosynthesis occurs in animals" },
-                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in fungi", AnswerDisplay = "Photosynthesis occurs in fungi" }
+                                            new() { IsTrue = true, AnswerText = "Photosynthesis occurs in plants", AnswerDisplay = "A" },
+                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in animals", AnswerDisplay = "B" },
+                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in fungi", AnswerDisplay = "C" }
                                         }
                                     },
                                     new()
@@ -823,9 +823,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "The speed of light is 300,000 km/s", AnswerDisplay = "The speed of light is 300,000 km/s" },
-                                            new() { IsTrue = true, AnswerText = "The speed of light is 299,792 km/s", AnswerDisplay = "The speed of light is 299,792 km/s" },
-                                            new() { IsTrue = false, AnswerText = "The speed of light is 150,000 km/s", AnswerDisplay = "The speed of light is 150,000 km/s" }
+                                            new() { IsTrue = false, AnswerText = "The speed of light is 300,000 km/s", AnswerDisplay = "A" },
+                                            new() { IsTrue = true, AnswerText = "The speed of light is 299,792 km/s", AnswerDisplay = "B" },
+                                            new() { IsTrue = false, AnswerText = "The speed of light is 150,000 km/s", AnswerDisplay = "C" }
                                         }
                                     }
                                 }
@@ -1153,7 +1153,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             }
                         }
                     },
-                    new()
+                   new()
                     {
                         TestSectionName = "Recording 2",
                         CloudResource = new CloudResource()
@@ -1216,9 +1216,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 1",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "The Earth revolves around the Sun", AnswerDisplay = "The Earth revolves around the Sun" },
-                                            new() { IsTrue = false, AnswerText = "The Sun revolves around the Earth", AnswerDisplay = "The Sun revolves around the Earth" },
-                                            new() { IsTrue = false, AnswerText = "The Earth is stationary", AnswerDisplay = "The Earth is stationary" }
+                                            new() { IsTrue = true, AnswerText = "The Earth revolves around the Sun", AnswerDisplay = "A" },
+                                            new() { IsTrue = false, AnswerText = "The Sun revolves around the Earth", AnswerDisplay = "B" },
+                                            new() { IsTrue = false, AnswerText = "The Earth is stationary", AnswerDisplay = "C" }
                                         }
                                     },
                                     new()
@@ -1228,9 +1228,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 2",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius", AnswerDisplay = "Water boils at 50 degrees Celsius" },
-                                            new() { IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius", AnswerDisplay = "Water boils at 100 degrees Celsius" },
-                                            new() { IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius", AnswerDisplay = "Water boils at 150 degrees Celsius" }
+                                            new() { IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius", AnswerDisplay = "A" },
+                                            new() { IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius", AnswerDisplay = "B" },
+                                            new() { IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius", AnswerDisplay = "C" }
                                         }
                                     },
                                     new()
@@ -1240,9 +1240,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "The capital of France is Berlin", AnswerDisplay = "The capital of France is Berlin" },
-                                            new() { IsTrue = true, AnswerText = "The capital of France is Paris", AnswerDisplay = "The capital of France is Paris" },
-                                            new() { IsTrue = false, AnswerText = "The capital of France is Madrid", AnswerDisplay = "The capital of France is Madrid" }
+                                            new() { IsTrue = false, AnswerText = "The capital of France is Berlin", AnswerDisplay = "A" },
+                                            new() { IsTrue = true, AnswerText = "The capital of France is Paris", AnswerDisplay = "B" },
+                                            new() { IsTrue = false, AnswerText = "The capital of France is Madrid", AnswerDisplay = "C" }
                                         }
                                     },
                                     new()
@@ -1252,9 +1252,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "Photosynthesis occurs in plants", AnswerDisplay = "Photosynthesis occurs in plants" },
-                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in animals", AnswerDisplay = "Photosynthesis occurs in animals" },
-                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in fungi", AnswerDisplay = "Photosynthesis occurs in fungi" }
+                                            new() { IsTrue = true, AnswerText = "Photosynthesis occurs in plants", AnswerDisplay = "A" },
+                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in animals", AnswerDisplay = "B" },
+                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in fungi", AnswerDisplay = "C" }
                                         }
                                     },
                                     new()
@@ -1264,9 +1264,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "The speed of light is 300,000 km/s", AnswerDisplay = "The speed of light is 300,000 km/s" },
-                                            new() { IsTrue = true, AnswerText = "The speed of light is 299,792 km/s", AnswerDisplay = "The speed of light is 299,792 km/s" },
-                                            new() { IsTrue = false, AnswerText = "The speed of light is 150,000 km/s", AnswerDisplay = "The speed of light is 150,000 km/s" }
+                                            new() { IsTrue = false, AnswerText = "The speed of light is 300,000 km/s", AnswerDisplay = "A" },
+                                            new() { IsTrue = true, AnswerText = "The speed of light is 299,792 km/s", AnswerDisplay = "B" },
+                                            new() { IsTrue = false, AnswerText = "The speed of light is 150,000 km/s", AnswerDisplay = "C" }
                                         }
                                     }
                                 }
@@ -2011,13 +2011,18 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TotalQuestion = 40
             });
         }
-
-
+        
+        // Save test histories
+        await dbContext.TestHistories.AddRangeAsync(testHistories);
+        await dbContext.SaveChangesAsync();
+        
+        
+        // Seed test section partition for listening test 1
         var listeningTest1 = await dbContext.Tests
+            .AsSplitQuery()
             .Where(x => x.TestTitle.Contains("Listening Test 1"))
             .Include(x => x.TestSections)
             .ThenInclude(x => x.TestSectionPartitions)
-            .AsSplitQuery()
             .FirstOrDefaultAsync();
 
         var testSections = listeningTest1!.TestSections.ToList();
@@ -2114,8 +2119,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 }
             });
         }
-
-        await dbContext.TestHistories.AddRangeAsync(testHistories);
+        
         await dbContext.SaveChangesAsync();
     }
     

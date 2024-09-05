@@ -94,7 +94,8 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
                     TestId = th.Test.TestId,
                     TestTitle = th.Test.TestTitle
                 },
-                PartitionHistories = th.PartitionHistories.Select(ph => new PartitionHistory()
+                PartitionHistories = th.PartitionHistories
+                    .Select(ph => new PartitionHistory()
                 {
                     PartitionHistoryId = ph.PartitionHistoryId,
                     TestSectionName = ph.TestSectionName,

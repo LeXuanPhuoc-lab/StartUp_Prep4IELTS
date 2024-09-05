@@ -7,6 +7,7 @@ using Prep4IELTS.Business.Models;
 using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Business.Utils;
 using Prep4IELTS.Data.Enum;
+using Prep4IELTS.Data.Extensions;
 
 namespace Prep4IELTS.Business.Services;
 
@@ -100,14 +101,15 @@ public class CloudinaryService(
         return (null, null, $"Error at Server. Failed to update file: {publicId}");
     }
 
-    public async Task<(bool? isDeleteSucess, string? messageErr)> DeleteAsync(string publicId)
+    public async Task<(bool? isDeleteSucess, string? messageErr)> DeleteAsync(string publicId, string fileType)
     {
         var existResource = await cloudinary.GetResourceAsync(publicId);
         if (existResource == null) return (false, "Not found any resource match");
         
         var deleteParams = new DeletionParams(publicId)
         {
-            Invalidate = true
+            Invalidate = true,
+            ResourceType = fileType.Equals(FileType.Image.GetDescription()) ? ResourceType.Image : ResourceType.Video
         };
         var deleteResult = await cloudinary.DestroyAsync(deleteParams);
         

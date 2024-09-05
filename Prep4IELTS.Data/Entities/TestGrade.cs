@@ -23,6 +23,6 @@ public partial class TestGrade
     [JsonIgnore]
     public virtual PartitionHistory PartitionHistory { get; set; } = null!;
 
-    [JsonIgnore]
+    // [JsonIgnore]
     public virtual Question Question { get; set; } = null!;
 }
