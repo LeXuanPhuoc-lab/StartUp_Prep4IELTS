@@ -278,6 +278,14 @@ public class TestController(
         var tags = await tagService.FindAllAsync();
         var partitionTags = await partitionTagService.FindAllAsync();
 
+        List<string> testTypes = new()
+        {
+            TestType.Listening.GetDescription(),
+            TestType.Reading.GetDescription(),
+            TestType.Writing.GetDescription(),
+            TestType.Speaking.GetDescription(),
+        };
+
         return Ok(new BaseResponse()
         {
             StatusCode = StatusCodes.Status200OK,
@@ -285,7 +293,8 @@ public class TestController(
             {
                 TestCategories = testCategories,
                 Tags = tags,
-                PartitionTags = partitionTags
+                PartitionTags = partitionTags,
+                TestTypes = testTypes
             }
         });
     }

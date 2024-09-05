@@ -5,6 +5,7 @@ using EXE202_Prep4IELTS.Payloads.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Data.Enum;
+using Prep4IELTS.Data.Extensions;
 
 namespace EXE202_Prep4IELTS.Controllers;
 
@@ -172,9 +173,9 @@ public class ResourceController(ICloudinaryService cloudinaryService) : Controll
     }
 
     [HttpDelete(ApiRoute.Resource.Delete)]
-    public async Task<IActionResult> DeleteResourceAsync([FromQuery] string publicId)
+    public async Task<IActionResult> DeleteResourceAsync([FromQuery] string publicId, string fileType)
     {
-        var result = await cloudinaryService.DeleteAsync(publicId);
+        var result = await cloudinaryService.DeleteAsync(publicId, fileType);
         var isDeleteSuccess = Convert.ToBoolean(result.isDeleteSucess);
         
         return string.IsNullOrEmpty(result.messageErr) && isDeleteSuccess
@@ -190,5 +191,21 @@ public class ResourceController(ICloudinaryService cloudinaryService) : Controll
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = result.messageErr
             });
+    }
+
+    [HttpGet(ApiRoute.Resource.GetFileType)]
+    public async Task<IActionResult> GetFileTypeAsync()
+    {
+        List<string> fileTypes = new ()
+        {
+            FileType.Image.GetDescription(),
+            FileType.Video.GetDescription(),
+        };
+
+        return await Task.FromResult(Ok(new BaseResponse()
+        {
+            StatusCode = StatusCodes.Status200OK,
+            Data = fileTypes
+        }));
     }
 }

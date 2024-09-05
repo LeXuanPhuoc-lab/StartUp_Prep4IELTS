@@ -30,7 +30,9 @@ public static class PartitionHistoryResponseExtension
         // Update accuracy rate
         var totalRightAnswer = sectionHistoryResponse.TotalRightAnswer;
         var totalPartitionQuestion = partitionHistories.SelectMany(x => x.TestGrades).Count();
-        sectionHistoryResponse.AccuracyRate = totalRightAnswer / (double)totalPartitionQuestion;
+        sectionHistoryResponse.AccuracyRate = (totalRightAnswer < 1) 
+            ? 0 
+            : totalRightAnswer / (double)totalPartitionQuestion;
 
         return sectionHistoryResponse;
     }

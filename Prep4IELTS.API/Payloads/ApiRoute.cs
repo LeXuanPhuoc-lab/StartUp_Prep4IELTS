@@ -58,6 +58,7 @@ public static class ApiRoute
 
     public static class Resource
     {
+        public const string GetFileType = Base + "/resources/file-type";
         public const string UploadImage = Base + "/resources/image/upload";
         public const string UploadAudio = Base + "/resources/audio/upload";
         public const string UpdateImage = Base + "/resources/image/update";

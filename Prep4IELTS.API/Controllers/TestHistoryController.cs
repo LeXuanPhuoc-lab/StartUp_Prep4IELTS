@@ -58,6 +58,16 @@ public class TestHistoryController(
         // Get test history by id, then include partition history and test grade 
         var testHistoryDto = await testHistoryService.FindByIdWithIncludePartitionAndGrade(id);
         
+        // Check exist test history
+        if (testHistoryDto == null!)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found any history match"
+            });
+        }
+        
         // Group partition history with unique TestSectionName, then map to IDictionary<string, List<PartitionHistoryDto>>
         var groupedSectionHistories = testHistoryDto.PartitionHistories
             .GroupBy(x => x.TestSectionName)
