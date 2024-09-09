@@ -14,7 +14,6 @@ public class PaginatedList<T> : List<T>
     
     public static PaginatedList<T> Paginate(IEnumerable<T> source, int pageIndex, int pageSize)
     {
-        // Convert to List
         var items = source.ToList();
 
         var totalPage = (int)Math.Ceiling(items.Count / (double)pageSize);

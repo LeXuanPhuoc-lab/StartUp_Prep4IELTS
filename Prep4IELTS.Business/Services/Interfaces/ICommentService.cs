@@ -13,5 +13,6 @@ public interface ICommentService
         string? includeProperties,
         int? pageIndex, int? pageSize);
 
+    Task<bool> RemoveRangeCommentAndChildrenAsync(List<CommentDto> comments);   
     Task<int> CountTotalByTestId(Guid testId);
 }

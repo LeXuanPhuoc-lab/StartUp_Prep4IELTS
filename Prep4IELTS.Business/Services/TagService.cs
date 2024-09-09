@@ -18,4 +18,9 @@ public class TagService(UnitOfWork unitOfWork) : ITagService
         var tagEntities =  await unitOfWork.TagRepository.FindAllAsync();
         return tagEntities.Adapt<List<TagDto>>();
     }
+
+    public async Task<bool> RemoveAllTestTag(Guid testId)
+    {
+        return await unitOfWork.TagRepository.RemoveAllTestTag(testId);
+    }
 }

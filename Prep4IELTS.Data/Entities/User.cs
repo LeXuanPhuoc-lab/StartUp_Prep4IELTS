@@ -44,4 +44,7 @@ public partial class User
     
     [JsonIgnore]
     public virtual ICollection<TestHistory> TestHistories { get; set; } = new List<TestHistory>();
+    
+    [JsonIgnore]
+    public virtual ICollection<Test> Tests { get; set; } = new List<Test>();
 }

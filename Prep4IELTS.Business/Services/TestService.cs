@@ -11,6 +11,7 @@ using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;
 using Prep4IELTS.Data.Enum;
 using Prep4IELTS.Data.Extensions;
+using Tag = Prep4IELTS.Data.Entities.Tag;
 
 namespace Prep4IELTS.Business.Services;
 
@@ -19,6 +20,8 @@ public class TestService(
     ITestHistoryService testHistoryService,
     ITestSectionService testSectionService,
     IQuestionService questionService,
+    ICommentService commentService,
+    ITagService tagService,
     IScoreCalculationService scoreCalculationService) : ITestService
 {
     // Basic
@@ -53,27 +56,70 @@ public class TestService(
         return isCreateSuccess;
     }
 
-    public async Task<bool> InsertReadingTestAsync(TestDto test)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<bool> RemoveAsync(Guid id)
     {
+        // Get all comment by test id 
+        var comments = await unitOfWork.TestRepository.FindAllCommentByTestIdAsync(id);
+        
+        if (comments.Any()) // Existing comment
+        {
+            // Remove all comment of the test
+            await commentService.RemoveRangeCommentAndChildrenAsync(
+                comments.Adapt<List<CommentDto>>());
+        }
+        
+        // Remove all test tag
+        await tagService.RemoveAllTestTag(id);
+        
+        
+        // Progress remove test 
         await unitOfWork.TestRepository.RemoveAsync(id);
+        
+        // Remove test histories
+        // await testHistoryService.RemoveAllByTestId(id);
+        
         return await unitOfWork.TestRepository.SaveChangeWithTransactionAsync() > 0;
     }
 
-    public async Task UpdateAsync(TestDto test)
+    public async Task<bool> UpdateAsync(TestDto test)
+    {
+        var testEntity = await unitOfWork.TestRepository.FindOneWithConditionAsync(tst => 
+            tst.Id == test.Id);
+
+        if (testEntity == null) return false;
+
+        // Update properties here... 
+        testEntity.TestTitle = test.TestTitle;
+        testEntity.Duration = test.Duration;
+        testEntity.TestType = test.TestType;
+        testEntity.TestCategoryId = test.TestCategoryId;
+        testEntity.ModifiedDate = DateTime.Now;
+
+        await unitOfWork.TestRepository.UpdateAsync(testEntity);
+        return await unitOfWork.TestRepository.SaveChangeWithTransactionAsync() > 0;
+    }
+
+    public async Task<bool> UpdateAsync(TestDto test, List<int>? tagIds)
     {
         var testEntity = await unitOfWork.TestRepository.FindAsync(test.TestId);
 
-        if (testEntity == null) return;
+        if (testEntity == null) return false;
 
-        // Update properties here...
+        // Get list of tags
+        if (tagIds != null && tagIds.Any())
+        {
+            await unitOfWork.TestRepository.UpdateTagsForTestAsync(testEntity.Id, tagIds);
+        }
+        
+        // Update properties here... 
+        testEntity.TestTitle = test.TestTitle;
+        testEntity.Duration = test.Duration;
+        testEntity.TestType = test.TestType;
+        testEntity.TestCategoryId = test.TestCategoryId;
+        testEntity.ModifiedDate = DateTime.Now;
 
         await unitOfWork.TestRepository.UpdateAsync(testEntity);
-        await unitOfWork.TestRepository.SaveChangeWithTransactionAsync();
+        return await unitOfWork.TestRepository.SaveChangeWithTransactionAsync() > 0;
     }
 
     public async Task<TestDto> FindAsync(Guid id)
@@ -365,6 +411,16 @@ public class TestService(
         return await testHistoryService.InsertAsync(testHistory.Adapt<TestHistoryDto>());
     }
 
+    public async Task<bool> PublishTestAsync(Guid id)
+    {
+        return await unitOfWork.TestRepository.PublishTestAsync(id);
+    }
+
+    public async Task<bool> HideTestAsync(Guid id)
+    {
+        return await unitOfWork.TestRepository.HideTestAsync(id);
+    }
+
     public async Task<int> CountTotalAsync()
     {
         return await unitOfWork.TestRepository.CountTotalAsync();
@@ -373,5 +429,15 @@ public class TestService(
     public async Task<bool> IsExistTestAsync(int id)
     {
         return await unitOfWork.TestRepository.IsExistTestAsync(id);
+    }
+
+    public async Task<bool> IsExistTestAsync(Guid id)
+    {
+        return await unitOfWork.TestRepository.IsExistTestAsync(id);
+    }
+
+    public async Task<bool> IsPublishedAsync(Guid id)
+    {
+        return await unitOfWork.TestRepository.IsPublishedAsync(id);
     }
 }

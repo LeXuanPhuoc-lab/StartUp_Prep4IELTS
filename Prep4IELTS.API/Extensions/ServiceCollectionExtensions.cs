@@ -66,6 +66,7 @@ public static class ServiceCollectionExtensions
         typeAdapterConfig.NewConfig<CreateTestSectionPartitionRequest, TestSectionPartition>();
         typeAdapterConfig.NewConfig<CreateQuestionRequest, Question>();
         typeAdapterConfig.NewConfig<CreateQuestionAnswerRequest, QuestionAnswer>();
+        typeAdapterConfig.NewConfig<UpdateTestRequest, Test>();
         typeAdapterConfig.NewConfig<CloudResourceRequest, CloudResource>();
         
         

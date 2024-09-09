@@ -21,4 +21,5 @@ public record UserDto(
     [JsonIgnore] public ICollection<CommentDto> Comments { get; set; } = new List<CommentDto>();
     [JsonIgnore] public ICollection<FlashcardDto> Flashcards { get; set; } = new List<FlashcardDto>();
     [JsonIgnore] public ICollection<TestHistoryDto> TestHistories { get; set; } = new List<TestHistoryDto>();
+    [JsonIgnore] public ICollection<TestDto> Tests { get; set; } = new List<TestDto>();
 };

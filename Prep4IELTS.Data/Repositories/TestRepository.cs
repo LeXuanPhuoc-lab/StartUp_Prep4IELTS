@@ -30,6 +30,65 @@ public class TestRepository : GenericRepository<Test>
         return await SaveChangeWithTransactionAsync() > 0;
     }
 
+    public async Task<bool> UpdateTagsForTestAsync(int id, List<int> tagIds)
+    {
+        var testEntity = await _dbSet.Include(tst => 
+            tst.Tags).FirstOrDefaultAsync(x => x.Id == id);
+        if (testEntity == null) return false;
+        
+        // Clear existing tags
+        testEntity.Tags.Clear();
+
+        foreach (var tagId in tagIds)
+        {
+            var tagEntity = await DbContext.Tags.FirstOrDefaultAsync(tg => tg.TagId == tagId);
+            if (tagEntity != null)
+            {
+                testEntity.Tags.Add(tagEntity);
+            }
+        }
+
+        return await SaveChangeWithTransactionAsync() > 0;
+    }
+
+    public override async Task RemoveAsync(object id)
+    {
+        var isGuid = Guid.TryParse(id.ToString(), out var idGuid);
+        int.TryParse(id.ToString(), out var idInt);
+        
+        var testEntity = await _dbSet
+            .Include(tst => tst.Tags) 
+            .Include(tst => tst.TestHistories)
+                .ThenInclude(th => th.PartitionHistories)
+                    .ThenInclude(ph => ph.TestGrades)
+            .Include(tst => tst.TestSections)
+                .ThenInclude(ts => ts.TestSectionPartitions)
+                    .ThenInclude(tsp => tsp.Questions)
+                        .ThenInclude(qs => qs.QuestionAnswers)
+            .Where(tst => isGuid ? tst.TestId == idGuid : tst.Id == idInt)
+            .FirstOrDefaultAsync();
+        
+        if (testEntity == null) throw new NullReferenceException($"Not found any test match id {id}");
+        
+        // Remove tags from testEntity.Tags if they exist
+        foreach (var tag in testEntity.Tags.ToList())
+        {
+            var tagEntity = await DbContext.Tags
+                .FirstOrDefaultAsync(x => x.TagId == tag.TagId);
+            if (tagEntity != null)
+            {
+                testEntity.Tags.Remove(tagEntity);
+            }
+        }
+        await SaveChangeAsync();
+        
+        // Remove all test history
+        DbContext.TestHistories.RemoveRange(testEntity.TestHistories);
+        
+        // Remove test 
+        _dbSet.Remove(testEntity);
+    }
+
     public async Task<IEnumerable<Test>> FindAllWithConditionAndPagingAsync(
         Expression<Func<Test, bool>>? filter,
         Func<IQueryable<Test>, IOrderedQueryable<Test>>? orderBy,
@@ -345,6 +404,11 @@ public class TestRepository : GenericRepository<Test>
         return test;
     }
 
+    public async Task<List<Comment>> FindAllCommentByTestIdAsync(Guid id)
+    {
+        return await DbContext.Comments.Where(cmt => cmt.TestId == id).ToListAsync();
+    }
+    
     public async Task<int> CountTotalAsync()
     {
         return await _dbSet.CountAsync();
@@ -353,5 +417,37 @@ public class TestRepository : GenericRepository<Test>
     public async Task<bool> IsExistTestAsync(int id)
     {
         return await _dbSet.AnyAsync(x => x.Id == id);
+    }
+    
+    public async Task<bool> IsExistTestAsync(Guid id)
+    {
+        return await _dbSet.AnyAsync(x => x.TestId == id);
+    }
+
+    public async Task<bool> IsPublishedAsync(Guid id)
+    {
+        return await _dbSet.AnyAsync(x => x.TestId == id && !x.IsDraft);
+    }
+
+    public async Task<bool> PublishTestAsync(Guid id)
+    {
+        var testEntity = await _dbSet.FirstOrDefaultAsync(x => x.TestId == id);
+        
+        if(testEntity == null) throw new NullReferenceException($"Not found any test match id {id}");
+        // Change test status to publish
+        testEntity.IsDraft = false;
+
+        return await SaveChangeWithTransactionAsync() > 0;
+    }
+
+    public async Task<bool> HideTestAsync(Guid id)
+    {
+        var testEntity = await _dbSet.FirstOrDefaultAsync(x => x.TestId == id);
+        
+        if(testEntity == null) throw new NullReferenceException($"Not found any test match id {id}");
+        // Change test status to publish
+        testEntity.IsDraft = true;
+
+        return await SaveChangeWithTransactionAsync() > 0;
     }
 }

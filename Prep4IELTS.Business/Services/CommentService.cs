@@ -27,6 +27,12 @@ public class CommentService(UnitOfWork unitOfWork) : ICommentService
         return commentEntities.Adapt<List<CommentDto>>();
     }
 
+    public async Task<bool> RemoveRangeCommentAndChildrenAsync(List<CommentDto> comments)
+    {
+        return await unitOfWork.CommentRepository.RemoveRangeCommentAndChildrenAsync(
+            comments.Adapt<List<Comment>>());
+    }
+
     public async Task<int> CountTotalByTestId(Guid testId)
     {
         return await unitOfWork.CommentRepository.CountTotalByTestId(testId); 

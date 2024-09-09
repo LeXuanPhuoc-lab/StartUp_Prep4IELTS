@@ -13,7 +13,8 @@ public interface ITestService
     Task<bool> InsertAsync(TestDto test);
     Task<bool> InsertAsync(TestDto test, List<int>? tagIds);
     Task<bool> RemoveAsync(Guid id);
-    Task UpdateAsync(TestDto test);
+    Task<bool> UpdateAsync(TestDto test);
+    Task<bool> UpdateAsync(TestDto test, List<int>? tagIds);
     Task<TestDto> FindAsync(Guid id);
     Task<IList<TestDto>> FindAllAsync();
     Task<TestDto> FindOneWithConditionAsync(
@@ -45,6 +46,11 @@ public interface ITestService
     Task<bool> SubmitTestAsync(int totalCompletionTime, DateTime takenDate, 
         bool isFull, Guid userId, 
         int testId, List<QuestionAnswerSubmissionModel> questionAnswers);
+
+    Task<bool> PublishTestAsync(Guid id);
+    Task<bool> HideTestAsync(Guid id);
     Task<int> CountTotalAsync();
     Task<bool> IsExistTestAsync(int id);
+    Task<bool> IsExistTestAsync(Guid id);
+    Task<bool> IsPublishedAsync(Guid id);
 }

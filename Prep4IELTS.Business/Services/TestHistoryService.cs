@@ -87,4 +87,9 @@ public class TestHistoryService(UnitOfWork unitOfWork) : ITestHistoryService
             await unitOfWork.TestHistoryRepository.FindByIdWithIncludePartitionAndGrade(testHistoryId);
         return testHistoryEntity.Adapt<TestHistoryDto>();
     }
+
+    public async Task<bool> RemoveAllByTestId(Guid testId)
+    {
+        return await unitOfWork.TestHistoryRepository.RemoveAllByTestId(testId);
+    }
 }

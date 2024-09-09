@@ -84,4 +84,10 @@ public class TestSectionService(UnitOfWork unitOfWork) : ITestSectionService
             await unitOfWork.TestSectionRepository.FindAllByTestId(testId);
         return testSectionEntities.Adapt<List<TestSectionDto>>();
     }
+
+    // public async Task<bool> RemoveRangeTestSectionAndRelations(List<TestSectionDto> testSections)
+    // {
+    //     return await unitOfWork.TestSectionRepository.RemoveRangeTestSectionAndRelations(
+    //         testSections.Adapt<List<TestSection>>());
+    // }
 }
