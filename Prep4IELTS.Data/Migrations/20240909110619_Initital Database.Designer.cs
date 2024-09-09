@@ -12,8 +12,8 @@ using Prep4IELTS.Data.Context;
 namespace Prep4IELTS.Data.Migrations
 {
     [DbContext(typeof(Prep4IeltsContext))]
-    [Migration("20240902064837_Initial Database")]
-    partial class InitialDatabase
+    [Migration("20240909110619_Initital Database")]
+    partial class InititalDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -469,6 +469,10 @@ namespace Prep4IELTS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_draft");
+
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime")
                         .HasColumnName("modified_date");
@@ -501,9 +505,15 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("total_section");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("user_id");
+
                     b.HasKey("TestId");
 
                     b.HasIndex("TestCategoryId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Test", (string)null);
                 });
@@ -853,11 +863,13 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.Comment", "ParentComment")
                         .WithMany("InverseParentComment")
                         .HasForeignKey("ParentCommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Comment_ParentComment");
 
                     b.HasOne("Prep4IELTS.Data.Entities.Test", "Test")
                         .WithMany("Comments")
                         .HasForeignKey("TestId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Comment_Test");
 
                     b.HasOne("Prep4IELTS.Data.Entities.User", "User")
@@ -900,6 +912,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.TestHistory", "TestHistory")
                         .WithMany("PartitionHistories")
                         .HasForeignKey("TestHistoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_PartitionHistory_TestHistory");
 
@@ -918,6 +931,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.TestSectionPartition", "TestSectionPart")
                         .WithMany("Questions")
                         .HasForeignKey("TestSectionPartId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Question_TestSectionPartition");
 
@@ -929,6 +943,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.Question", "Question")
                         .WithMany("QuestionAnswers")
                         .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_QuestionAnswer_Question");
 
@@ -943,7 +958,15 @@ namespace Prep4IELTS.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Test_TestCategory");
 
+                    b.HasOne("Prep4IELTS.Data.Entities.User", "User")
+                        .WithMany("Tests")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Test_User");
+
                     b.Navigation("TestCategory");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.TestGrade", b =>
@@ -951,6 +974,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.PartitionHistory", "PartitionHistory")
                         .WithMany("TestGrades")
                         .HasForeignKey("PartitionHistoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_TestGrade_PartitionHistory");
 
@@ -981,6 +1005,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.Test", "Test")
                         .WithMany("TestHistories")
                         .HasForeignKey("TestId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_TestHistory_Test");
 
@@ -1004,11 +1029,13 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.CloudResource", "CloudResource")
                         .WithMany("TestSections")
                         .HasForeignKey("CloudResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_TestSection_CloudResource");
 
                     b.HasOne("Prep4IELTS.Data.Entities.Test", "Test")
                         .WithMany("TestSections")
                         .HasForeignKey("TestId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_TestSection_Test");
 
@@ -1022,6 +1049,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.CloudResource", "CloudResource")
                         .WithMany("TestSectionPartitions")
                         .HasForeignKey("CloudResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_TestSectionPartition_CloudResource");
 
                     b.HasOne("Prep4IELTS.Data.Entities.PartitionTag", "PartitionTag")
@@ -1033,6 +1061,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.TestSection", "TestSection")
                         .WithMany("TestSectionPartitions")
                         .HasForeignKey("TestSectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_TestSectionPartition_TestSection");
 
@@ -1063,7 +1092,6 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.Test", null)
                         .WithMany()
                         .HasForeignKey("TestId")
-                        .IsRequired()
                         .HasConstraintName("FK_TestTag_Test");
                 });
 
@@ -1151,6 +1179,8 @@ namespace Prep4IELTS.Data.Migrations
                     b.Navigation("Flashcards");
 
                     b.Navigation("TestHistories");
+
+                    b.Navigation("Tests");
                 });
 #pragma warning restore 612, 618
         }

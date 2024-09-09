@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Prep4IELTS.Data.Context;
 using Prep4IELTS.Data.Entities;
 using Prep4IELTS.Data.Extensions;
@@ -320,6 +321,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
     {
         var rnd = new Random();
         List<SystemRole> roles = await dbContext.SystemRoles.ToListAsync();
+
+        var staffRoleId = roles.First(x => 
+            x.RoleName!.Equals(Enum.SystemRole.Staff.GetDescription())).RoleId;
+        var studentRoleId = roles.First(x => 
+            x.RoleName!.Equals(Enum.SystemRole.Student.GetDescription())).RoleId;
         
         List<User> users = new()
         {
@@ -336,11 +342,12 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 CreateDate = DateTime.Now,
                 TestTakenDate = DateTime.Now.AddDays(-30),
                 TargetScore = "8.0",
-                RoleId = roles.First(x => x.RoleName!.Equals(Enum.SystemRole.Staff.GetDescription())).RoleId
+                RoleId = staffRoleId
             },
             new User
             {
-                ClerkId = Guid.NewGuid().ToString(),
+                UserId = Guid.Parse("5e1bb613-7b62-4be4-aed2-239135ddae4e"),
+                ClerkId = "user_2lVW45D606uSy7ZVBgnNRhrfeMn",
                 FirstName = "John",
                 LastName = "Doe",
                 Email = "john.doe@example.com",
@@ -350,7 +357,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 CreateDate = DateTime.Now,
                 TestTakenDate = DateTime.Now.AddDays(-30),
                 TargetScore = "8.0",
-                RoleId = roles[rnd.Next(roles.Count())].RoleId
+                RoleId = staffRoleId
             },
             new User
             {
@@ -364,7 +371,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 CreateDate = DateTime.Now.AddMonths(-3),
                 TestTakenDate = DateTime.Now.AddDays(-60),
                 TargetScore = "6.0",
-                RoleId = roles[rnd.Next(roles.Count())].RoleId
+                RoleId = studentRoleId
             },
             new User
             {
@@ -378,7 +385,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 CreateDate = DateTime.Now.AddMonths(-6),
                 TestTakenDate = DateTime.Now.AddDays(-15),
                 TargetScore = "5.5",
-                RoleId = roles[rnd.Next(roles.Count())].RoleId
+                RoleId = studentRoleId
             },
             new User
             {
@@ -392,7 +399,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 CreateDate = DateTime.Now.AddMonths(-12),
                 TestTakenDate = DateTime.Now.AddDays(-90),
                 TargetScore = "6.5",
-                RoleId = roles[rnd.Next(roles.Count())].RoleId
+                RoleId = studentRoleId
             },
             new User
             {
@@ -406,7 +413,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 CreateDate = DateTime.Now.AddYears(-1),
                 TestTakenDate = DateTime.Now.AddDays(-45),
                 TargetScore = "7.5",
-                RoleId = roles[rnd.Next(roles.Count())].RoleId
+                RoleId = studentRoleId
+            },
+            new User
+            {
+                ClerkId = Guid.NewGuid().ToString(),
+                FirstName = "Eve",
+                LastName = "Aaron",
+                Email = "eve.aaron@example.com",
+                DateOfBirth = new DateTime(1992, 3, 5),
+                Phone = "0767882931",
+                IsActive = false,
+                CreateDate = DateTime.Now.AddYears(-1),
+                TestTakenDate = DateTime.Now.AddDays(-45),
+                TargetScore = "7.5",
+                RoleId = studentRoleId
             }
         };
 
@@ -471,8 +492,14 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         var tags = await dbContext.Tags.ToListAsync();
 
         // Get all users
-        var users = await dbContext.Users.OrderBy(x => x.Id).Take(10).ToListAsync();
-
+        var studentUsers = await dbContext.Users.Where(x => 
+            x.Role != null && 
+            x.Role.RoleName!.Equals(Data.Enum.SystemRole.Student.GetDescription())).ToListAsync();
+        
+        var staffUsers = await dbContext.Users.Where(x => 
+            x.Role != null && 
+            x.Role.RoleName!.Equals(Data.Enum.SystemRole.Staff.GetDescription())).ToListAsync();
+        
         // Init random
         var rnd = new Random();
 
@@ -493,7 +520,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Reading.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
+                IsDraft = false
             },
             new()
             {
@@ -509,7 +538,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Reading.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
+                IsDraft = false
             },
             new()
             {
@@ -525,7 +556,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Reading.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
+                IsDraft = false
             },
             new()
             {
@@ -542,11 +575,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
                 CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
+                IsDraft = false,
                 Comments = new List<Comment>()
                 {
                     new()
                     {
-                        UserId = users[0].UserId,
+                        UserId = studentUsers[0].UserId,
                         Content = "30/40, bài Listening này khó thật",
                         CommentDate = DateTime.Now,
                         TotalChildNode = 3,
@@ -554,13 +589,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                         {
                             new()
                             {
-                                UserId = users[1].UserId,
+                                UserId = studentUsers[1].UserId,
                                 Content = "Mình cũng 30/40",
                                 CommentDate = DateTime.Now.AddSeconds(1000),
                             },
                             new()
                             {
-                                UserId = users[2].UserId,
+                                UserId = studentUsers[2].UserId,
                                 Content = "Sao câu 23 đáp án ABC vậy ạ ???",
                                 CommentDate = DateTime.Now.AddDays(1),
                                 TotalChildNode = 2,
@@ -568,13 +603,13 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                 {
                                     new()
                                     {
-                                        UserId = users[1].UserId,
+                                        UserId = studentUsers[1].UserId,
                                         Content = "Mình cũng sai câu này :>>>",
                                         CommentDate = DateTime.Now.AddSeconds(1000),
                                     },
                                     new()
                                     {
-                                        UserId = users[4].UserId,
+                                        UserId = studentUsers[4].UserId,
                                         Content = "Coi transcript ở đây: https://pre4ielts.com/tests/transcript",
                                         CommentDate = DateTime.Now.AddSeconds(1000),
                                     }
@@ -584,7 +619,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     },
                     new()
                     {
-                        UserId = users[3].UserId,
+                        UserId = studentUsers[3].UserId,
                         Content = "33/40, part 4 hơi khó",
                         CommentDate = DateTime.Now.AddDays(2),
                         TotalChildNode = 0
@@ -1031,6 +1066,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
                 CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
+                IsDraft = false,
                 TestSections = new List<TestSection>()
                 {
                     new()
@@ -1472,6 +1509,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
                 CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
+                IsDraft = false,
                 TestSections = new List<TestSection>()
                 {
                     new()
@@ -1912,7 +1951,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Writing.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
+                IsDraft = false
             },
             new()
             {
@@ -1928,7 +1969,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Writing.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
+                IsDraft = false
             },
             new()
             {
@@ -1944,7 +1987,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Listening.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
+                IsDraft = false
             },
             new()
             {
@@ -1960,7 +2005,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     x.TagName.Equals(Enum.Tag.IeltsAcademic.GetDescription()) ||
                     x.TagName.Equals(Enum.Tag.Reading.GetDescription()
                     ))).ToList(),
-                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
+                IsDraft = false
             }
         };
 
@@ -2025,6 +2072,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             .ThenInclude(x => x.TestSectionPartitions)
             .FirstOrDefaultAsync();
 
+        Console.WriteLine("Check Listening Test 1 name : " + listeningTest1!.TestTitle);
+        
         var testSections = listeningTest1!.TestSections.ToList();
 
         for (int i = 0; i < 2; ++i)

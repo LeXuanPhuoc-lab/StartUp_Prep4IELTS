@@ -13,6 +13,7 @@ public static class ApiRoute
     {
         // [HTTP GET]
         public const string GetAll = Base + "/tests";
+        public const string GetAllDraft = Base + "/tests/draft";
         public const string GetById = Base + "/tests/{id}";
         public const string GetAllAnswer = Base + "/tests/{id}/answers";
         public const string GetCreateTestDetail = Base + "/tests/create/detail";
@@ -22,6 +23,16 @@ public static class ApiRoute
         // [HTTP POST]
         public const string Submission = Base + "/tests/submission";
         public const string Create = Base + "/tests/create";
+        
+        // [HTTP PUT]
+        public const string Update = Base + "/tests/{id}/update";
+        
+        // [HTTP PATCH]
+        public const string Publish = Base + "/tests/{id}/publish";
+        public const string Hidden = Base + "/tests/{id}/hidden";
+        
+        // [HTTP DELETE]
+        public const string Delete = Base + "/tests/{id}/delete";
     }
 
     public static class TestCategory

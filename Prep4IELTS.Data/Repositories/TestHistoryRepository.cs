@@ -131,4 +131,13 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
             })
             .FirstOrDefaultAsync();
     }
+
+    public async Task<bool> RemoveAllByTestId(Guid testId)
+    {
+        var testHistories = await _dbSet.Where(x =>
+            x.TestId == testId).ToListAsync();
+        
+        _dbSet.RemoveRange(testHistories);
+        return await SaveChangeWithTransactionAsync() > 0;
+    }
 }

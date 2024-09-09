@@ -152,7 +152,7 @@ public class GenericRepository<TEntity> where TEntity : class
         var entityToDelete = _dbSet.Find(id);
         if(entityToDelete != null) PerformRemove(entityToDelete);
     }
-    public async Task RemoveAsync(object id)
+    public virtual async Task RemoveAsync(object id)
     {
         var entityToDelete = await _dbSet.FindAsync(id);
         if(entityToDelete != null) PerformRemove(entityToDelete);

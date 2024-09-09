@@ -6,7 +6,7 @@ namespace EXE202_Prep4IELTS.Attributes;
 
 public class ClerkAuthorizeAttribute : Attribute, IActionFilter
 {
-    public new string[] Roles { get; set; } = [];
+    public string[] Roles { get; set; } = [];
     public bool Require { get; set; } = true;
 
     public void OnActionExecuting(ActionExecutingContext context)

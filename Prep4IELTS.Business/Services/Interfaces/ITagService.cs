@@ -6,4 +6,5 @@ public interface ITagService
 {
     Task<TagDto> FindByIdAsync(int tagId);
     Task<List<TagDto>> FindAllAsync();
+    Task<bool> RemoveAllTestTag(Guid testId);
 }

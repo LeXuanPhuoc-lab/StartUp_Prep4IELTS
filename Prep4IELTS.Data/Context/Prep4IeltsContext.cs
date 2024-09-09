@@ -49,16 +49,20 @@ public partial class Prep4IeltsContext : DbContext
     public virtual DbSet<User> Users { get; set; }
     
     public virtual DbSet<ScoreCalculation> ScoreCalculations { get; set; }
+    public virtual DbSet<CloudResource> CloudResources { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(GetConnectionString(), o 
+    {
+        optionsBuilder.UseSqlServer(GetConnectionString(), o
             => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+        optionsBuilder.EnableSensitiveDataLogging();
+    }
     
     private string GetConnectionString()
     {
         IConfigurationBuilder builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .AddEnvironmentVariables();
 
         string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? null!;
@@ -92,11 +96,13 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.ParentComment).WithMany(p => p.InverseParentComment)
                 .HasForeignKey(d => d.ParentCommentId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Comment_ParentComment");
 
             entity.HasOne(d => d.Test).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.TestId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Comment_Test");
 
             entity.HasOne(d => d.User).WithMany(p => p.Comments)
@@ -187,7 +193,7 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.TestHistory).WithMany(p => p.PartitionHistories)
                 .HasForeignKey(d => d.TestHistoryId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PartitionHistory_TestHistory");
 
             entity.HasOne(d => d.TestSectionPart).WithMany(p => p.PartitionHistories)
@@ -223,7 +229,8 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.TestSectionPart).WithMany(p => p.Questions)
                 .HasForeignKey(d => d.TestSectionPartId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Question_TestSectionPartition");
         });
 
@@ -245,7 +252,8 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.Question).WithMany(p => p.QuestionAnswers)
                 .HasForeignKey(d => d.QuestionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_QuestionAnswer_Question");
         });
 
@@ -285,6 +293,7 @@ public partial class Prep4IeltsContext : DbContext
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
             entity.Property(e => e.TestCategoryId).HasColumnName("test_category_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.TestTitle)
                 .HasMaxLength(155)
                 .HasColumnName("test_title");
@@ -301,6 +310,7 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.CreateBy)
                 .HasMaxLength(255)
                 .HasColumnName("create_by");
+            entity.Property(e => e.IsDraft).HasColumnName("is_draft");
             entity.Property(e => e.TotalEngaged).HasColumnName("total_engaged");
             entity.Property(e => e.TotalQuestion).HasColumnName("total_question");
             entity.Property(e => e.TotalSection).HasColumnName("total_section");
@@ -309,19 +319,25 @@ public partial class Prep4IeltsContext : DbContext
                 .HasForeignKey(d => d.TestCategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Test_TestCategory");
+            
+            entity.HasOne(d => d.User).WithMany(p => p.Tests)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Test_User");
 
             entity.HasMany(d => d.Tags).WithMany(p => p.Tests)
                 .UsingEntity<Dictionary<string, object>>(
                     "TestTag",
                     r => r.HasOne<Tag>().WithMany()
                         .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.ClientSetNull) 
                         .HasConstraintName("FK_TestTag_Tag")
                         .IsRequired(false),
                     l => l.HasOne<Test>().WithMany()
                         .HasForeignKey("TestId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_TestTag_Test"),
+                        .HasConstraintName("FK_TestTag_Test")
+                        .IsRequired(false),
                     j =>
                     {
                         j.HasKey("TestId", "TagId").HasName("PK_TestTag");
@@ -365,7 +381,8 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.PartitionHistory).WithMany(p => p.TestGrades)
                 .HasForeignKey(d => d.PartitionHistoryId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_TestGrade_PartitionHistory");
 
             entity.HasOne(d => d.Question).WithMany(p => p.TestGrades)
@@ -410,7 +427,8 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.Test).WithMany(p => p.TestHistories)
                 .HasForeignKey(d => d.TestId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_TestHistory_Test");
 
             entity.HasOne(d => d.User).WithMany(p => p.TestHistories)
@@ -465,12 +483,14 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.Test).WithMany(p => p.TestSections)
                 .HasForeignKey(d => d.TestId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_TestSection_Test");
             
             entity.HasOne(d => d.CloudResource).WithMany(p => p.TestSections)
                 .HasForeignKey(d => d.CloudResourceId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_TestSection_CloudResource");
         });
 
@@ -498,12 +518,14 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.TestSection).WithMany(p => p.TestSectionPartitions)
                 .HasForeignKey(d => d.TestSectionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_TestSectionPartition_TestSection");
             
             entity.HasOne(d => d.CloudResource).WithMany(p => p.TestSectionPartitions)
                 .HasForeignKey(d => d.CloudResourceId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_TestSectionPartition_CloudResource");
         });
 

@@ -43,4 +43,44 @@ public class TestSectionRepository : GenericRepository<TestSection>
             })
             .ToListAsync();
     }
+
+    // public async Task<bool> RemoveRangeTestSectionAndRelations(List<TestSection> testSections)
+    // {
+    //     foreach (var testSection in testSections)
+    //     {
+    //         var testSectionEntity = await _dbSet
+    //             .AsSplitQuery()
+    //             .Include(ts => ts.CloudResource)
+    //             .Include(ts => ts.TestSectionPartitions)
+    //             .ThenInclude(tsp => tsp.Questions)
+    //             .ThenInclude(q => q.QuestionAnswers)
+    //             .FirstOrDefaultAsync(ts => ts.TestSectionId == testSection.TestSectionId);
+    //
+    //         // if (testSectionEntity != null)
+    //         // {
+    //         //     var sectionPartitions = testSectionEntity.TestSectionPartitions.ToList();
+    //         //     var partitionHistories = sectionPartitions.SelectMany(tsp => tsp.PartitionHistories).ToList();
+    //         //     var testGrades = partitionHistories.SelectMany(tsp => tsp.TestGrades).ToList();
+    //         //     var testHistories = partitionHistories.Select(ph => ph.TestHistory).ToList();
+    //         //     var cloudResources = sectionPartitions.Select(sp => sp.CloudResource).ToList();
+    //         //     var questions = sectionPartitions.SelectMany(sp => sp.Questions).ToList();
+    //         //     var answers = questions.SelectMany(q => q.QuestionAnswers).ToList();
+    //         //
+    //         //     // Combine with cloud resource of section with section parts 
+    //         //     cloudResources.Add(testSection.CloudResource);
+    //         //     
+    //         //     // Remove related entities
+    //         //     DbContext.TestGrades.RemoveRange(testGrades);
+    //         //     DbContext.PartitionHistories.RemoveRange(partitionHistories);
+    //         //     DbContext.TestHistories.RemoveRange(testHistories);
+    //         //     DbContext.CloudResources.RemoveRange(cloudResources);
+    //         //     DbContext.QuestionAnswers.RemoveRange(answers);
+    //         //     DbContext.Questions.RemoveRange(questions);
+    //         //     DbContext.TestSectionPartitions.RemoveRange(sectionPartitions);   
+    //         // }
+    //         _dbSet.Remove(testSectionEntity);
+    //     }
+    //     
+    //     return await SaveChangeWithTransactionAsync() > 0;
+    // }
 }

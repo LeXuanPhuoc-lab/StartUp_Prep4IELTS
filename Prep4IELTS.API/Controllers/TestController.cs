@@ -1,11 +1,14 @@
+using EXE202_Prep4IELTS.Attributes;
 using EXE202_Prep4IELTS.Payloads;
 using EXE202_Prep4IELTS.Payloads.Filters;
 using EXE202_Prep4IELTS.Payloads.Requests.Tests;
 using EXE202_Prep4IELTS.Payloads.Responses;
 using EXE202_Prep4IELTS.Payloads.Responses.Tests;
+using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Prep4IELTS.Business.Constants;
 using Prep4IELTS.Business.Models;
 using Prep4IELTS.Business.Services.Interfaces;
@@ -14,6 +17,7 @@ using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;
 using Prep4IELTS.Data.Enum;
 using Prep4IELTS.Data.Extensions;
+using Serilog;
 
 namespace EXE202_Prep4IELTS.Controllers;
 
@@ -60,6 +64,8 @@ public class TestController(
             // With conditions
             // Search with test title
             filter: x => x.TestTitle.Contains(req.Term ?? "") &&
+                         // Is not draft
+                         !x.IsDraft && 
                          // filter with test category name
                          (string.IsNullOrEmpty(req.Category) ||
                           x.TestCategory.TestCategoryName!.Equals(req.Category.Replace("%", " "))),
@@ -107,6 +113,73 @@ public class TestController(
             });
     }
 
+    //  Summary:
+    //      Get all existing tests 
+    [HttpGet(ApiRoute.Test.GetAllDraft, Name = nameof(GetAllTestDraftAsync))]
+    // [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
+    public async Task<IActionResult> GetAllTestDraftAsync([FromQuery] TestFilterRequest req)
+    {
+        // Get staff information
+        var staffDto = HttpContext.Items["User"] as User;
+        // if (staffDto == null) return Unauthorized();
+        
+        // Get all test (draft) for particular staff
+        var testDtos = await testService.FindAllWithConditionAndPagingAsync(
+            // With conditions
+            // Search with test title
+            filter: x => x.TestTitle.Contains(req.Term ?? "") &&
+                         // Is not draft
+                         x.IsDraft && 
+                         // With particular staff id 
+                         // x.UserId == staffDto.UserId &&
+                         x.UserId == Guid.Parse("EE3DA1EC-E2D1-458C-B6C9-23E76727DA8D") &&
+                         // filter with test category name
+                         (string.IsNullOrEmpty(req.Category) ||
+                          x.TestCategory.TestCategoryName!.Equals(req.Category.Replace("%", " "))),
+            orderBy: null,
+            // Include Tags
+            includeProperties: "Tags",
+            // With page index
+            pageIndex: req.Page,
+            // With page size
+            pageSize: req.PageSize ?? _appSettings.PageSize,
+            // Include user test histories (if any)
+            userId: req.UserId);
+
+        // Total actual tests
+        var actualTotal = await testService.CountTotalAsync();
+
+        // Sorting 
+        if (!string.IsNullOrEmpty(req.OrderBy))
+        {
+            var sortingEnumerable = await SortHelper.SortTestByColumnAsync(testDtos, req.OrderBy);
+            testDtos = sortingEnumerable.ToList();
+        }
+
+        // Create paginated detail list 
+        var paginatedDetail = PaginatedDetailList<TestDto>.CreateInstance(testDtos,
+            pageIndex: req.Page ?? 1,
+            req.PageSize ?? _appSettings.PageSize,
+            actualItem: actualTotal);
+
+        return !testDtos.Any() // Not exist any test
+            ? NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found any tests."
+            })
+            : Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    Tests = paginatedDetail,
+                    Page = paginatedDetail.PageIndex,
+                    TotalPage = paginatedDetail.TotalPage
+                }
+            });
+    }
+    
     //  Summary:
     //      Get test by id 
     [HttpGet(ApiRoute.Test.GetById, Name = nameof(GetTestByIdAsync))]
@@ -272,6 +345,7 @@ public class TestController(
     //  Summary:
     //      Create Test Detail
     [HttpGet(ApiRoute.Test.GetCreateTestDetail, Name = nameof(GetCreateTestDetailAsync))]
+    [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
     public async Task<IActionResult> GetCreateTestDetailAsync()
     {
         var testCategories = await testCategoryService.FindAllAsync();
@@ -299,17 +373,28 @@ public class TestController(
         });
     }
     
-    
     //  Summary:
     //      Create Test
     [HttpPost(ApiRoute.Test.Create, Name = nameof(CreateTestAsync))]
+    [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
     public async Task<IActionResult> CreateTestAsync([FromBody] CreateTestRequest req)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         
+        // Get staff information
+        var staffDto = HttpContext.Items["User"] as UserDto;
+        // if (staffDto == null) return Unauthorized();
         
         // Map request to test entity
         var testEntity = mapper.Map<Test>(req);
+        
+        // Update created user
+        // testEntity.UserId = staffDto.UserId;
+        // testEntity.CreateBy = $"{staffDto.FirstName} {staffDto.LastName}";
+        testEntity.UserId = Guid.Parse("EE3DA1EC-E2D1-458C-B6C9-23E76727DA8D");
+        
+        // Mark as Draft
+        testEntity.IsDraft = true;
         
         // Get all test sections
         var testSections = testEntity.TestSections.ToList();
@@ -413,6 +498,157 @@ public class TestController(
 
         return isCreateSuccess
             ? Created()
+            : StatusCode(StatusCodes.Status500InternalServerError);
+    }
+    
+    //  Summary:
+    //      Update Test
+    [HttpPut(ApiRoute.Test.Update, Name = nameof(UpdateTestAsync))]
+    [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
+    public async Task<IActionResult> UpdateTestAsync([FromRoute] Guid id,[FromBody] UpdateTestRequest req)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        
+        // Check exist test 
+        var isExistTest = await testService.IsExistTestAsync(id);
+        if (!isExistTest)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any test match id {id}"
+            });
+        }
+        
+        // Check test status
+        var isPublished = await testService.IsPublishedAsync(id);
+        if (isPublished)
+        {
+            return BadRequest(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Test must be hidden to progress update"
+            });
+        }
+        
+        // Mapping to testDto
+        var testToUpdate = mapper.Map<Test>(req);
+        // Test id
+        testToUpdate.TestId = id;
+        
+        // Progress update test
+        var isUpdatedSuccess = await testService.UpdateAsync(testToUpdate.Adapt<TestDto>(), req.Tags);
+        
+        return isUpdatedSuccess
+            ? NoContent()
+            : StatusCode(StatusCodes.Status500InternalServerError);
+    }
+    
+    //  Summary:
+    //      Delete Test
+    [HttpDelete(ApiRoute.Test.Delete, Name = nameof(DeleteTestAsync))]
+    [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
+    public async Task<IActionResult> DeleteTestAsync([FromRoute] Guid id)
+    {
+        // Check exist test 
+        var isExistTest = await testService.IsExistTestAsync(id);
+        if (!isExistTest)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any test match id {id}"
+            });
+        }
+        
+        // Check test status
+        var isPublished = await testService.IsPublishedAsync(id);
+        if (isPublished)
+        {
+            return BadRequest(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Test must be hidden to progress delete"
+            });
+        }
+        
+        // Progress delete test 
+        var isDeleted = await testService.RemoveAsync(id);
+
+        return isDeleted 
+            ? NoContent()
+            : StatusCode(StatusCodes.Status500InternalServerError);
+    }
+    
+    //  Summary:
+    //      Publish test
+    [HttpPatch(ApiRoute.Test.Publish, Name = nameof(PublishTestAsync))]
+    [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
+    public async Task<IActionResult> PublishTestAsync([FromRoute] Guid id)
+    {
+        // Check existing test
+        var isExistTest = await testService.IsExistTestAsync(id);
+        if (!isExistTest)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any test match id {id}"
+            });
+        }
+        
+        // Check test status
+        var isPublished = await testService.IsPublishedAsync(id);
+        if (isPublished)
+        {
+            return BadRequest(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Test already published"
+            });
+        }
+        
+        // Progress publish test
+        var isPublishedSuccess = await testService.PublishTestAsync(id);
+        
+        return isPublishedSuccess
+            ? NoContent()
+            : StatusCode(StatusCodes.Status500InternalServerError);
+    }
+    
+    //  Summary:
+    //      Hidden test
+    [HttpPatch(ApiRoute.Test.Hidden, Name = nameof(HideTestAsync))]
+    [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
+    public async Task<IActionResult> HideTestAsync([FromRoute] Guid id)
+    {
+        // Check existing test
+        var isExistTest = await testService.IsExistTestAsync(id);
+        if (!isExistTest)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any test match id {id}"
+            });
+        }
+        
+        // Check test status
+        var isPublished = await testService.IsPublishedAsync(id);
+        if (!isPublished)
+        {
+            return BadRequest(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Test already hidden"
+            });
+        }
+        
+        // Progress publish test
+        var isHideSuccess = await testService.HideTestAsync(id);
+        
+        return isHideSuccess
+            ? NoContent()
             : StatusCode(StatusCodes.Status500InternalServerError);
     }
 }

@@ -27,7 +27,7 @@ public class CommentController(
             // order descending by comment date
             orderBy: new (cmt => cmt.OrderByDescending(x => x.CommentDate)),
             // Include nothing
-            includeProperties: null,
+            includeProperties: "User",
             // Get with particular pageIndex
             pageIndex: page,
             // With pageSize elements

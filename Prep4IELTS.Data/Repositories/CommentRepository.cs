@@ -34,6 +34,8 @@ public class CommentRepository : GenericRepository<Comment>
     {
         await _dbSet.Entry(comment)
             .Collection(x => x.InverseParentComment)
+            .Query()
+            .Include(x => x.User)
             .LoadAsync();
 
         foreach (var childElement in comment.InverseParentComment)
@@ -42,6 +44,38 @@ public class CommentRepository : GenericRepository<Comment>
         }
     }
 
+
+    public async Task<bool> RemoveRangeCommentAndChildrenAsync(List<Comment> comments)
+    {
+        foreach (var cmt in comments)
+        {
+            var commentEntity = await _dbSet
+                .FirstOrDefaultAsync(x => x.CommentId == cmt.CommentId);
+
+            if (commentEntity != null)
+            {
+                await RemoveInverseParentCommentRecursively(commentEntity);
+            }
+        }
+
+        return await SaveChangeWithTransactionAsync() > 0;
+    }
+    
+    private async Task RemoveInverseParentCommentRecursively(Comment comment)
+    {
+        await _dbSet.Entry(comment)
+            .Collection(x => x.InverseParentComment)
+            .LoadAsync();
+
+        foreach (var childElement in comment.InverseParentComment)
+        {
+            await RemoveInverseParentCommentRecursively(childElement); 
+            childElement.InverseParentComment.Clear();
+        }
+
+        _dbSet.Remove(comment);
+    }
+    
     public async Task<IEnumerable<Comment>> FindAllWithConditionAndPagingAsync(
         Expression<Func<Comment, bool>>? filter,
         Func<IQueryable<Comment>, IOrderedQueryable<Comment>>? orderBy,

@@ -29,4 +29,5 @@ public interface ITestSectionService
     
     // Additional
     Task<IList<TestSectionDto>> FindAllByTestId(Guid testId);
+    // Task<bool> RemoveRangeTestSectionAndRelations(List<TestSectionDto> testSections);
 }

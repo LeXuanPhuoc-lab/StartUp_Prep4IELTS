@@ -24,16 +24,21 @@ public partial class Test
 
     public int TestCategoryId { get; set; }
     
+    public Guid UserId { get; set; }
+    
     public DateTime CreateDate { get; set; }
     
     public DateTime? ModifiedDate { get; set; }
 
     public string? CreateBy { get; set; } = string.Empty;
+    public bool IsDraft { get; set; } 
     
     [JsonIgnore]
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     public virtual TestCategory TestCategory { get; set; } = null!;
+    
+    public virtual User User { get; set; } = null!; 
     
     // [JsonIgnore]
     public virtual ICollection<TestHistory> TestHistories { get; set; } = new List<TestHistory>();
