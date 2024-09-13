@@ -860,13 +860,11 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.Comment", "ParentComment")
                         .WithMany("InverseParentComment")
                         .HasForeignKey("ParentCommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Comment_ParentComment");
 
                     b.HasOne("Prep4IELTS.Data.Entities.Test", "Test")
                         .WithMany("Comments")
                         .HasForeignKey("TestId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Comment_Test");
 
                     b.HasOne("Prep4IELTS.Data.Entities.User", "User")
@@ -1026,7 +1024,6 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.CloudResource", "CloudResource")
                         .WithMany("TestSections")
                         .HasForeignKey("CloudResourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_TestSection_CloudResource");
 
                     b.HasOne("Prep4IELTS.Data.Entities.Test", "Test")
@@ -1046,7 +1043,6 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.CloudResource", "CloudResource")
                         .WithMany("TestSectionPartitions")
                         .HasForeignKey("CloudResourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_TestSectionPartition_CloudResource");
 
                     b.HasOne("Prep4IELTS.Data.Entities.PartitionTag", "PartitionTag")

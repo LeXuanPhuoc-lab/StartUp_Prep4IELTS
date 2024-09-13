@@ -23,8 +23,8 @@ public class CreatePaymentRequest
     [Phone]
     public string PhoneNumber { get; set; } = string.Empty;
 
-    [Required]
-    public string RequestType { get; set; } = string.Empty;
+    // [Required]
+    public string? RequestType { get; set; } = string.Empty;
     
     // With display method, FE handle this
 }

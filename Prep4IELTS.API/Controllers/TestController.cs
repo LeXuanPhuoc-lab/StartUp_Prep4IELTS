@@ -28,6 +28,8 @@ public class TestController(
     IUserService userService,
     ITagService tagService,
     IPartitionTagService partitionTagService,
+    ITestGradeService testGradeService,
+    ITestHistoryService testHistoryService,
     IMapper mapper,
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
 {
@@ -343,6 +345,83 @@ public class TestController(
     }
 
     //  Summary:
+    //      Get test for re-submit
+    [HttpGet(ApiRoute.Test.GetForReSubmit, Name = nameof(GetTestForReSubmitAsync))]
+    public async Task<IActionResult> GetTestForReSubmitAsync([FromRoute] int id, 
+        [FromQuery] int[] section, [FromQuery] int testHistoryId)
+    {
+        var testDto = await testService.FindByIdForPracticeAsync(id, section);
+
+        if (testDto == null!)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any test match id {id}"
+            });
+        }
+        
+        var testGradeDtos = await testGradeService.FindAllTestGradeByHistoryId(testHistoryId);
+        
+        if (!testGradeDtos.Any())
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found test history in {testDto.TestTitle}"
+            });
+        }
+        
+        return Ok(new BaseResponse()
+        {
+            StatusCode = StatusCodes.Status200OK,
+            Data = new
+            {
+                Test = testDto,
+                TestGrades = testGradeDtos
+            }
+        });
+    }
+    
+    //  Summary:
+    //      Re-submit test
+    [HttpPut(ApiRoute.Test.ReSubmit, Name = nameof(ReSubmitTestAsync))]
+    public async Task<IActionResult> ReSubmitTestAsync([FromRoute] int id, [FromBody] ReSubmitTestRequest req)
+    {
+        // Check exist test 
+        var isExistTest = await testService.IsExistTestAsync(id);
+        if (!isExistTest)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any test match id {id}"
+            });
+        }
+        
+        // Check exist test history
+        var isExistTestHistory = await testHistoryService.IsExistTestHistoryAsync(req.TestHistoryId);
+        if (!isExistTestHistory)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any test history match id {req.TestHistoryId}"
+            });
+        }
+        
+        // Progress re-submit test 
+        // Map update TestGradeRequest to TestGrade 
+        var testGrades = req.TestGrades.Adapt<List<TestGrade>>();
+        var isUpdated = await testGradeService.UpdateTestGradesAsync(
+            testGrades.Adapt<List<TestGradeDto>>(), req.TestHistoryId, req.TotalCompletionTime, req.TakenDatetime);
+        
+        return isUpdated 
+            ? NoContent()
+            : StatusCode(StatusCodes.Status500InternalServerError);
+    }
+    
+    //  Summary:
     //      Create Test Detail
     [HttpGet(ApiRoute.Test.GetCreateTestDetail, Name = nameof(GetCreateTestDetailAsync))]
     [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
@@ -376,7 +455,7 @@ public class TestController(
     //  Summary:
     //      Create Test
     [HttpPost(ApiRoute.Test.Create, Name = nameof(CreateTestAsync))]
-    [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
+    // [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
     public async Task<IActionResult> CreateTestAsync([FromBody] CreateTestRequest req)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -643,6 +722,18 @@ public class TestController(
                 Message = "Test already hidden"
             });
         }
+        
+        // Check exist any history in test 
+        var isExistAnyHistory = await testService.IsExistAnyHistoryAsync(id);
+        if (!isExistAnyHistory)
+        {
+            return BadRequest(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Can not hide test containing histories"
+            });
+        }
+        
         
         // Progress publish test
         var isHideSuccess = await testService.HideTestAsync(id);

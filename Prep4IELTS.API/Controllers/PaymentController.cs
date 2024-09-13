@@ -1,7 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using CloudinaryDotNet;
 using EXE202_Prep4IELTS.Payloads;
 using EXE202_Prep4IELTS.Payloads.Requests.Payments;
+using EXE202_Prep4IELTS.Payloads.Requests.Payments.Momo;
+using EXE202_Prep4IELTS.Payloads.Requests.Payments.PayOS;
 using EXE202_Prep4IELTS.Payloads.Responses;
+using EXE202_Prep4IELTS.Payloads.Responses.Payments.PayOS;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Prep4IELTS.Business.Constants;
@@ -13,9 +18,11 @@ namespace EXE202_Prep4IELTS.Controllers;
 
 [ApiController]
 public class PaymentController(
-    IOptionsMonitor<MomoConfiguration> momoMonitor) : ControllerBase
+    IOptionsMonitor<MomoConfiguration> momoMonitor,
+    IOptionsMonitor<PayOSConfiguration> payOsMonitor) : ControllerBase
 {
     private readonly MomoConfiguration _momoConfig = momoMonitor.CurrentValue;
+    private readonly PayOSConfiguration _payOsConfig = payOsMonitor.CurrentValue;
 
     [HttpPost(ApiRoute.Payment.CreatePaymentWithMethod, Name = nameof(CreatePaymentWithMethodAsync))]
     public async Task<IActionResult> CreatePaymentWithMethodAsync([FromBody] CreatePaymentRequest req)
@@ -29,9 +36,20 @@ public class PaymentController(
             // MOMO
             // [Momo Test Checkout](https://developers.momo.vn/v3/checkout/)
             case PaymentIssuerConstants.Momo:
-                // Generate requestId and OrderId   
-                var requestId = MomoPaymentHelper.GenerateRequestId();
-                var orderId = MomoPaymentHelper.GenerateOrderId(requestId);
+                
+                // Check existing request type 
+                if (string.IsNullOrEmpty(req.RequestType))
+                {
+                    return BadRequest(new BaseResponse()
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = "Missing request type for Momo issuer"
+                    });
+                }
+                
+                // Generate requestId and orderId   
+                var requestId = PaymentHelper.GenerateRequestId();
+                var orderId = PaymentHelper.GenerateOrderId(requestId);
                 
                 // [Momo Test Account](https://developers.momo.vn/v3/docs/payment/onboarding/test-instructions/#e-wallet-test-details)
                 // Initiate Momo one time payment request 
@@ -87,11 +105,74 @@ public class PaymentController(
                         Message = paymentResp.Item2
                     });
             #endregion
+            
+            #region PayOS
+            // PayOS
+            case PaymentIssuerConstants.PayOs:
+                // Generate requestId and orderCode
+                var orderCode =  PaymentHelper.GenerateRandomOrderCodeDigits(5);
+
+                // Initiate PayOS payment request
+                PayOSPaymentRequest payOsPaymentRequest = new()
+                {
+                    OrderCode = orderCode,
+                    Amount = req.Amount,
+                    Description = "Test payment with PayOS",
+                    BuyerName = req.Name ?? string.Empty,
+                    BuyerEmail = req.Email,
+                    BuyerPhone = req.PhoneNumber,
+                    BuyerAddress = "Address of merchant",
+                    Items = new List<object>()
+                    {
+                        new
+                        {
+                            Name = "Iphone",
+                            Quantity = 2,
+                            Price = 28000000
+                        }
+                    },
+                    CancelUrl = _payOsConfig.CancelUrl,
+                    ReturnUrl = _payOsConfig.ReturnUrl,
+                    ExpiredAt = (int)((DateTimeOffset)DateTime.Now.AddHours(2)).ToUnixTimeSeconds()
+                };
+                
+                // Generate signature
+                await payOsPaymentRequest.GenerateSignatureAsync(orderCode, _payOsConfig);
+                var payOsPaymentResp = await payOsPaymentRequest.GetUrlAsync(_payOsConfig);
+
+                return payOsPaymentResp.Item1
+                    ? Ok(payOsPaymentResp.Item3)
+                    : BadRequest(new BaseResponse()
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = payOsPaymentResp.Item2
+                    });
+            #endregion
         }
 
         return BadRequest();
     }
+
+    [HttpGet(ApiRoute.Payment.GetPaymentIssuers)]
+    public async Task<IActionResult> GetPaymentIssuerAsync()
+    {
+        List<string> paymentIssuers = new()
+        {
+            PaymentIssuerConstants.Momo,
+            PaymentIssuerConstants.PayOs
+        };
+
+        await Task.CompletedTask;
         
+        return paymentIssuers.Any() 
+            ? Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = paymentIssuers
+            }) 
+            : NotFound();
+    }
+    
     #region Momo Payment
     [HttpGet(ApiRoute.Payment.GetMomoPaymentMethods)]
     public async Task<IActionResult> GetMomoPaymentMethodsAsync(
@@ -241,6 +322,40 @@ public class PaymentController(
 
         await Task.CompletedTask;
         return Ok();
+    }
+    #endregion
+
+    #region PayOS
+    [HttpGet(ApiRoute.Payment.GetPayOsPaymentLinkInformation)]
+    public async Task<IActionResult> PayOsPaymentLinkInformationAsync([FromRoute] string paymentLinkId)
+    {
+        var getLinkInformationResp = 
+            await PayOsPaymentRequestExtensions.GetLinkInformationAsync(paymentLinkId, _payOsConfig);
+
+        return getLinkInformationResp.Item1
+            ? Ok(getLinkInformationResp.Item3)
+            : BadRequest(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = getLinkInformationResp.Item2
+            });
+    }
+
+    [HttpPost(ApiRoute.Payment.CancelPayOsPayment)]
+    public async Task<IActionResult> CancelPayOsPaymentAsync(
+        [FromRoute] string paymentLinkId, 
+        [FromBody] PayOSCancelPaymentRequest req)
+    {
+        // Process cancel payOS payment
+        var cancelResp = await req.CancelAsync(paymentLinkId, _payOsConfig);
+
+        return cancelResp.Item1
+            ? Ok(cancelResp.Item3)
+            : BadRequest(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = cancelResp.Item2
+            });
     }
     #endregion
 }

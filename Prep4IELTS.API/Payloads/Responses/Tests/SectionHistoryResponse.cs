@@ -10,6 +10,8 @@ public class SectionHistoryResponse
     public int? TotalSkipAnswer { get; set; }
     public double? AccuracyRate { get; set; }
     
+    public CloudResourceDto CloudResource { get; set; } = null!;
+    
     // public PartitionHistoryDetailResponse PartitionHistoryResp { get; set; } = null!;
     public List<PartitionHistoryDto> PartitionHistories { get; set; } = new ();
 }

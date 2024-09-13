@@ -1,4 +1,4 @@
-namespace EXE202_Prep4IELTS.Payloads.Responses.Payments;
+namespace EXE202_Prep4IELTS.Payloads.Responses.Payments.Momo;
 
 public class MomoInitiateTransactionResponse
 {

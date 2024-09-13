@@ -52,17 +52,14 @@ public partial class Prep4IeltsContext : DbContext
     public virtual DbSet<CloudResource> CloudResources { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer(GetConnectionString(), o
-            => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
-        optionsBuilder.EnableSensitiveDataLogging();
-    }
+        =>  optionsBuilder.UseSqlServer(GetConnectionString(), o
+                => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
     
     private string GetConnectionString()
     {
         IConfigurationBuilder builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
 
         string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? null!;
@@ -96,13 +93,14 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.ParentComment).WithMany(p => p.InverseParentComment)
                 .HasForeignKey(d => d.ParentCommentId)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Comment_ParentComment");
 
             entity.HasOne(d => d.Test).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.TestId)
-                // .OnDelete(DeleteBehavior.ClientSetNull)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Comment_Test");
 
             entity.HasOne(d => d.User).WithMany(p => p.Comments)
@@ -489,8 +487,8 @@ public partial class Prep4IeltsContext : DbContext
             
             entity.HasOne(d => d.CloudResource).WithMany(p => p.TestSections)
                 .HasForeignKey(d => d.CloudResourceId)
-                // .OnDelete(DeleteBehavior.ClientSetNull)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_TestSection_CloudResource");
         });
 
@@ -524,8 +522,8 @@ public partial class Prep4IeltsContext : DbContext
             
             entity.HasOne(d => d.CloudResource).WithMany(p => p.TestSectionPartitions)
                 .HasForeignKey(d => d.CloudResourceId)
-                // .OnDelete(DeleteBehavior.ClientSetNull)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_TestSectionPartition_CloudResource");
         });
 

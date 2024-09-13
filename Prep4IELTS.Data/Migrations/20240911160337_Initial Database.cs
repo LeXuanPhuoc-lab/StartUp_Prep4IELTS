@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prep4IELTS.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InititalDatabase : Migration
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -231,14 +231,12 @@ namespace Prep4IELTS.Data.Migrations
                         name: "FK_Comment_ParentComment",
                         column: x => x.parent_comment_id,
                         principalTable: "Comment",
-                        principalColumn: "comment_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "comment_id");
                     table.ForeignKey(
                         name: "FK_Comment_Test",
                         column: x => x.test_id,
                         principalTable: "Test",
-                        principalColumn: "test_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "test_id");
                     table.ForeignKey(
                         name: "FK_Comment_User",
                         column: x => x.user_id,
@@ -313,8 +311,7 @@ namespace Prep4IELTS.Data.Migrations
                         name: "FK_TestSection_CloudResource",
                         column: x => x.cloud_resource_id,
                         principalTable: "Cloud_Resource",
-                        principalColumn: "cloud_resource_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "cloud_resource_id");
                     table.ForeignKey(
                         name: "FK_TestSection_Test",
                         column: x => x.test_id,
@@ -364,8 +361,7 @@ namespace Prep4IELTS.Data.Migrations
                         name: "FK_TestSectionPartition_CloudResource",
                         column: x => x.cloud_resource_id,
                         principalTable: "Cloud_Resource",
-                        principalColumn: "cloud_resource_id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "cloud_resource_id");
                     table.ForeignKey(
                         name: "FK_TestSectionPartition_Tag",
                         column: x => x.partition_tag_id,

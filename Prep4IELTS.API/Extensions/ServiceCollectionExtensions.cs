@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IScoreCalculationService, ScoreCalculationService>();
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<IPartitionTagService, PartitionTagService>();
+        services.AddScoped<ITestGradeService, TestGradeService>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
         services.AddScoped<ICloudinaryService, CloudinaryService>();
         
@@ -68,6 +69,7 @@ public static class ServiceCollectionExtensions
         typeAdapterConfig.NewConfig<CreateQuestionAnswerRequest, QuestionAnswer>();
         typeAdapterConfig.NewConfig<UpdateTestRequest, Test>();
         typeAdapterConfig.NewConfig<CloudResourceRequest, CloudResource>();
+        typeAdapterConfig.NewConfig<UpdateTestGradeRequest, TestGrade>();
         
         
         // Register the mapper as Singleton service for my application
@@ -97,7 +99,33 @@ public static class ServiceCollectionExtensions
         // Configure App settings
         services.Configure<AppSettings>(
             configuration.GetSection("AppSettings"));
+        
+        // Configure PayOS
+        var payOsConfigSection = configuration.GetSection("PayOS");
+        var payOsConfig = payOsConfigSection.Get<PayOSConfiguration>();
+        if (env.IsDevelopment() && payOsConfig != null) // Is development environment
+        {
+            var payGate = "https://api-merchant.payos.vn";
+            var paymentUrl = $"{payGate}/v2/payment-requests";
+            var getPaymentLinkInformation = "https://api-merchant.payos.vn/v2/payment-requests/{0}";
+            var cancelPaymentUrl = "https://api-merchant.payos.vn/v2/payment-requests/{0}/cancel";
+            var returnUrl = "https://localhost:6000/api/payment/payOs-return";
+            var cancelUrl = "https://localhost:6000/api/payment/payOs-cancel";
 
+            services.Configure<PayOSConfiguration>(options =>
+            {
+                options.ClientId = payOsConfig.ClientId;
+                options.ApiKey = payOsConfig.ApiKey;
+                options.ChecksumKey = payOsConfig.ChecksumKey;
+                options.ReturnUrl = returnUrl;
+                options.CancelUrl = cancelUrl;
+                options.PaymentUrl = paymentUrl;
+                options.GetPaymentLinkInformationUrl = getPaymentLinkInformation;
+                options.CancelPaymentUrl = cancelPaymentUrl;
+            });
+        }
+        
+        
         // Configure Momo
         var momoConfigSection = configuration.GetSection("Momo");
         var momoConfig = momoConfigSection.Get<MomoConfiguration>();

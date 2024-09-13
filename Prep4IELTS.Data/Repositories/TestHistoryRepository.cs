@@ -7,7 +7,7 @@ namespace Prep4IELTS.Data.Repositories;
 
 public class TestHistoryRepository : GenericRepository<TestHistory>
 {
-    public TestHistoryRepository(Prep4IeltsContext dbContext) 
+    public TestHistoryRepository(Prep4IeltsContext dbContext)
         : base(dbContext)
     {
     }
@@ -36,13 +36,13 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
                 TestId = th.TestId,
                 PartitionHistories = th.PartitionHistories.Select(ph => new PartitionHistory()
                 {
-                   PartitionHistoryId = ph.PartitionHistoryId,
-                   TestSectionName = ph.TestSectionName,
-                   TestSectionPart = new TestSectionPartition()
-                   {
-                       TestSectionPartId = ph.TestSectionPart.TestSectionPartId,
-                       PartitionTag = ph.TestSectionPart.PartitionTag,
-                   }
+                    PartitionHistoryId = ph.PartitionHistoryId,
+                    TestSectionName = ph.TestSectionName,
+                    TestSectionPart = new TestSectionPartition()
+                    {
+                        TestSectionPartId = ph.TestSectionPart.TestSectionPartId,
+                        PartitionTag = ph.TestSectionPart.PartitionTag,
+                    }
                 }).ToList()
             }).ToListAsync();
     }
@@ -50,7 +50,7 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
     public async Task<IEnumerable<TestHistory>> FindAllByUserIdAsync(Guid userId)
     {
         // Retrieve TestHistories with related PartitionHistories
-        var testHistoryEntities =  await _dbSet
+        var testHistoryEntities = await _dbSet
             .Where(th => th.UserId.Equals(userId))
             .Include(ph => ph.Test)
             .Include(ph => ph.PartitionHistories)
@@ -60,7 +60,7 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
         // Filter the PartitionHistories to ensure distinct TestSectionPartId
         foreach (var th in testHistoryEntities)
         {
-            if(th.Test.TestHistories.Any()) th.Test.TestHistories.Clear();
+            if (th.Test.TestHistories.Any()) th.Test.TestHistories.Clear();
             th.PartitionHistories = th.PartitionHistories
                 .GroupBy(ph => ph.TestSectionName)
                 .Select(g => g.First())
@@ -70,7 +70,7 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
         return testHistoryEntities;
     }
 
-    public async Task<TestHistory?> FindByIdWithIncludePartitionAndGrade(int testHistoryId)
+    public async Task<TestHistory?> FindByIdWithIncludePartitionAndGradeAsync(int testHistoryId)
     {
         return await _dbSet.AsSplitQuery()
             .Where(x => x.TestHistoryId == testHistoryId)
@@ -92,42 +92,59 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
                 Test = new Test()
                 {
                     TestId = th.Test.TestId,
-                    TestTitle = th.Test.TestTitle
+                    TestTitle = th.Test.TestTitle,
+                    TestSections = th.Test.TestSections.Select(ts => new TestSection()
+                    {
+                        TestSectionId = ts.TestSectionId,
+                        CloudResource = ts.CloudResource,
+                    }).ToList(),   
                 },
                 PartitionHistories = th.PartitionHistories
                     .Select(ph => new PartitionHistory()
-                {
-                    PartitionHistoryId = ph.PartitionHistoryId,
-                    TestSectionName = ph.TestSectionName,
-                    TotalRightAnswer = ph.TotalRightAnswer,
-                    TotalWrongAnswer = ph.TotalWrongAnswer,
-                    TotalSkipAnswer = ph.TotalSkipAnswer,
-                    AccuracyRate = ph.AccuracyRate,
-                    TotalQuestion = ph.TotalQuestion,
-                    TestHistoryId = ph.TestHistoryId,
-                    TestSectionPartId = ph.TestSectionPartId,
-                    TestSectionPart = new TestSectionPartition()
                     {
-                        TestSectionPartId = ph.TestSectionPart.TestSectionPartId,
-                        IsVerticalLayout = ph.TestSectionPart.IsVerticalLayout,
-                        PartitionTagId = ph.TestSectionPart.PartitionTagId,
-                        PartitionTag = new PartitionTag()
+                        PartitionHistoryId = ph.PartitionHistoryId,
+                        TestSectionName = ph.TestSectionName,
+                        TotalRightAnswer = ph.TotalRightAnswer,
+                        TotalWrongAnswer = ph.TotalWrongAnswer,
+                        TotalSkipAnswer = ph.TotalSkipAnswer,
+                        AccuracyRate = ph.AccuracyRate,
+                        TotalQuestion = ph.TotalQuestion,
+                        TestHistoryId = ph.TestHistoryId,
+                        TestSectionPartId = ph.TestSectionPartId,
+                        TestSectionPart = new TestSectionPartition()
                         {
-                            PartitionTagId = ph.TestSectionPart.PartitionTag.PartitionTagId,
-                            PartitionTagDesc = ph.TestSectionPart.PartitionTag.PartitionTagDesc,
+                            TestSectionPartId = ph.TestSectionPart.TestSectionPartId,
+                            IsVerticalLayout = ph.TestSectionPart.IsVerticalLayout,
+                            PartitionTagId = ph.TestSectionPart.PartitionTagId,
+                            CloudResource = ph.TestSectionPart.CloudResource,
+                            PartitionTag = new PartitionTag()
+                            {
+                                PartitionTagId = ph.TestSectionPart.PartitionTag.PartitionTagId,
+                                PartitionTagDesc = ph.TestSectionPart.PartitionTag.PartitionTagDesc,
+                            },
                         },
-                    },
-                    TestGrades = ph.TestGrades.Select(tg => new TestGrade()
-                    {
-                        TestGradeId = tg.TestGradeId,
-                        GradeStatus = tg.GradeStatus,
-                        QuestionNumber = tg.QuestionNumber,
-                        RightAnswer = tg.RightAnswer,
-                        InputedAnswer = tg.InputedAnswer,
-                        QuestionId = tg.QuestionId,
-                        PartitionHistoryId = tg.PartitionHistoryId,
+                        TestGrades = ph.TestGrades.Select(tg => new TestGrade()
+                        {
+                            TestGradeId = tg.TestGradeId,
+                            GradeStatus = tg.GradeStatus,
+                            QuestionNumber = tg.QuestionNumber,
+                            RightAnswer = tg.RightAnswer,
+                            InputedAnswer = tg.InputedAnswer,
+                            QuestionId = tg.QuestionId,
+                            Question = tg.Question.IsMultipleChoice
+                                ? new Question()
+                                {
+                                    QuestionId = tg.Question.QuestionId,
+                                    QuestionDesc = tg.Question.QuestionDesc,
+                                    QuestionNumber = tg.Question.QuestionNumber,
+                                    IsMultipleChoice = tg.Question.IsMultipleChoice,
+                                    TestSectionPartId = tg.Question.TestSectionPartId,
+                                    QuestionAnswers = tg.Question.QuestionAnswers
+                                }
+                                : null!,
+                            PartitionHistoryId = tg.PartitionHistoryId,
+                        }).ToList()
                     }).ToList()
-                }).ToList()
             })
             .FirstOrDefaultAsync();
     }
@@ -136,8 +153,13 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
     {
         var testHistories = await _dbSet.Where(x =>
             x.TestId == testId).ToListAsync();
-        
+
         _dbSet.RemoveRange(testHistories);
         return await SaveChangeWithTransactionAsync() > 0;
+    }
+
+    public async Task<bool> IsExistTestHistoryAsync(int testHistoryId)
+    {
+        return await _dbSet.AnyAsync(th => th.TestHistoryId == testHistoryId);
     }
 }

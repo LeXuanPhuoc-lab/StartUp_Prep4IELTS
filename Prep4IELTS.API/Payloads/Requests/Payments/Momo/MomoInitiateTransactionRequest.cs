@@ -1,36 +1,44 @@
 using System.Text;
 using EXE202_Prep4IELTS.Payloads.Responses.Payments;
+using EXE202_Prep4IELTS.Payloads.Responses.Payments.Momo;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Prep4IELTS.Business.Constants;
 using Prep4IELTS.Business.Utils;
 
-namespace EXE202_Prep4IELTS.Payloads.Requests.Payments;
+namespace EXE202_Prep4IELTS.Payloads.Requests.Payments.Momo;
 
-public class MomoPaymentConfirmRequest
+public class MomoInitiateTransactionRequest
 {
     public string PartnerCode { get; set; } = string.Empty;
     public string RequestId { get; set; } = string.Empty;
-    public string OrderId { get; set; } = string.Empty;
-    public string RequestType { get; set; } = string.Empty;
     public long Amount { get; set; }
+    public string OrderId { get; set; } = string.Empty;
+    public string OrderInfo { get; set; } = string.Empty;
+    public string RedirectUrl { get; set; } = string.Empty;
+    public string IpnUrl { get; set; } = string.Empty;
+    public string RequestType { get; set; } = string.Empty;
+    public string ExtraData { get; set; } = string.Empty;
+    public string PartnerClientId { get; set; } = string.Empty;
     public string Lang { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Signature { get; set; } = string.Empty;
+    public object? UserInfo { get; set; }
 }
 
-public static class PaymentConfirmRequestExtension
+public static class MomoInitiateTransactionRequestExtension
 {
-    public static async Task GenerateSignatureAsync(this MomoPaymentConfirmRequest req, 
-        string accessKey, string secretKey)
+    public static async Task GenerateSignatureAsync(this MomoInitiateTransactionRequest req, string accessKey, string secretKey)
     {
-        var rawSignature = $"accessKey={accessKey}&amount={req.Amount}&description={req.Description}&orderId={req.OrderId}" +
-                           $"&partnerCode={req.PartnerCode}&requestId={req.RequestId}&requestType={req.RequestType}";
+        var rawSignature = 
+            $"accessKey={accessKey}&amount={req.Amount}&extraData={req.ExtraData}" +
+            $"&ipnUrl={req.IpnUrl}&orderId={req.OrderId}&orderInfo={req.OrderInfo}&partnerClientId={req.PartnerClientId}" +
+            $"&partnerCode={req.PartnerCode}&redirectUrl={req.RedirectUrl}&requestId={req.RequestId}&requestType={req.RequestType}";
         await Task.FromResult(req.Signature = HashHelper.HmacSha256(rawSignature, secretKey));
     }
 
-    public static async Task<(bool, string?, MomoPaymentConfirmResponse)> ConfirmPaymentAsync(this MomoPaymentConfirmRequest req, 
-        string paymentConfirmUrl)
+    public static async Task<(bool, string?, MomoInitiateTransactionResponse?)> InitiateTransactionAsync(this MomoInitiateTransactionRequest req,
+        string initiateTransactionUrl)
     {
         // Initiate HttpClient
         using HttpClient httpClient = new();
@@ -45,32 +53,30 @@ public static class PaymentConfirmRequestExtension
             content: requestData,
             encoding: Encoding.UTF8,
             mediaType:"application/json");
-        
         // Execute POST request with uri and request content
-        var paymentConfirmRes = await httpClient.PostAsync(
-            requestUri: paymentConfirmUrl, 
+        var initiatePaymentRes = await httpClient.PostAsync(
+            requestUri: initiateTransactionUrl, 
             content: requestContent);
         
         // Response content
-        var content = paymentConfirmRes.Content.ReadAsStringAsync().Result;
-        var responseData = JsonConvert.DeserializeObject<MomoPaymentConfirmResponse>(content);
+        var content = initiatePaymentRes.Content.ReadAsStringAsync().Result;
+        var responseData = JsonConvert.DeserializeObject<MomoInitiateTransactionResponse>(content);
         // Check for response content not found 
         if (responseData == null) return (false, "Request to server failed. Not found any response data", null!);
         
-        if (paymentConfirmRes.IsSuccessStatusCode)
+        // [MomoResultCode](https://developers.momo.vn/v3/docs/payment/api/result-handling/resultcode/)
+        if (initiatePaymentRes.IsSuccessStatusCode)
         {
             // Check result code status 
             if (responseData.ResultCode.ToString()
-                .Equals(MomoResultCodeConstants.Successful)) // Transfer to respective partner successfully
+                    .Equals(MomoResultCodeConstants.Successful)) 
             {
                 return (true, string.Empty, responseData);
             }
             
-            // Failed Status (Cancel)
             return (false, responseData.Message, responseData);
         }
         
-        // Invoke problem
-        return (false, responseData?.Message, null!);
+        return (false, responseData.Message, null!);
     }
 }
