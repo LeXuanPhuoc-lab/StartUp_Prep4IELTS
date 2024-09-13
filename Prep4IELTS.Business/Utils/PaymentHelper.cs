@@ -1,10 +1,15 @@
 namespace Prep4IELTS.Business.Utils;
 
-public class MomoPaymentHelper
+public class PaymentHelper
 {
     public static string GenerateRequestId()
     {
         return $"RE{GenerateRandomDigits(11)}";
+    }
+
+    public static int GenerateRandomOrderCodeDigits(int length)
+    {
+        return int.Parse(GenerateRandomDigits(length));
     }
 
     public static string GenerateOrderId(string requestId)

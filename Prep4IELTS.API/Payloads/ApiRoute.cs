@@ -19,9 +19,11 @@ public static class ApiRoute
         public const string GetCreateTestDetail = Base + "/tests/create/detail";
         public const string PracticeById = Base + "/tests/{id}/practice";
         public const string StartTest = Base + "/tests/{id}/start";
+        public const string GetForReSubmit = Base + "/tests/{id}/re-submit";
         
         // [HTTP POST]
         public const string Submission = Base + "/tests/submission";
+        public const string ReSubmit = Base + "/tests/{id}/re-submit";
         public const string Create = Base + "/tests/create";
         
         // [HTTP PUT]
@@ -57,6 +59,7 @@ public static class ApiRoute
     public static class Payment
     {
         public const string CreatePaymentWithMethod = Base + "/payment/create";
+        public const string GetPaymentIssuers = Base + "/payment/issuers";
         
         // MOMO
         public const string GetMomoPaymentMethods = Base + "/payment/momo-methods";
@@ -65,6 +68,10 @@ public static class ApiRoute
         public const string InitiateTransaction = Base + "/payment/momo/initiate-transaction";
         public const string MomoReturn = Base + "/payment/momo-return";
         public const string MomoIpn = Base + "/payment/momo-ipn";
+        
+        // PayOS
+        public const string GetPayOsPaymentLinkInformation = Base + "/payment/pay-os/payment-link-information/{paymentLinkId}";
+        public const string CancelPayOsPayment = Base + "/payment/pay-os/cancel-payment/{paymentLinkId}";
     }
 
     public static class Resource

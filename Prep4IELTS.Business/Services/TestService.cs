@@ -71,6 +71,8 @@ public class TestService(
         // Remove all test tag
         await tagService.RemoveAllTestTag(id);
         
+        // Remove all cloud resource
+        await unitOfWork.TestRepository.RemoveAllCloudResourceAsync(id);
         
         // Progress remove test 
         await unitOfWork.TestRepository.RemoveAsync(id);
@@ -439,5 +441,10 @@ public class TestService(
     public async Task<bool> IsPublishedAsync(Guid id)
     {
         return await unitOfWork.TestRepository.IsPublishedAsync(id);
+    }
+
+    public async Task<bool> IsExistAnyHistoryAsync(Guid id)
+    {
+        return await unitOfWork.TestRepository.IsExistAnyHistoryAsync(id);
     }
 }

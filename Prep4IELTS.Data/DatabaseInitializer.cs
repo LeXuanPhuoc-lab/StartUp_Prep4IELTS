@@ -106,7 +106,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         await dbContext.SystemRoles.AddRangeAsync(roles);
         await dbContext.SaveChangesAsync();
     }
-    
+
     //  Summary:
     //      Seeding Band Score
     private async Task SeedBandScoreAsync()
@@ -314,7 +314,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         await dbContext.ScoreCalculations.AddRangeAsync(scoreCalculations);
         await dbContext.SaveChangesAsync();
     }
-    
+
     //  Summary:
     //      Seeding user
     private async Task SeedUserAsync()
@@ -322,11 +322,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         var rnd = new Random();
         List<SystemRole> roles = await dbContext.SystemRoles.ToListAsync();
 
-        var staffRoleId = roles.First(x => 
+        var staffRoleId = roles.First(x =>
             x.RoleName!.Equals(Enum.SystemRole.Staff.GetDescription())).RoleId;
-        var studentRoleId = roles.First(x => 
+        var studentRoleId = roles.First(x =>
             x.RoleName!.Equals(Enum.SystemRole.Student.GetDescription())).RoleId;
-        
+
         List<User> users = new()
         {
             new User
@@ -351,6 +351,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 FirstName = "John",
                 LastName = "Doe",
                 Email = "john.doe@example.com",
+                DateOfBirth = new DateTime(1990, 5, 15),
+                Phone = "0978112391",
+                IsActive = true,
+                CreateDate = DateTime.Now,
+                TestTakenDate = DateTime.Now.AddDays(-30),
+                TargetScore = "8.0",
+                RoleId = staffRoleId
+            },
+            new User
+            {
+                UserId = Guid.Parse("5e1bb613-7b62-4be4-aed2-239135ddae4e"),
+                ClerkId = "user_2lygVRLBQMwZMzVDPP5hKZ77tiK",
+                FirstName = "Xuan",
+                LastName = "Phuoc",
+                Email = "xuan.phuoc@gmail.com",
                 DateOfBirth = new DateTime(1990, 5, 15),
                 Phone = "0978112391",
                 IsActive = true,
@@ -492,14 +507,14 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         var tags = await dbContext.Tags.ToListAsync();
 
         // Get all users
-        var studentUsers = await dbContext.Users.Where(x => 
-            x.Role != null && 
+        var studentUsers = await dbContext.Users.Where(x =>
+            x.Role != null &&
             x.Role.RoleName!.Equals(Data.Enum.SystemRole.Student.GetDescription())).ToListAsync();
-        
-        var staffUsers = await dbContext.Users.Where(x => 
-            x.Role != null && 
+
+        var staffUsers = await dbContext.Users.Where(x =>
+            x.Role != null &&
             x.Role.RoleName!.Equals(Data.Enum.SystemRole.Staff.GetDescription())).ToListAsync();
-        
+
         // Init random
         var rnd = new Random();
 
@@ -644,6 +659,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                 PartitionDesc = "Description for questions",
                                 PartitionTag = new PartitionTag()
                                     { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                CloudResource = new()
+                                {
+                                    Url = "http://example.com/image.jpeg",
+                                    CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                                },
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -810,9 +830,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 1",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "The Earth revolves around the Sun", AnswerDisplay = "A" },
-                                            new() { IsTrue = false, AnswerText = "The Sun revolves around the Earth", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "The Earth is stationary", AnswerDisplay = "C" }
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "The Earth revolves around the Sun",
+                                                AnswerDisplay = "A"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The Sun revolves around the Earth",
+                                                AnswerDisplay = "B"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The Earth is stationary",
+                                                AnswerDisplay = "C"
+                                            }
                                         }
                                     },
                                     new()
@@ -822,9 +854,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 2",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius", AnswerDisplay = "A" },
-                                            new() { IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius", AnswerDisplay = "C" }
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius",
+                                                AnswerDisplay = "A"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius",
+                                                AnswerDisplay = "B"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius",
+                                                AnswerDisplay = "C"
+                                            }
                                         }
                                     },
                                     new()
@@ -834,9 +878,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "The capital of France is Berlin", AnswerDisplay = "A" },
-                                            new() { IsTrue = true, AnswerText = "The capital of France is Paris", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "The capital of France is Madrid", AnswerDisplay = "C" }
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The capital of France is Berlin",
+                                                AnswerDisplay = "A"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "The capital of France is Paris",
+                                                AnswerDisplay = "B"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The capital of France is Madrid",
+                                                AnswerDisplay = "C"
+                                            }
                                         }
                                     },
                                     new()
@@ -846,9 +902,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "Photosynthesis occurs in plants", AnswerDisplay = "A" },
-                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in animals", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in fungi", AnswerDisplay = "C" }
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "Photosynthesis occurs in plants",
+                                                AnswerDisplay = "A"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Photosynthesis occurs in animals",
+                                                AnswerDisplay = "B"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Photosynthesis occurs in fungi",
+                                                AnswerDisplay = "C"
+                                            }
                                         }
                                     },
                                     new()
@@ -858,9 +926,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "The speed of light is 300,000 km/s", AnswerDisplay = "A" },
-                                            new() { IsTrue = true, AnswerText = "The speed of light is 299,792 km/s", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "The speed of light is 150,000 km/s", AnswerDisplay = "C" }
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The speed of light is 300,000 km/s",
+                                                AnswerDisplay = "A"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "The speed of light is 299,792 km/s",
+                                                AnswerDisplay = "B"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The speed of light is 150,000 km/s",
+                                                AnswerDisplay = "C"
+                                            }
                                         }
                                     }
                                 }
@@ -1190,7 +1270,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             }
                         }
                     },
-                   new()
+                    new()
                     {
                         TestSectionName = "Recording 2",
                         CloudResource = new CloudResource()
@@ -1253,9 +1333,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 1",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "The Earth revolves around the Sun", AnswerDisplay = "A" },
-                                            new() { IsTrue = false, AnswerText = "The Sun revolves around the Earth", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "The Earth is stationary", AnswerDisplay = "C" }
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "The Earth revolves around the Sun",
+                                                AnswerDisplay = "A"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The Sun revolves around the Earth",
+                                                AnswerDisplay = "B"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The Earth is stationary",
+                                                AnswerDisplay = "C"
+                                            }
                                         }
                                     },
                                     new()
@@ -1265,9 +1357,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 2",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius", AnswerDisplay = "A" },
-                                            new() { IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius", AnswerDisplay = "C" }
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius",
+                                                AnswerDisplay = "A"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius",
+                                                AnswerDisplay = "B"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius",
+                                                AnswerDisplay = "C"
+                                            }
                                         }
                                     },
                                     new()
@@ -1277,9 +1381,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "The capital of France is Berlin", AnswerDisplay = "A" },
-                                            new() { IsTrue = true, AnswerText = "The capital of France is Paris", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "The capital of France is Madrid", AnswerDisplay = "C" }
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The capital of France is Berlin",
+                                                AnswerDisplay = "A"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "The capital of France is Paris",
+                                                AnswerDisplay = "B"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The capital of France is Madrid",
+                                                AnswerDisplay = "C"
+                                            }
                                         }
                                     },
                                     new()
@@ -1289,9 +1405,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "Photosynthesis occurs in plants", AnswerDisplay = "A" },
-                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in animals", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in fungi", AnswerDisplay = "C" }
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "Photosynthesis occurs in plants",
+                                                AnswerDisplay = "A"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Photosynthesis occurs in animals",
+                                                AnswerDisplay = "B"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Photosynthesis occurs in fungi",
+                                                AnswerDisplay = "C"
+                                            }
                                         }
                                     },
                                     new()
@@ -1301,9 +1429,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "The speed of light is 300,000 km/s", AnswerDisplay = "A" },
-                                            new() { IsTrue = true, AnswerText = "The speed of light is 299,792 km/s", AnswerDisplay = "B" },
-                                            new() { IsTrue = false, AnswerText = "The speed of light is 150,000 km/s", AnswerDisplay = "C" }
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The speed of light is 300,000 km/s",
+                                                AnswerDisplay = "A"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "The speed of light is 299,792 km/s",
+                                                AnswerDisplay = "B"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The speed of light is 150,000 km/s",
+                                                AnswerDisplay = "C"
+                                            }
                                         }
                                     }
                                 }
@@ -1530,6 +1670,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                 PartitionDesc = "Description for questions",
                                 PartitionTag = new PartitionTag()
                                     { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                CloudResource = new()
+                                {
+                                    Url = "http://example.com/image.jpeg",
+                                    CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
+                                },
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1696,9 +1841,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 1",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "The Earth revolves around the Sun", AnswerDisplay = "The Earth revolves around the Sun" },
-                                            new() { IsTrue = false, AnswerText = "The Sun revolves around the Earth", AnswerDisplay = "The Sun revolves around the Earth" },
-                                            new() { IsTrue = false, AnswerText = "The Earth is stationary", AnswerDisplay = "The Earth is stationary" }
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "The Earth revolves around the Sun",
+                                                AnswerDisplay = "The Earth revolves around the Sun"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The Sun revolves around the Earth",
+                                                AnswerDisplay = "The Sun revolves around the Earth"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The Earth is stationary",
+                                                AnswerDisplay = "The Earth is stationary"
+                                            }
                                         }
                                     },
                                     new()
@@ -1708,9 +1865,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 2",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius", AnswerDisplay = "Water boils at 50 degrees Celsius" },
-                                            new() { IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius", AnswerDisplay = "Water boils at 100 degrees Celsius" },
-                                            new() { IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius", AnswerDisplay = "Water boils at 150 degrees Celsius" }
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius",
+                                                AnswerDisplay = "Water boils at 50 degrees Celsius"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius",
+                                                AnswerDisplay = "Water boils at 100 degrees Celsius"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius",
+                                                AnswerDisplay = "Water boils at 150 degrees Celsius"
+                                            }
                                         }
                                     },
                                     new()
@@ -1720,9 +1889,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "The capital of France is Berlin", AnswerDisplay = "The capital of France is Berlin" },
-                                            new() { IsTrue = true, AnswerText = "The capital of France is Paris", AnswerDisplay = "The capital of France is Paris" },
-                                            new() { IsTrue = false, AnswerText = "The capital of France is Madrid", AnswerDisplay = "The capital of France is Madrid" }
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The capital of France is Berlin",
+                                                AnswerDisplay = "The capital of France is Berlin"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "The capital of France is Paris",
+                                                AnswerDisplay = "The capital of France is Paris"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The capital of France is Madrid",
+                                                AnswerDisplay = "The capital of France is Madrid"
+                                            }
                                         }
                                     },
                                     new()
@@ -1732,9 +1913,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = true, AnswerText = "Photosynthesis occurs in plants", AnswerDisplay = "Photosynthesis occurs in plants" },
-                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in animals", AnswerDisplay = "Photosynthesis occurs in animals" },
-                                            new() { IsTrue = false, AnswerText = "Photosynthesis occurs in fungi", AnswerDisplay = "Photosynthesis occurs in fungi" }
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "Photosynthesis occurs in plants",
+                                                AnswerDisplay = "Photosynthesis occurs in plants"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Photosynthesis occurs in animals",
+                                                AnswerDisplay = "Photosynthesis occurs in animals"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "Photosynthesis occurs in fungi",
+                                                AnswerDisplay = "Photosynthesis occurs in fungi"
+                                            }
                                         }
                                     },
                                     new()
@@ -1744,9 +1937,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                                         QuestionDesc = "Multiple Choice 3",
                                         QuestionAnswers = new List<QuestionAnswer>()
                                         {
-                                            new() { IsTrue = false, AnswerText = "The speed of light is 300,000 km/s", AnswerDisplay = "The speed of light is 300,000 km/s" },
-                                            new() { IsTrue = true, AnswerText = "The speed of light is 299,792 km/s", AnswerDisplay = "The speed of light is 299,792 km/s" },
-                                            new() { IsTrue = false, AnswerText = "The speed of light is 150,000 km/s", AnswerDisplay = "The speed of light is 150,000 km/s" }
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The speed of light is 300,000 km/s",
+                                                AnswerDisplay = "The speed of light is 300,000 km/s"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = true, AnswerText = "The speed of light is 299,792 km/s",
+                                                AnswerDisplay = "The speed of light is 299,792 km/s"
+                                            },
+                                            new()
+                                            {
+                                                IsTrue = false, AnswerText = "The speed of light is 150,000 km/s",
+                                                AnswerDisplay = "The speed of light is 150,000 km/s"
+                                            }
                                         }
                                     }
                                 }
@@ -2040,7 +2245,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             var rndUser = users[rnd.Next(users.Count)];
             var rndTest = tests[rnd.Next(tests.Count)];
             var rndBandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)];
-            
+
             testHistories.Add(new()
             {
                 TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
@@ -2051,6 +2256,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 UserId = rndUser.UserId,
                 TestId = rndTest.TestId,
                 BandScore = rndBandScore.BandScore,
+                ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
                 TotalRightAnswer = rnd.Next(0, 10),
                 TotalSkipAnswer = rnd.Next(0, 10),
                 TotalWrongAnswer = rnd.Next(0, 10),
@@ -2058,12 +2264,12 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 TotalQuestion = 40
             });
         }
-        
+
         // Save test histories
         await dbContext.TestHistories.AddRangeAsync(testHistories);
         await dbContext.SaveChangesAsync();
-        
-        
+
+
         // Seed test section partition for listening test 1
         var listeningTest1 = await dbContext.Tests
             .AsSplitQuery()
@@ -2073,7 +2279,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             .FirstOrDefaultAsync();
 
         Console.WriteLine("Check Listening Test 1 name : " + listeningTest1!.TestTitle);
-        
+
         var testSections = listeningTest1!.TestSections.ToList();
 
         for (int i = 0; i < 2; ++i)
@@ -2089,6 +2295,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 AccuracyRate = double.Parse("0.65"),
                 TestType = listeningTest1.TestType,
                 BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
+                ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
                 IsFull = rnd.Next(0, 1) == 1,
                 TestCategoryId = listeningTest1.TestCategoryId,
                 UserId = users[0].UserId,
@@ -2168,10 +2375,10 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 }
             });
         }
-        
+
         await dbContext.SaveChangesAsync();
     }
-    
+
     //  Summary:
     //      Seeding Test Grade
     private async Task SeedTestGradeAsync()
@@ -2181,7 +2388,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             .Include(x => x.TestSections)
             .ThenInclude(x => x.TestSectionPartitions)
             .ThenInclude(x => x.Questions)
-            .FirstOrDefaultAsync(tst => 
+            .FirstOrDefaultAsync(tst =>
                 tst.TestTitle.Contains("Listening Test 1"));
 
         if (test == null)
@@ -2189,386 +2396,391 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             Console.WriteLine("Not found Listening Test 1 to grade");
             return;
         }
-        
-        var testHistory = await dbContext.TestHistories
+
+        var testHistories = await dbContext.TestHistories
             .AsSplitQuery()
             .Include(x => x.PartitionHistories)
-            .FirstOrDefaultAsync(x => 
-                x.TestId.Equals(test.TestId));
+            .Where(x =>
+                x.TestId.Equals(test.TestId))
+            .ToListAsync();
 
         var questions = test.TestSections
             .SelectMany(x => x.TestSectionPartitions)
             .SelectMany(x => x.Questions)
             .ToList();
 
-        var partitionHistories = testHistory!.PartitionHistories.ToList();
-
-        List<TestGrade> testGrades = new()
+        foreach (var th in testHistories)
         {
-            new()
+            var partitionHistories = th!.PartitionHistories.ToList();
+            
+            if(!partitionHistories.Any()) continue;
+            
+            List<TestGrade> testGrades = new()
             {
-                QuestionNumber = 1,
-                QuestionId = questions[0].QuestionId,
-                PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
-                RightAnswer = "A",
-                InputedAnswer = "B",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 2,
-                QuestionId = questions[1].QuestionId,
-                PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
-                RightAnswer = "B",
-                InputedAnswer = "B",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 3,
-                QuestionId = questions[2].QuestionId,
-                PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "C",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 4,
-                QuestionId = questions[3].QuestionId,
-                PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
-                RightAnswer = "D",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 5,
-                QuestionId = questions[4].QuestionId,
-                PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
-                RightAnswer = "May 26th",
-                InputedAnswer = "May 26th",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 6,
-                QuestionId = questions[5].QuestionId,
-                PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
-                RightAnswer = "F",
-                InputedAnswer = "",
-                GradeStatus = Enum.GradeStatus.Skip.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 7,
-                QuestionId = questions[6].QuestionId,
-                PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 8,
-                QuestionId = questions[7].QuestionId,
-                PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
-                RightAnswer = "A",
-                InputedAnswer = "A",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 9,
-                QuestionId = questions[8].QuestionId,
-                PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
-                RightAnswer = "A",
-                InputedAnswer = "",
-                GradeStatus = Enum.GradeStatus.Skip.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 10,
-                QuestionId = questions[9].QuestionId,
-                PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
-                RightAnswer = "G",
-                InputedAnswer = "B",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 11,
-                QuestionId = questions[10].QuestionId,
-                PartitionHistoryId = partitionHistories[1].PartitionHistoryId,
-                RightAnswer = "G",
-                InputedAnswer = "B",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 12,
-                QuestionId = questions[11].QuestionId,
-                PartitionHistoryId = partitionHistories[1].PartitionHistoryId,
-                RightAnswer = "G",
-                InputedAnswer = "B",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 13,
-                QuestionId = questions[12].QuestionId,
-                PartitionHistoryId = partitionHistories[1].PartitionHistoryId,
-                RightAnswer = "G",
-                InputedAnswer = "B",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 14,
-                QuestionId = questions[13].QuestionId,
-                PartitionHistoryId = partitionHistories[1].PartitionHistoryId,
-                RightAnswer = "A",
-                InputedAnswer = "A",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 15,
-                QuestionId = questions[14].QuestionId,
-                PartitionHistoryId = partitionHistories[1].PartitionHistoryId,
-                RightAnswer = "G",
-                InputedAnswer = "G",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 16,
-                QuestionId = questions[15].QuestionId,
-                PartitionHistoryId = partitionHistories[2].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 17,
-                QuestionId = questions[16].QuestionId,
-                PartitionHistoryId = partitionHistories[2].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 18,
-                QuestionId = questions[17].QuestionId,
-                PartitionHistoryId = partitionHistories[2].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 19,
-                QuestionId = questions[18].QuestionId,
-                PartitionHistoryId = partitionHistories[2].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 20,
-                QuestionId = questions[19].QuestionId,
-                PartitionHistoryId = partitionHistories[2].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 21,
-                QuestionId = questions[20].QuestionId,
-                PartitionHistoryId = partitionHistories[3].PartitionHistoryId,
-                RightAnswer = "G",
-                InputedAnswer = "G",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 22,
-                QuestionId = questions[21].QuestionId,
-                PartitionHistoryId = partitionHistories[3].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 23,
-                QuestionId = questions[22].QuestionId,
-                PartitionHistoryId = partitionHistories[3].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 24,
-                QuestionId = questions[23].QuestionId,
-                PartitionHistoryId = partitionHistories[3].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 25,
-                QuestionId = questions[24].QuestionId,
-                PartitionHistoryId = partitionHistories[3].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 26,
-                QuestionId = questions[25].QuestionId,
-                PartitionHistoryId = partitionHistories[4].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 27,
-                QuestionId = questions[26].QuestionId,
-                PartitionHistoryId = partitionHistories[4].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 28,
-                QuestionId = questions[27].QuestionId,
-                PartitionHistoryId = partitionHistories[4].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 29,
-                QuestionId = questions[28].QuestionId,
-                PartitionHistoryId = partitionHistories[4].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 30,
-                QuestionId = questions[29].QuestionId,
-                PartitionHistoryId = partitionHistories[4].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 31,
-                QuestionId = questions[30].QuestionId,
-                PartitionHistoryId = partitionHistories[5].PartitionHistoryId,
-                RightAnswer = "A",
-                InputedAnswer = "B",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 32,
-                QuestionId = questions[31].QuestionId,
-                PartitionHistoryId = partitionHistories[5].PartitionHistoryId,
-                RightAnswer = "B",
-                InputedAnswer = "B",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 33,
-                QuestionId = questions[32].QuestionId,
-                PartitionHistoryId = partitionHistories[5].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "C",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 34,
-                QuestionId = questions[33].QuestionId,
-                PartitionHistoryId = partitionHistories[5].PartitionHistoryId,
-                RightAnswer = "D",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 35,
-                QuestionId = questions[34].QuestionId,
-                PartitionHistoryId = partitionHistories[5].PartitionHistoryId,
-                RightAnswer = "May 26th",
-                InputedAnswer = "May 26th",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 36,
-                QuestionId = questions[35].QuestionId,
-                PartitionHistoryId = partitionHistories[6].PartitionHistoryId,
-                RightAnswer = "F",
-                InputedAnswer = "",
-                GradeStatus = Enum.GradeStatus.Skip.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 37,
-                QuestionId = questions[36].QuestionId,
-                PartitionHistoryId = partitionHistories[6].PartitionHistoryId,
-                RightAnswer = "C",
-                InputedAnswer = "D",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 38,
-                QuestionId = questions[37].QuestionId,
-                PartitionHistoryId = partitionHistories[6].PartitionHistoryId,
-                RightAnswer = "A",
-                InputedAnswer = "A",
-                GradeStatus = Enum.GradeStatus.Correct.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 39,
-                QuestionId = questions[38].QuestionId,
-                PartitionHistoryId = partitionHistories[6].PartitionHistoryId,
-                RightAnswer = "A",
-                InputedAnswer = "",
-                GradeStatus = Enum.GradeStatus.Skip.GetDescription()
-            },
-            new()
-            {
-                QuestionNumber = 40,
-                QuestionId = questions[39].QuestionId,
-                PartitionHistoryId = partitionHistories[6].PartitionHistoryId,
-                RightAnswer = "G",
-                InputedAnswer = "B",
-                GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
-            }
-        };
+                new()
+                {
+                    QuestionNumber = 1,
+                    QuestionId = questions[0].QuestionId,
+                    PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
+                    RightAnswer = "A",
+                    InputedAnswer = "B",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 2,
+                    QuestionId = questions[1].QuestionId,
+                    PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
+                    RightAnswer = "B",
+                    InputedAnswer = "B",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 3,
+                    QuestionId = questions[2].QuestionId,
+                    PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "C",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 4,
+                    QuestionId = questions[3].QuestionId,
+                    PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
+                    RightAnswer = "D",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 5,
+                    QuestionId = questions[4].QuestionId,
+                    PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
+                    RightAnswer = "May 26th",
+                    InputedAnswer = "May 26th",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 6,
+                    QuestionId = questions[5].QuestionId,
+                    PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
+                    RightAnswer = "F",
+                    InputedAnswer = "",
+                    GradeStatus = Enum.GradeStatus.Skip.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 7,
+                    QuestionId = questions[6].QuestionId,
+                    PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 8,
+                    QuestionId = questions[7].QuestionId,
+                    PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
+                    RightAnswer = "A",
+                    InputedAnswer = "A",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 9,
+                    QuestionId = questions[8].QuestionId,
+                    PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
+                    RightAnswer = "A",
+                    InputedAnswer = "",
+                    GradeStatus = Enum.GradeStatus.Skip.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 10,
+                    QuestionId = questions[9].QuestionId,
+                    PartitionHistoryId = partitionHistories[0].PartitionHistoryId,
+                    RightAnswer = "G",
+                    InputedAnswer = "B",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 11,
+                    QuestionId = questions[10].QuestionId,
+                    PartitionHistoryId = partitionHistories[1].PartitionHistoryId,
+                    RightAnswer = "G",
+                    InputedAnswer = "B",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 12,
+                    QuestionId = questions[11].QuestionId,
+                    PartitionHistoryId = partitionHistories[1].PartitionHistoryId,
+                    RightAnswer = "G",
+                    InputedAnswer = "B",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 13,
+                    QuestionId = questions[12].QuestionId,
+                    PartitionHistoryId = partitionHistories[1].PartitionHistoryId,
+                    RightAnswer = "G",
+                    InputedAnswer = "B",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 14,
+                    QuestionId = questions[13].QuestionId,
+                    PartitionHistoryId = partitionHistories[1].PartitionHistoryId,
+                    RightAnswer = "A",
+                    InputedAnswer = "A",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 15,
+                    QuestionId = questions[14].QuestionId,
+                    PartitionHistoryId = partitionHistories[1].PartitionHistoryId,
+                    RightAnswer = "G",
+                    InputedAnswer = "G",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 16,
+                    QuestionId = questions[15].QuestionId,
+                    PartitionHistoryId = partitionHistories[2].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 17,
+                    QuestionId = questions[16].QuestionId,
+                    PartitionHistoryId = partitionHistories[2].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 18,
+                    QuestionId = questions[17].QuestionId,
+                    PartitionHistoryId = partitionHistories[2].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 19,
+                    QuestionId = questions[18].QuestionId,
+                    PartitionHistoryId = partitionHistories[2].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 20,
+                    QuestionId = questions[19].QuestionId,
+                    PartitionHistoryId = partitionHistories[2].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 21,
+                    QuestionId = questions[20].QuestionId,
+                    PartitionHistoryId = partitionHistories[3].PartitionHistoryId,
+                    RightAnswer = "G",
+                    InputedAnswer = "G",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 22,
+                    QuestionId = questions[21].QuestionId,
+                    PartitionHistoryId = partitionHistories[3].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 23,
+                    QuestionId = questions[22].QuestionId,
+                    PartitionHistoryId = partitionHistories[3].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 24,
+                    QuestionId = questions[23].QuestionId,
+                    PartitionHistoryId = partitionHistories[3].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 25,
+                    QuestionId = questions[24].QuestionId,
+                    PartitionHistoryId = partitionHistories[3].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 26,
+                    QuestionId = questions[25].QuestionId,
+                    PartitionHistoryId = partitionHistories[4].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 27,
+                    QuestionId = questions[26].QuestionId,
+                    PartitionHistoryId = partitionHistories[4].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 28,
+                    QuestionId = questions[27].QuestionId,
+                    PartitionHistoryId = partitionHistories[4].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 29,
+                    QuestionId = questions[28].QuestionId,
+                    PartitionHistoryId = partitionHistories[4].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 30,
+                    QuestionId = questions[29].QuestionId,
+                    PartitionHistoryId = partitionHistories[4].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 31,
+                    QuestionId = questions[30].QuestionId,
+                    PartitionHistoryId = partitionHistories[5].PartitionHistoryId,
+                    RightAnswer = "A",
+                    InputedAnswer = "B",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 32,
+                    QuestionId = questions[31].QuestionId,
+                    PartitionHistoryId = partitionHistories[5].PartitionHistoryId,
+                    RightAnswer = "B",
+                    InputedAnswer = "B",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 33,
+                    QuestionId = questions[32].QuestionId,
+                    PartitionHistoryId = partitionHistories[5].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "C",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 34,
+                    QuestionId = questions[33].QuestionId,
+                    PartitionHistoryId = partitionHistories[5].PartitionHistoryId,
+                    RightAnswer = "D",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 35,
+                    QuestionId = questions[34].QuestionId,
+                    PartitionHistoryId = partitionHistories[5].PartitionHistoryId,
+                    RightAnswer = "May 26th",
+                    InputedAnswer = "May 26th",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 36,
+                    QuestionId = questions[35].QuestionId,
+                    PartitionHistoryId = partitionHistories[6].PartitionHistoryId,
+                    RightAnswer = "F",
+                    InputedAnswer = "",
+                    GradeStatus = Enum.GradeStatus.Skip.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 37,
+                    QuestionId = questions[36].QuestionId,
+                    PartitionHistoryId = partitionHistories[6].PartitionHistoryId,
+                    RightAnswer = "C",
+                    InputedAnswer = "D",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 38,
+                    QuestionId = questions[37].QuestionId,
+                    PartitionHistoryId = partitionHistories[6].PartitionHistoryId,
+                    RightAnswer = "A",
+                    InputedAnswer = "A",
+                    GradeStatus = Enum.GradeStatus.Correct.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 39,
+                    QuestionId = questions[38].QuestionId,
+                    PartitionHistoryId = partitionHistories[6].PartitionHistoryId,
+                    RightAnswer = "A",
+                    InputedAnswer = "",
+                    GradeStatus = Enum.GradeStatus.Skip.GetDescription()
+                },
+                new()
+                {
+                    QuestionNumber = 40,
+                    QuestionId = questions[39].QuestionId,
+                    PartitionHistoryId = partitionHistories[6].PartitionHistoryId,
+                    RightAnswer = "G",
+                    InputedAnswer = "B",
+                    GradeStatus = Enum.GradeStatus.Wrong.GetDescription()
+                }
+            };
 
-        await dbContext.TestGrades.AddRangeAsync(testGrades);
-        await dbContext.SaveChangesAsync();
+            await dbContext.TestGrades.AddRangeAsync(testGrades);
+            await dbContext.SaveChangesAsync();
+        }
     }
-    
 }

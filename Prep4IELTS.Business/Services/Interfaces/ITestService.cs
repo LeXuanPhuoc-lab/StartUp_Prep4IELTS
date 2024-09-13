@@ -46,11 +46,11 @@ public interface ITestService
     Task<bool> SubmitTestAsync(int totalCompletionTime, DateTime takenDate, 
         bool isFull, Guid userId, 
         int testId, List<QuestionAnswerSubmissionModel> questionAnswers);
-
     Task<bool> PublishTestAsync(Guid id);
     Task<bool> HideTestAsync(Guid id);
     Task<int> CountTotalAsync();
     Task<bool> IsExistTestAsync(int id);
     Task<bool> IsExistTestAsync(Guid id);
     Task<bool> IsPublishedAsync(Guid id);
+    Task<bool> IsExistAnyHistoryAsync(Guid id);
 }

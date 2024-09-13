@@ -1,4 +1,4 @@
-namespace EXE202_Prep4IELTS.Payloads.Requests.Payments;
+namespace EXE202_Prep4IELTS.Payloads.Requests.Payments.Momo;
 
 public class MomoConfirmPaymentRequest
 {

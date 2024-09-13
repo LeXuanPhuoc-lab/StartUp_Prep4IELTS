@@ -1,12 +1,12 @@
 using System.Text;
-using EXE202_Prep4IELTS.Payloads.Responses;
 using EXE202_Prep4IELTS.Payloads.Responses.Payments;
+using EXE202_Prep4IELTS.Payloads.Responses.Payments.Momo;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Prep4IELTS.Business.Constants;
 using Prep4IELTS.Business.Utils;
 
-namespace EXE202_Prep4IELTS.Payloads.Requests.Payments;
+namespace EXE202_Prep4IELTS.Payloads.Requests.Payments.Momo;
 
 public class MomoCheckTransactionRequest
 {

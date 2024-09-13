@@ -56,7 +56,7 @@ public class TestHistoryController(
     public async Task<IActionResult> GetHistoryByIdAsync([FromRoute] int id)
     {
         // Get test history by id, then include partition history and test grade 
-        var testHistoryDto = await testHistoryService.FindByIdWithIncludePartitionAndGrade(id);
+        var testHistoryDto = await testHistoryService.FindByIdWithIncludePartitionAndGradeAsync(id);
         
         // Check exist test history
         if (testHistoryDto == null!)
@@ -76,13 +76,29 @@ public class TestHistoryController(
                 totalQuestion: testHistoryDto.TotalQuestion,
                 partitionHistories: g.Select(ph => ph).ToList())).ToList();
         
-        // Clear elements within TestHistory
-        testHistoryDto.PartitionHistories.Clear();
+        // Section resources
+        var sectionResources = testHistoryDto.Test.TestSections
+            .Select(ts => ts.CloudResource)
+            .ToList();
+        // Foreach section history, add cloud resource
+        for (int i = 0; i < groupedSectionHistories.Count; i++)
+        {
+            if (sectionResources[i] != null!) // Ensure exist resource as same index as section history
+            {
+                // Assign cloud resource for section history
+                groupedSectionHistories[i].CloudResource = sectionResources[i];
+            }
+        }
         
         // Init test history detail response
         TestHistoryResponse testHistoryResp = new() { TestHistory = testHistoryDto };
         // Calc total right, wrong, skip foreach test section
         testHistoryResp.SectionHistories = groupedSectionHistories;
+        
+        // Clear partition histories within TestHistory
+        testHistoryDto.PartitionHistories.Clear();
+        // Clear test sections in test history
+        testHistoryDto.Test.TestSections.Clear();
         
         return testHistoryDto == null!
             ? NotFound(new BaseResponse()
@@ -116,4 +132,5 @@ public class TestHistoryController(
                 Data = partitionHistoryDto
             });
     }
+    
 }

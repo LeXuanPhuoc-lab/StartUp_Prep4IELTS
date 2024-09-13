@@ -81,15 +81,20 @@ public class TestHistoryService(UnitOfWork unitOfWork) : ITestHistoryService
         return testHistoryEntities.Adapt<List<TestHistoryDto>>(); 
     }
 
-    public async Task<TestHistoryDto> FindByIdWithIncludePartitionAndGrade(int testHistoryId)
+    public async Task<TestHistoryDto> FindByIdWithIncludePartitionAndGradeAsync(int testHistoryId)
     {
         var testHistoryEntity = 
-            await unitOfWork.TestHistoryRepository.FindByIdWithIncludePartitionAndGrade(testHistoryId);
+            await unitOfWork.TestHistoryRepository.FindByIdWithIncludePartitionAndGradeAsync(testHistoryId);
         return testHistoryEntity.Adapt<TestHistoryDto>();
     }
 
     public async Task<bool> RemoveAllByTestId(Guid testId)
     {
         return await unitOfWork.TestHistoryRepository.RemoveAllByTestId(testId);
+    }
+
+    public async Task<bool> IsExistTestHistoryAsync(int testHistoryId)
+    {
+        return await unitOfWork.TestHistoryRepository.IsExistTestHistoryAsync(testHistoryId);
     }
 }

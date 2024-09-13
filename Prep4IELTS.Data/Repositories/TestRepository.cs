@@ -89,6 +89,29 @@ public class TestRepository : GenericRepository<Test>
         _dbSet.Remove(testEntity);
     }
 
+    public async Task<bool> RemoveAllCloudResourceAsync(Guid testId)
+    {
+        var test = await _dbSet
+            .Include(x => x.TestSections)
+            .ThenInclude(x => x.CloudResource)
+            .FirstOrDefaultAsync(tst => tst.TestId == testId);
+        
+        var testSectionIds = test!.TestSections.Select(ts => ts.TestSectionId).ToList();
+        var partitionCloudResources = await DbContext.TestSectionPartitions
+            .Include(tsp => tsp.CloudResource)
+            .Where(tsp => testSectionIds.Contains(tsp.TestSectionId) && tsp.CloudResource != null!)
+            .Select(tsp => tsp.CloudResource)
+            .ToListAsync();
+        
+        // Add cloud sources of test sections
+        partitionCloudResources.AddRange(test.TestSections.Select(tsp => tsp.CloudResource));
+        
+        // Remove range
+        DbContext.CloudResources.RemoveRange(partitionCloudResources);
+        // Save change
+        return await SaveChangeWithTransactionAsync() > 0;
+    }
+    
     public async Task<IEnumerable<Test>> FindAllWithConditionAndPagingAsync(
         Expression<Func<Test, bool>>? filter,
         Func<IQueryable<Test>, IOrderedQueryable<Test>>? orderBy,
@@ -449,5 +472,10 @@ public class TestRepository : GenericRepository<Test>
         testEntity.IsDraft = true;
 
         return await SaveChangeWithTransactionAsync() > 0;
+    }
+
+    public async Task<bool> IsExistAnyHistoryAsync(Guid id)
+    {
+        return await _dbSet.Where(x => x.TestId == id).AnyAsync(x => x.TestHistories.Any());
     }
 }

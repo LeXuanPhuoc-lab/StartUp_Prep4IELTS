@@ -20,7 +20,7 @@ public class CloudinaryService(
     public async Task<(string? secureUrl, string? publicId, string? messageErr)> UploadAsync(string publicId, IFormFile file, FileType fileType)
     {
         // Custom public Id, end with random digits
-        var publicIdCustom = $"{publicId}/{MomoPaymentHelper.GenerateRandomDigits(7)}";
+        var publicIdCustom = $"{publicId}/{PaymentHelper.GenerateRandomDigits(7)}";
     
         switch (fileType)
         {
