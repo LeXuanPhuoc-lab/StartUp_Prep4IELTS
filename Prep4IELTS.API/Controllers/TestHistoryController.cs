@@ -80,6 +80,8 @@ public class TestHistoryController(
         var sectionResources = testHistoryDto.Test.TestSections
             .Select(ts => ts.CloudResource)
             .ToList();
+        // Test section 
+        var sections = testHistoryDto.Test.TestSections.ToList();
         // Foreach section history, add cloud resource
         for (int i = 0; i < groupedSectionHistories.Count; i++)
         {
@@ -88,7 +90,10 @@ public class TestHistoryController(
                 // Assign cloud resource for section history
                 groupedSectionHistories[i].CloudResource = sectionResources[i];
             }
+            // Assign test section id
+            groupedSectionHistories[i].TestSectionId = sections[i].TestSectionId;
         }
+        
         
         // Init test history detail response
         TestHistoryResponse testHistoryResp = new() { TestHistory = testHistoryDto };

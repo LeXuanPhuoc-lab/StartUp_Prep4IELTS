@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Prep4IELTS.Data.Entities;
 
@@ -33,18 +32,20 @@ public partial class User
     public string? TargetScore { get; set; }
 
     public int? RoleId { get; set; }
-    
-    [JsonIgnore]
+
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-    [JsonIgnore]
-    public virtual ICollection<Flashcard> Flashcards { get; set; } = new List<Flashcard>();
-
     public virtual SystemRole? Role { get; set; }
-    
-    [JsonIgnore]
+
     public virtual ICollection<TestHistory> TestHistories { get; set; } = new List<TestHistory>();
-    
-    [JsonIgnore]
+
     public virtual ICollection<Test> Tests { get; set; } = new List<Test>();
+
+    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
+    public virtual ICollection<UserFlashcard> UserFlashcards { get; set; } = new List<UserFlashcard>();
+
+    public virtual UserPremiumPackage? UserPremiumPackage { get; set; }
+
+    public virtual ICollection<UserSpeakingSampleHistory> UserSpeakingSampleHistories { get; set; } = new List<UserSpeakingSampleHistory>();
 }

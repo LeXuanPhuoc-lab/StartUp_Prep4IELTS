@@ -146,13 +146,7 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("total_words");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("user_id");
-
                     b.HasKey("FlashcardId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Flashcard", (string)null);
                 });
@@ -240,7 +234,7 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("test_section_name");
 
-                    b.Property<int?>("TestSectionPartId")
+                    b.Property<int>("TestSectionPartId")
                         .HasColumnType("int")
                         .HasColumnName("test_section_part_id");
 
@@ -288,6 +282,69 @@ namespace Prep4IELTS.Data.Migrations
                         .HasName("PK_PartitionTag");
 
                     b.ToTable("Partition_Tag", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.PaymentType", b =>
+                {
+                    b.Property<int>("PaymentTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("payment_type_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentTypeId"));
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("payment_method");
+
+                    b.HasKey("PaymentTypeId")
+                        .HasName("PK_PaymentType");
+
+                    b.ToTable("Payment_Type", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.PremiumPackage", b =>
+                {
+                    b.Property<int>("PremiumPackageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("premium_package_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PremiumPackageId"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("create_date");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("description");
+
+                    b.Property<int>("DurationInMonths")
+                        .HasColumnType("int")
+                        .HasColumnName("duration_in_months");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("PremiumPackageName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("premium_package_name");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(10, 2)")
+                        .HasColumnName("price");
+
+                    b.HasKey("PremiumPackageId")
+                        .HasName("PK_PremiumPackage");
+
+                    b.ToTable("Premium_Package", (string)null);
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.Question", b =>
@@ -375,8 +432,8 @@ namespace Prep4IELTS.Data.Migrations
 
                     b.Property<string>("BandScore")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("band_score");
 
                     b.Property<int>("FromTotalRight")
@@ -397,6 +454,118 @@ namespace Prep4IELTS.Data.Migrations
                         .HasName("PK_ScoreCalculation");
 
                     b.ToTable("Score_Calculation", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingPart", b =>
+                {
+                    b.Property<int>("PartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("part_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PartId"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("create_date");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("PartDescription")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("part_description");
+
+                    b.Property<int>("PartNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("part_number");
+
+                    b.Property<int>("TopicSampleId")
+                        .HasColumnType("int")
+                        .HasColumnName("topic_sample_id");
+
+                    b.HasKey("PartId")
+                        .HasName("PK_SpeakingPart");
+
+                    b.HasIndex("TopicSampleId");
+
+                    b.ToTable("Speaking_Part", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingTopic", b =>
+                {
+                    b.Property<int>("TopicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("topic_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TopicId"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("create_date");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("TopicName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("topic_name");
+
+                    b.HasKey("TopicId")
+                        .HasName("PK_SpeakingTopic");
+
+                    b.ToTable("Speaking_Topic", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingTopicSample", b =>
+                {
+                    b.Property<int>("TopicSampleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("topic_sample_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TopicSampleId"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("create_date");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("TopicId")
+                        .HasColumnType("int")
+                        .HasColumnName("topic_id");
+
+                    b.Property<string>("TopicSampleName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("topic_sample_name");
+
+                    b.HasKey("TopicSampleId")
+                        .HasName("PK_SpeakingTopicSample");
+
+                    b.HasIndex("TopicId");
+
+                    b.ToTable("Speaking_Topic_Sample", (string)null);
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.SystemRole", b =>
@@ -445,11 +614,6 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("test_id")
                         .HasDefaultValueSql("(newsequentialid())");
-
-                    b.Property<string>("CreateBy")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("create_by");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime")
@@ -732,6 +896,12 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("partition_desc");
 
+                    b.Property<string>("PartitionImage")
+                        .HasMaxLength(2048)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2048)")
+                        .HasColumnName("partition_image");
+
                     b.Property<int>("PartitionTagId")
                         .HasColumnType("int")
                         .HasColumnName("partition_tag_id");
@@ -750,6 +920,52 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasIndex("TestSectionId");
 
                     b.ToTable("Test_Section_Partition", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.Transaction", b =>
+                {
+                    b.Property<int>("TransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("transaction_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
+
+                    b.Property<decimal>("PaymentAmount")
+                        .HasColumnType("decimal(10, 2)")
+                        .HasColumnName("payment_amount");
+
+                    b.Property<int>("PaymentTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("payment_type_id");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("transaction_date");
+
+                    b.Property<string>("TransactionStatus")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("transaction_status");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("UserPremiumPackageId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_premium_package_id");
+
+                    b.HasKey("TransactionId");
+
+                    b.HasIndex("PaymentTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserPremiumPackageId");
+
+                    b.ToTable("Transaction", (string)null);
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.User", b =>
@@ -831,10 +1047,133 @@ namespace Prep4IELTS.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex(new[] { "ClerkId" }, "UQ__User__EA2ECA192588F56C")
+                    b.HasIndex(new[] { "ClerkId" }, "UQ__User__EA2ECA19E6DC35F4")
                         .IsUnique();
 
                     b.ToTable("User", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.UserFlashcard", b =>
+                {
+                    b.Property<int>("UserFlashcardId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("user_flashcard_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserFlashcardId"));
+
+                    b.Property<int>("FlashcardId")
+                        .HasColumnType("int")
+                        .HasColumnName("flashcard_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("UserFlashcardId")
+                        .HasName("PK_UserFlashcard");
+
+                    b.HasIndex("FlashcardId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("User_Flashcard", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.UserFlashcardProgress", b =>
+                {
+                    b.Property<int>("UserFlashcardProgressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("user_flashcard_progress_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserFlashcardProgressId"));
+
+                    b.Property<int>("FlashcardDetailId")
+                        .HasColumnType("int")
+                        .HasColumnName("flashcard_detail_id");
+
+                    b.Property<string>("ProgressStatus")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("progress_status");
+
+                    b.Property<int>("UserFlashcardId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_flashcard_id");
+
+                    b.HasKey("UserFlashcardProgressId")
+                        .HasName("PK_UserFlashcardProgress");
+
+                    b.HasIndex("FlashcardDetailId");
+
+                    b.HasIndex("UserFlashcardId");
+
+                    b.ToTable("User_Flashcard_Progress", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.UserPremiumPackage", b =>
+                {
+                    b.Property<int>("UserPremiumPackageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("user_premium_package_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserPremiumPackageId"));
+
+                    b.Property<DateTime>("ExpireDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("expire_date");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("PremiumPackageId")
+                        .HasColumnType("int")
+                        .HasColumnName("premium_package_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("UserPremiumPackageId")
+                        .HasName("PK_UserPremiumPackage");
+
+                    b.HasIndex("PremiumPackageId");
+
+                    b.HasIndex(new[] { "UserId" }, "UQ__User_Pre__B9BE370EE1A5DD97")
+                        .IsUnique();
+
+                    b.ToTable("User_Premium_Package", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.UserSpeakingSampleHistory", b =>
+                {
+                    b.Property<int>("UserSampleHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("user_sample_history_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserSampleHistoryId"));
+
+                    b.Property<int>("TopicSampleId")
+                        .HasColumnType("int")
+                        .HasColumnName("topic_sample_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("UserSampleHistoryId")
+                        .HasName("PK_UserSpeakingSampleHistory");
+
+                    b.HasIndex("TopicSampleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("User_Speaking_Sample_History", (string)null);
                 });
 
             modelBuilder.Entity("TestTag", b =>
@@ -880,17 +1219,6 @@ namespace Prep4IELTS.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Prep4IELTS.Data.Entities.Flashcard", b =>
-                {
-                    b.HasOne("Prep4IELTS.Data.Entities.User", "User")
-                        .WithMany("Flashcards")
-                        .HasForeignKey("UserId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Flashcard_User");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardDetail", b =>
                 {
                     b.HasOne("Prep4IELTS.Data.Entities.Flashcard", "Flashcard")
@@ -914,6 +1242,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.TestSectionPartition", "TestSectionPart")
                         .WithMany("PartitionHistories")
                         .HasForeignKey("TestSectionPartId")
+                        .IsRequired()
                         .HasConstraintName("FK_PartitionHistory_SectionPartition");
 
                     b.Navigation("TestHistory");
@@ -943,6 +1272,30 @@ namespace Prep4IELTS.Data.Migrations
                         .HasConstraintName("FK_QuestionAnswer_Question");
 
                     b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingPart", b =>
+                {
+                    b.HasOne("Prep4IELTS.Data.Entities.SpeakingTopicSample", "TopicSample")
+                        .WithMany("SpeakingParts")
+                        .HasForeignKey("TopicSampleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_SpeakingPart_Sample");
+
+                    b.Navigation("TopicSample");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingTopicSample", b =>
+                {
+                    b.HasOne("Prep4IELTS.Data.Entities.SpeakingTopic", "Topic")
+                        .WithMany("SpeakingTopicSamples")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_SpeakingTopicSample_Topic");
+
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.Test", b =>
@@ -989,7 +1342,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.ScoreCalculation", "ScoreCalculation")
                         .WithMany("TestHistories")
                         .HasForeignKey("ScoreCalculationId")
-                        .HasConstraintName("FK_TestHistory_ScoreCalculation");
+                        .HasConstraintName("FK_TestHistory_ScoreCaculation");
 
                     b.HasOne("Prep4IELTS.Data.Entities.TestCategory", "TestCategory")
                         .WithMany("TestHistories")
@@ -1008,7 +1361,7 @@ namespace Prep4IELTS.Data.Migrations
                         .WithMany("TestHistories")
                         .HasForeignKey("UserId")
                         .IsRequired()
-                        .HasConstraintName("FK_TestHistory_User");
+                        .HasConstraintName("FK_TestHitory_User");
 
                     b.Navigation("ScoreCalculation");
 
@@ -1065,6 +1418,33 @@ namespace Prep4IELTS.Data.Migrations
                     b.Navigation("TestSection");
                 });
 
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.Transaction", b =>
+                {
+                    b.HasOne("Prep4IELTS.Data.Entities.PaymentType", "PaymentType")
+                        .WithMany("Transactions")
+                        .HasForeignKey("PaymentTypeId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Transaction_PaymentType");
+
+                    b.HasOne("Prep4IELTS.Data.Entities.User", "User")
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Transaction_User");
+
+                    b.HasOne("Prep4IELTS.Data.Entities.UserPremiumPackage", "UserPremiumPackage")
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserPremiumPackageId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Transaction_UserPremiumPackage");
+
+                    b.Navigation("PaymentType");
+
+                    b.Navigation("User");
+
+                    b.Navigation("UserPremiumPackage");
+                });
+
             modelBuilder.Entity("Prep4IELTS.Data.Entities.User", b =>
                 {
                     b.HasOne("Prep4IELTS.Data.Entities.SystemRole", "Role")
@@ -1075,16 +1455,95 @@ namespace Prep4IELTS.Data.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.UserFlashcard", b =>
+                {
+                    b.HasOne("Prep4IELTS.Data.Entities.Flashcard", "Flashcard")
+                        .WithMany("UserFlashcards")
+                        .HasForeignKey("FlashcardId")
+                        .IsRequired()
+                        .HasConstraintName("FK_UserFlashcard_Flashcard");
+
+                    b.HasOne("Prep4IELTS.Data.Entities.User", "User")
+                        .WithMany("UserFlashcards")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_UserFlashcard_User");
+
+                    b.Navigation("Flashcard");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.UserFlashcardProgress", b =>
+                {
+                    b.HasOne("Prep4IELTS.Data.Entities.FlashcardDetail", "FlashcardDetail")
+                        .WithMany("UserFlashcardProgresses")
+                        .HasForeignKey("FlashcardDetailId")
+                        .IsRequired()
+                        .HasConstraintName("FK_UserFlashcardProgress_FlashcardDetail");
+
+                    b.HasOne("Prep4IELTS.Data.Entities.UserFlashcard", "UserFlashcard")
+                        .WithMany("UserFlashcardProgresses")
+                        .HasForeignKey("UserFlashcardId")
+                        .IsRequired()
+                        .HasConstraintName("FK_UserFlashcardProgress_UserFlashcard");
+
+                    b.Navigation("FlashcardDetail");
+
+                    b.Navigation("UserFlashcard");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.UserPremiumPackage", b =>
+                {
+                    b.HasOne("Prep4IELTS.Data.Entities.PremiumPackage", "PremiumPackage")
+                        .WithMany("UserPremiumPackages")
+                        .HasForeignKey("PremiumPackageId")
+                        .IsRequired()
+                        .HasConstraintName("PK_UserPremiumPackage_PremiumPackage");
+
+                    b.HasOne("Prep4IELTS.Data.Entities.User", "User")
+                        .WithOne("UserPremiumPackage")
+                        .HasForeignKey("Prep4IELTS.Data.Entities.UserPremiumPackage", "UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_UserPremiumPackage_User");
+
+                    b.Navigation("PremiumPackage");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.UserSpeakingSampleHistory", b =>
+                {
+                    b.HasOne("Prep4IELTS.Data.Entities.SpeakingTopicSample", "TopicSample")
+                        .WithMany("UserSpeakingSampleHistories")
+                        .HasForeignKey("TopicSampleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_UserSpeakingSampleHistory_Sample");
+
+                    b.HasOne("Prep4IELTS.Data.Entities.User", "User")
+                        .WithMany("UserSpeakingSampleHistories")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_UserSpeakingSampleHistory_User");
+
+                    b.Navigation("TopicSample");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TestTag", b =>
                 {
                     b.HasOne("Prep4IELTS.Data.Entities.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagId")
+                        .IsRequired()
                         .HasConstraintName("FK_TestTag_Tag");
 
                     b.HasOne("Prep4IELTS.Data.Entities.Test", null)
                         .WithMany()
                         .HasForeignKey("TestId")
+                        .IsRequired()
                         .HasConstraintName("FK_TestTag_Test");
                 });
 
@@ -1103,6 +1562,13 @@ namespace Prep4IELTS.Data.Migrations
             modelBuilder.Entity("Prep4IELTS.Data.Entities.Flashcard", b =>
                 {
                     b.Navigation("FlashcardDetails");
+
+                    b.Navigation("UserFlashcards");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardDetail", b =>
+                {
+                    b.Navigation("UserFlashcardProgresses");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.PartitionHistory", b =>
@@ -1115,6 +1581,16 @@ namespace Prep4IELTS.Data.Migrations
                     b.Navigation("TestSectionPartitions");
                 });
 
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.PaymentType", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.PremiumPackage", b =>
+                {
+                    b.Navigation("UserPremiumPackages");
+                });
+
             modelBuilder.Entity("Prep4IELTS.Data.Entities.Question", b =>
                 {
                     b.Navigation("QuestionAnswers");
@@ -1125,6 +1601,18 @@ namespace Prep4IELTS.Data.Migrations
             modelBuilder.Entity("Prep4IELTS.Data.Entities.ScoreCalculation", b =>
                 {
                     b.Navigation("TestHistories");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingTopic", b =>
+                {
+                    b.Navigation("SpeakingTopicSamples");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingTopicSample", b =>
+                {
+                    b.Navigation("SpeakingParts");
+
+                    b.Navigation("UserSpeakingSampleHistories");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.SystemRole", b =>
@@ -1169,11 +1657,27 @@ namespace Prep4IELTS.Data.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("Flashcards");
-
                     b.Navigation("TestHistories");
 
                     b.Navigation("Tests");
+
+                    b.Navigation("Transactions");
+
+                    b.Navigation("UserFlashcards");
+
+                    b.Navigation("UserPremiumPackage");
+
+                    b.Navigation("UserSpeakingSampleHistories");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.UserFlashcard", b =>
+                {
+                    b.Navigation("UserFlashcardProgresses");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.UserPremiumPackage", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

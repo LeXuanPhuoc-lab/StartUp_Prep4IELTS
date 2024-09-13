@@ -105,7 +105,7 @@ public class TestRepository : GenericRepository<Test>
         
         // Add cloud sources of test sections
         partitionCloudResources.AddRange(test.TestSections.Select(tsp => tsp.CloudResource));
-        
+
         // Remove range
         DbContext.CloudResources.RemoveRange(partitionCloudResources);
         // Save change

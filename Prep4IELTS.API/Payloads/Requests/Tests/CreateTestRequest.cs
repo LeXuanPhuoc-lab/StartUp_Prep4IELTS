@@ -25,10 +25,10 @@ public class CreateTestRequest
     [Required(ErrorMessage = "Test category is required.")]
     public int TestCategoryId { get; set; }
 
-    [StringLength(maximumLength: 155, MinimumLength = 2,
-        ErrorMessage = "Create by must be between 2 and 155 characters long.")]
+    // [StringLength(maximumLength: 155, MinimumLength = 2,
+        // ErrorMessage = "Create by must be between 2 and 155 characters long.")]
 
-    public string? CreateBy { get; set; } = null!;
+    // public string? CreateBy { get; set; } = null!;
     
     public List<int>? Tags { get; set; } = new();
 

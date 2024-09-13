@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Prep4IELTS.Data.Entities;
 
@@ -32,16 +31,17 @@ public partial class TestHistory
 
     public Guid TestId { get; set; }
 
-    public int TestCategoryId { get; set; }
     public int? ScoreCalculationId { get; set; }
 
+    public int TestCategoryId { get; set; }
+
     public virtual ICollection<PartitionHistory> PartitionHistories { get; set; } = new List<PartitionHistory>();
-    
+
+    public virtual ScoreCalculation? ScoreCalculation { get; set; }
+
     public virtual Test Test { get; set; } = null!;
 
     public virtual TestCategory TestCategory { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
-
-    public virtual ScoreCalculation ScoreCalculation { get; set; } = null!;
 }

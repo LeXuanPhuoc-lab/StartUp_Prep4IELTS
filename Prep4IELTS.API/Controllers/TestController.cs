@@ -118,12 +118,12 @@ public class TestController(
     //  Summary:
     //      Get all existing tests 
     [HttpGet(ApiRoute.Test.GetAllDraft, Name = nameof(GetAllTestDraftAsync))]
-    // [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
+    [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
     public async Task<IActionResult> GetAllTestDraftAsync([FromQuery] TestFilterRequest req)
     {
         // Get staff information
         var staffDto = HttpContext.Items["User"] as User;
-        // if (staffDto == null) return Unauthorized();
+        if (staffDto == null) return Unauthorized();
         
         // Get all test (draft) for particular staff
         var testDtos = await testService.FindAllWithConditionAndPagingAsync(
@@ -133,8 +133,7 @@ public class TestController(
                          // Is not draft
                          x.IsDraft && 
                          // With particular staff id 
-                         // x.UserId == staffDto.UserId &&
-                         x.UserId == Guid.Parse("EE3DA1EC-E2D1-458C-B6C9-23E76727DA8D") &&
+                         x.UserId == staffDto.UserId &&
                          // filter with test category name
                          (string.IsNullOrEmpty(req.Category) ||
                           x.TestCategory.TestCategoryName!.Equals(req.Category.Replace("%", " "))),
@@ -462,18 +461,19 @@ public class TestController(
         
         // Get staff information
         var staffDto = HttpContext.Items["User"] as UserDto;
-        // if (staffDto == null) return Unauthorized();
+        if (staffDto == null) return Unauthorized();
         
         // Map request to test entity
         var testEntity = mapper.Map<Test>(req);
         
         // Update created user
-        // testEntity.UserId = staffDto.UserId;
-        // testEntity.CreateBy = $"{staffDto.FirstName} {staffDto.LastName}";
-        testEntity.UserId = Guid.Parse("EE3DA1EC-E2D1-458C-B6C9-23E76727DA8D");
+        testEntity.UserId = staffDto.UserId;
         
         // Mark as Draft
         testEntity.IsDraft = true;
+        
+        // Create date
+        testEntity.CreateDate = DateTime.Now;
         
         // Get all test sections
         var testSections = testEntity.TestSections.ToList();
@@ -506,7 +506,7 @@ public class TestController(
             case TestTypeConstants.Listening:
                 // Check for audio resource in each sections
                 var totalAudioResource = testSections.Count(ts => 
-                    ts.CloudResource != null!);
+                    ts.CloudResource != null);
                 
                 // Invoke error
                 if (totalAudioResource != testSections.Count)

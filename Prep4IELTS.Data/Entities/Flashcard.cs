@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Prep4IELTS.Data.Entities;
 
@@ -20,10 +19,7 @@ public partial class Flashcard
 
     public bool IsPublic { get; set; }
 
-    public Guid UserId { get; set; }
-
     public virtual ICollection<FlashcardDetail> FlashcardDetails { get; set; } = new List<FlashcardDetail>();
-    
-    [JsonIgnore]
-    public virtual User User { get; set; } = null!;
+
+    public virtual ICollection<UserFlashcard> UserFlashcards { get; set; } = new List<UserFlashcard>();
 }

@@ -4,6 +4,7 @@ namespace EXE202_Prep4IELTS.Payloads.Responses.Tests;
 
 public class SectionHistoryResponse
 {
+    public int TestSectionId { get; set; }
     public string SectionName { get; set; } = string.Empty;
     public int? TotalRightAnswer { get; set; }
     public int? TotalWrongAnswer { get; set; }
