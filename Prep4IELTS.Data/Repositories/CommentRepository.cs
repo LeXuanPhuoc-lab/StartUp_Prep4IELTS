@@ -17,7 +17,7 @@ public class CommentRepository : GenericRepository<Comment>
     public async Task<IEnumerable<Comment>> FindAllWithSizeByTestIdAsync(Guid testId, int totalElementSize)
     {
         var commentEntities = await _dbSet.Where(x => 
-                x.TestId != null && x.TestId.Equals(testId))
+                x.TestId != Guid.Empty && x.TestId.Equals(testId))
             .OrderByDescending(x => x.CommentDate)
             .Take(totalElementSize).ToListAsync();
 

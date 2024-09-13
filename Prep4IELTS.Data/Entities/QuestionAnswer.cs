@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Prep4IELTS.Data.Entities;
 
@@ -15,7 +14,6 @@ public partial class QuestionAnswer
     public bool IsTrue { get; set; }
 
     public int QuestionId { get; set; }
-    
-    [JsonIgnore]
+
     public virtual Question Question { get; set; } = null!;
 }
