@@ -361,7 +361,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             },
             new User
             {
-                UserId = Guid.Parse("5e1bb613-7b62-4be4-aed2-239135ddae4e"),
+                UserId = Guid.Parse("fcfb4edc-6045-40eb-823b-50fc6eb108a7"),
                 ClerkId = "user_2lygVRLBQMwZMzVDPP5hKZ77tiK",
                 FirstName = "Xuan",
                 LastName = "Phuoc",
