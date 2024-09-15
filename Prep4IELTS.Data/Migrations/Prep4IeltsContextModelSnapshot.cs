@@ -770,6 +770,10 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("isFull");
 
+                    b.Property<bool?>("IsResubmitted")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_resubmitted");
+
                     b.Property<int?>("ScoreCalculationId")
                         .HasColumnType("int")
                         .HasColumnName("score_calculation_id");

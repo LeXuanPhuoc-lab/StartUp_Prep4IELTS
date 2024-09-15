@@ -12,8 +12,8 @@ using Prep4IELTS.Data.Context;
 namespace Prep4IELTS.Data.Migrations
 {
     [DbContext(typeof(Prep4IeltsContext))]
-    [Migration("20240913091641_Initital Database")]
-    partial class InititalDatabase
+    [Migration("20240914141015_Intitial Database")]
+    partial class IntitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -772,6 +772,10 @@ namespace Prep4IELTS.Data.Migrations
                     b.Property<bool>("IsFull")
                         .HasColumnType("bit")
                         .HasColumnName("isFull");
+
+                    b.Property<bool?>("IsResubmitted")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_resubmitted");
 
                     b.Property<int?>("ScoreCalculationId")
                         .HasColumnType("int")

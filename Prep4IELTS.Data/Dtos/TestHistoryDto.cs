@@ -14,6 +14,7 @@ public record TestHistoryDto(
     bool IsFull, 
     string TestType, 
     string? BandScore, 
+    bool? IsResubmitted,
     Guid UserId, UserDto User,
     Guid TestId, TestDto Test, 
     int TestCategoryId, TestCategoryDto TestCategory,

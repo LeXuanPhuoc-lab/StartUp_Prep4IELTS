@@ -11,7 +11,7 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
         : base(dbContext)
     {
     }
-
+    
     public async Task<IEnumerable<TestHistory>> FindAllByTestAndUserAsync(Guid testId, Guid userId)
     {
         return await _dbSet
@@ -32,6 +32,7 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
                 IsFull = th.IsFull,
                 TestType = th.TestType,
                 BandScore = th.BandScore,
+                IsResubmitted = th.IsResubmitted,
                 UserId = th.UserId,
                 TestId = th.TestId,
                 PartitionHistories = th.PartitionHistories.Select(ph => new PartitionHistory()
@@ -70,6 +71,71 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
         return testHistoryEntities;
     }
 
+    public async Task<IEnumerable<TestHistory>> FindAllByUserIdWithDaysRangeAsync(Guid userId, int days)
+    {
+        var currentDate = DateTime.Now;
+        var timeSpan = TimeSpan.FromDays(days);
+        var backDate = currentDate.Subtract(timeSpan);
+        
+        // Retrieve TestHistories with related PartitionHistories
+        var testHistoryEntities = await _dbSet
+            .AsSplitQuery()
+            .Where(th => th.UserId.Equals(userId) &&
+                         // Filter taken date from backTime to currentTime
+                         th.TakenDate >= backDate && th.TakenDate <= currentDate)
+            .Select(th => new TestHistory()
+            {
+                TestHistoryId = th.TestHistoryId,
+                TotalRightAnswer = th.TotalRightAnswer,
+                TotalWrongAnswer = th.TotalWrongAnswer,
+                TotalSkipAnswer = th.TotalSkipAnswer,
+                TotalQuestion = th.TotalQuestion,
+                TotalCompletionTime = th.TotalCompletionTime,
+                TakenDate = th.TakenDate,
+                AccuracyRate = th.AccuracyRate,
+                IsFull = th.IsFull,
+                TestType = th.TestType,
+                BandScore = th.BandScore,
+                UserId = th.UserId,
+                TestId = th.TestId,
+                ScoreCalculationId = th.ScoreCalculationId,
+                TestCategoryId = th.TestCategoryId,
+                TestCategory = th.TestCategory,
+                IsResubmitted = th.IsResubmitted,
+                PartitionHistories = th.PartitionHistories.Select(ph => new PartitionHistory()
+                {
+                    PartitionHistoryId = ph.PartitionHistoryId,
+                    TestSectionName = ph.TestSectionName,
+                    TotalRightAnswer = ph.TotalRightAnswer,
+                    TotalWrongAnswer = ph.TotalWrongAnswer,
+                    TotalSkipAnswer = ph.TotalSkipAnswer,
+                    TotalQuestion = ph.TotalQuestion,
+                    AccuracyRate = ph.AccuracyRate,
+                    TestHistoryId = ph.TestHistoryId,
+                    TestSectionPartId = ph.TestSectionPartId,
+                    TestSectionPart = new TestSectionPartition()
+                    {
+                        TestSectionPartId = ph.TestSectionPart.TestSectionPartId,
+                        PartitionTagId = ph.TestSectionPart.PartitionTagId,
+                        PartitionTag = ph.TestSectionPart.PartitionTag,
+                    }
+                }).ToList()
+            })
+            .ToListAsync();
+
+        // Filter the PartitionHistories to ensure distinct TestSectionPartId
+        // foreach (var th in testHistoryEntities)
+        // {
+        //     // if (th.Test.TestHistories.Any()) th.Test.TestHistories.Clear();
+        //     th.PartitionHistories = th.PartitionHistories
+        //         .GroupBy(ph => ph.TestSectionName)
+        //         .Select(g => g.First())
+        //         .ToList();
+        // }
+
+        return testHistoryEntities;
+    }
+    
     public async Task<TestHistory?> FindByIdWithIncludePartitionAndGradeAsync(int testHistoryId)
     {
         return await _dbSet.AsSplitQuery()
@@ -85,6 +151,7 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
                 TakenDate = th.TakenDate,
                 AccuracyRate = th.AccuracyRate,
                 IsFull = th.IsFull,
+                IsResubmitted = th.IsResubmitted,
                 TestType = th.TestType,
                 BandScore = th.BandScore,
                 UserId = th.UserId,

@@ -14,7 +14,7 @@ public partial class TestSection
     public int TotalQuestion { get; set; }
 
     public string? SectionTranscript { get; set; }
-
+    
     public Guid TestId { get; set; }
 
     public int? CloudResourceId { get; set; }

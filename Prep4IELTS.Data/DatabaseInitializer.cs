@@ -75,6 +75,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             if (!dbContext.Users.Any()) await SeedUserAsync();
             // Tags
             if (!dbContext.Tags.Any()) await SeedTagAsync();
+            // Partition Tags
+            if (!dbContext.PartitionTags.Any()) await SeedPartitionTagAsync();
             // Test categories
             if (!dbContext.TestCategories.Any()) await SeedTestCategoryAsync();
             // Tests
@@ -469,6 +471,114 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
     }
 
     //  Summary:
+    //      Seeding partition tags
+    private async Task SeedPartitionTagAsync()
+    {
+        List<PartitionTag> partitionTags = new()
+        {
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ListeningMatching.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ListeningMultipleChoice.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ListeningNoteOrFormCompletion.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ListeningMapOrDiagramLabelling.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ListeningSentenceCompletion.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ListeningShortAnswer.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ListeningSummaryOrFlowchartCompletion.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ListeningTableCompletion.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ListeningPickFromList.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingTrueFalseNotGiven.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingYesNoNotGiven.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingMultipleChoice.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingSummaryCompletion.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingDiagramLabelCompletion.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingShortAnswer.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingTableNoteOrFlowchartCompletion.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingSentenceCompletion.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingMatchingHeadings.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingMatchingInformationToParagraphs.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingMatchingFeatures.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingMatchingSentenceEndings.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingMatchingName.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingAgreeDisagreeNotGiven.GetDescription(),
+            },
+            new()
+            {
+                PartitionTagDesc = Enum.PartitionTag.ReadingChoosingFromList.GetDescription(),
+            }
+        };
+        
+        await dbContext.PartitionTags.AddRangeAsync(partitionTags);
+        await dbContext.SaveChangesAsync();
+    }
+    
+    //  Summary:
     //      Seeding Test Categories
     private async Task SeedTestCategoryAsync()
     {
@@ -506,6 +616,15 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         // Get all tag
         var tags = await dbContext.Tags.ToListAsync();
 
+        // Get all partition tag
+        var listeningPartitionTags = await dbContext.PartitionTags.Where(pt => 
+            pt.PartitionTagDesc != null && 
+            pt.PartitionTagDesc.Contains("[Listening]")).ToListAsync();
+        
+        var readingPartitionTags = await dbContext.PartitionTags.Where(pt => 
+            pt.PartitionTagDesc != null && 
+            pt.PartitionTagDesc.Contains("[Reading]")).ToListAsync();
+        
         // Get all users
         var studentUsers = await dbContext.Users.Where(x =>
             x.Role != null &&
@@ -525,10 +644,10 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             {
                 TestId = Guid.NewGuid(),
                 TestTitle = "IELTS Simulation Reading Test 1",
-                Duration = 2400,
+                Duration = 3600,
                 TestType = Enum.TestType.Reading.GetDescription(),
-                TotalQuestion = 40,
-                TotalSection = 4,
+                TotalQuestion = 13,
+                TotalSection = 1,
                 TotalEngaged = rnd.Next(0, 200_000),
                 TestCategoryId = ieltsAcademicCategory?.TestCategoryId ?? 0,
                 Tags = tags.Where(x => x.TagName != null && (
@@ -537,7 +656,405 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     ))).ToList(),
                 CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
                 UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
-                IsDraft = false
+                IsDraft = false,
+                TestSections = new List<TestSection>()
+                {
+                    new ()
+                    {
+                        TestSectionName = "Passage 1",
+                        TotalQuestion = 13,
+                        ReadingDesc = @"<h2 style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:1.55rem;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;letter-spacing:normal;line-height:1.3;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"" id=""a-disaster-of-titanic-proportions""><strong style=""box-sizing:border-box;font-weight:bolder;"">A disaster of Titanic proportions</strong></h2>
+<p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">At 11.39 p.m. on the evening of Sunday 14 April 1912, lookouts Frederick Fleet and Reginald Lee on the forward mast of the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;sighted an eerie, black mass coming into view directly in front of the ship. Fleet picked up the phone to the helm, waited for Sixth Officer Moody to answer, and yelled 'Iceberg, right ahead!' The greatest disaster in maritime history was about to be set in motion.</p>
+<p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">Thirty-seven seconds later, despite the efforts of officers in the bridge and engine room to steer around the iceberg, the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;struck a piece of submerged ice, bursting rivets in the ship's hull and flooding the first five watertight compartments. The ship's designer, Thomas Andrews, carried out a visual inspection of the ship's damage and informed Captain Smith at midnight that the ship would sink in less than two hours. By 12.30 a.m., the lifeboats were being filled with women and children, after Smith had given the command for them to be uncovered and swung out 15 minutes earlier. The first lifeboat was successfully lowered 15 minutes later, with only 28 of its 65 seats occupied. By 1.15 a.m., the waterline was beginning to reach the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>'s name on the ship's bow, and over the next hour every lifeboat would be released as officers struggled to maintain order amongst the growing panic on board.</p>
+<p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">The closing moments of the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>'s sinking began shortly after 2 a.m., as the last lifeboat was lowered and the ship's propellers lifted out of the water, leaving the 1,500 passengers still on board to surge towards the stern. At 2.17 a.m., Harold Bride and Jack Philips tapped out their last wireless message after being relieved of duty as the ship's wireless operators, and the ship's band stopped playing. Less than a minute later, occupants of the lifeboats witnessed the ship's lights flash once, then go black, and a huge roar signalled the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>'s contents plunging towards the bow, causing the front half of the ship to break off and go under. The&nbsp;<em style=""box-sizing:border-box;""><i>Titanic'</i></em>s stern bobbed up momentarily, and at 2.20 a.m., the ship finally disappeared beneath the frigid waters.</p>
+<p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">What or who was responsible for the scale of this catastrophe? Explanations abound, some that focus on very small details. Due to a last minute change in the ship's officer line-up, iceberg lookouts Frederick Fleet and Reginald Lee were making do without a pair of binoculars that an officer transferred off the ship in Southampton had left in a cupboard onboard, unbeknownst to any of the ship's crew. Fleet, who survived the sinking, insisted at a subsequent inquiry that he could have identified the iceberg in time to avert disaster if he had been in possession of the binoculars.</p>
+<p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">Less than an hour before the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;struck the iceberg, wireless operator Cyril Evans on the&nbsp;<em style=""box-sizing:border-box;""><i>Californian</i></em>&nbsp;, located just 20 miles to the north, tried to contact operator Jack Philips on the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;to warn him of pack ice in the area. 'Shut up, shut up, you're jamming my signal', Philips replied. 'I'm busy.' The&nbsp;<em style=""box-sizing:border-box;""><i>Titanic'</i></em>s wireless system had broken down for several hours earlier that day, and Philips was clearing a backlog of personal messages that passengers had requested to be sent to family and friends in the USA. Nevertheless, Captain Smith had maintained the ship's speed of 22 knots despite multiple earlier warnings of ice ahead. It has been suggested that Smith was under pressure to make headlines by arriving early in New York, but maritime historians such as Richard Howell have countered this perception, noting that Smith was simply following common procedure at the time, and not behaving recklessly.</p>
+<p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">One of the strongest explanations for the severe loss of life has been the fact that the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;did not carry enough lifeboats for everyone on board. Maritime regulations at the time tied lifeboat capacity to ship size, not to the number of passengers on board. This meant that the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;, with room for 1,178 of its 2,222 passengers, actually surpassed the Board of Trade's requirement that it carry lifeboats for 1,060 of its passengers. Nevertheless, with lifeboats being lowered less than half full in many cases, and only 712 passengers surviving despite a two and a half hour window of opportunity, more lifeboats would not have guaranteed more survivors in the absence of better training and preparation. Many passengers were confused about where to go after the order to launch lifeboats was given; a lifeboat drill scheduled for earlier on the same day that the Titanic struck the iceberg was cancelled by Captain Smith, in order to allow passengers to attend church.</p>",
+                        TestSectionPartitions = new List<TestSectionPartition>()
+                        {
+                            new()
+                            {
+                                PartitionDesc = @"<p><i>Complete the table below.</i><br><i>Choose&nbsp;<strong>NO MORE THAN TWO WORDS</strong>&nbsp;from the text for each answer.</i><br><i>Write your answers in boxes 1-6 on your answer sheet.</i></p>
+<p>&nbsp;</p>
+<figure class=""table"" style=""float:left;width:47.95%;"">
+    <table class=""ck-table-resized"" style=""border-color:border;"">
+        <colgroup>
+            <col style=""width:16.71%;"">
+            <col style=""width:15.48%;"">
+            <col style=""width:17.34%;"">
+            <col style=""width:50.47%;"">
+        </colgroup>
+        <tbody>
+            <tr>
+                <td>
+                    <p style=""text-align:center;""><strong>Time</strong></p>
+                </td>
+                <td>
+                    <p style=""text-align:center;""><strong>Person</strong></p>
+                </td>
+                <td>
+                    <p style=""text-align:center;""><strong>Position</strong></p>
+                </td>
+                <td>
+                    <p style=""text-align:center;""><strong>Action</strong></p>
+                </td>
+            </tr>
+            <tr>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">11.39 p.m.</span></td>
+                <td><u>1&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u></td>
+                <td><u>2&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</u></td>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Reported sighting of iceberg</span></td>
+            </tr>
+            <tr>
+                <td><u>3&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u></td>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Andrews</span></td>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Ship's designer</span></td>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Reported how long the&nbsp;</span><i>Titanic&nbsp;</i><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">could</span><br><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">stay afloat</span></td>
+            </tr>
+            <tr>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">12.15 a.m.</span></td>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Smith</span></td>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Captain</span></td>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Ordered&nbsp;</span><u>4&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">to be released</span></td>
+            </tr>
+            <tr>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">2.17 a.m.</span></td>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Bride &amp; Philips</span></td>
+                <td><u>5&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</u></td>
+                <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Relayed final&nbsp;</span><u>6&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u></td>
+            </tr>
+        </tbody>
+    </table>
+</figure>",
+                                IsVerticalLayout = true,
+                                PartitionTagId = readingPartitionTags[
+                                    rnd.Next(readingPartitionTags.Count)].PartitionTagId,
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 1,
+                                        IsMultipleChoice = false,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "(FREDERICK) FLEET",
+                                                AnswerText = "FLEET",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "(FREDERICK) FLEET",
+                                                AnswerText = "FREDERICK FLEET",
+                                                IsTrue = true
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 2,
+                                        IsMultipleChoice = false,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "LOOKOUT",
+                                                AnswerText = "LOOKOUT",
+                                                IsTrue = true
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 3,
+                                        IsMultipleChoice = false,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "MIDNIGHT [OR] 12(.00) A.M./AM",
+                                                AnswerText = "MIDNIGHT",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "MIDNIGHT [OR] 12(.00) A.M./AM",
+                                                AnswerText = "12 A.M.",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "MIDNIGHT [OR] 12(.00) A.M./AM",
+                                                AnswerText = "12 AM",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "MIDNIGHT [OR] 12(.00) A.M./AM",
+                                                AnswerText = "12.00 A.M.",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "MIDNIGHT [OR] 12(.00) A.M./AM",
+                                                AnswerText = "12.00 AM",
+                                                IsTrue = true
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 4,
+                                        IsMultipleChoice = false,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "LIFEBOATS",
+                                                AnswerText = "LIFEBOATS",
+                                                IsTrue = true
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 5,
+                                        IsMultipleChoice = false,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "WIRELESS OPERATORS",
+                                                AnswerText = "WIRELESS OPERATORS",
+                                                IsTrue = true
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 6,
+                                        IsMultipleChoice = false,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "(WIRELESS) MESSAGE",
+                                                AnswerText = "MESSAGE",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "(WIRELESS) MESSAGE",
+                                                AnswerText = "WIRELESS MESSAGE",
+                                                IsTrue = true
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            new()
+                            {
+                                PartitionDesc = @"<p><em style=""-webkit-text-stroke-width:0px;background-color:rgb(16, 17, 17);box-sizing:border-box;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;""><i>Do the following statements agree with the information given in Reading Passage 1?&nbsp;In boxes 7-13 on your answer sheet, write</i></em><br><em style=""-webkit-text-stroke-width:0px;background-color:rgb(16, 17, 17);box-sizing:border-box;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;""><i><strong style=""box-sizing:border-box;font-weight:bolder;"">TRUE</strong>&nbsp;if the statement agrees with the information</i></em><br><em style=""-webkit-text-stroke-width:0px;background-color:rgb(16, 17, 17);box-sizing:border-box;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;""><i><strong style=""box-sizing:border-box;font-weight:bolder;"">FALSE</strong>&nbsp;if the statement contradicts the information</i></em><br><em style=""-webkit-text-stroke-width:0px;background-color:rgb(16, 17, 17);box-sizing:border-box;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;""><i><strong style=""box-sizing:border-box;font-weight:bolder;"">NOT GIVEN</strong>&nbsp;if there is no information on this</i></em></p>",
+                                IsVerticalLayout = true,
+                                PartitionTagId = readingPartitionTags[
+                                    rnd.Next(readingPartitionTags.Count)].PartitionTagId,
+                                Questions = new List<Question>()
+                                {
+                                    new()
+                                    {
+                                        QuestionNumber = 7,
+                                        QuestionDesc = "The binoculars for the men on watch had been left in a crew locker in Southampton.",
+                                        IsMultipleChoice = true,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "TRUE",
+                                                AnswerText = "TRUE",
+                                                IsTrue = false
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "FALSE",
+                                                AnswerText = "FALSE",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "NOT GIVEN",
+                                                AnswerText = "NOT GIVEN",
+                                                IsTrue = false
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 8,
+                                        QuestionDesc = "The missing binoculars were the major factor leading to the collision with the iceberg.",
+                                        IsMultipleChoice = true,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "TRUE",
+                                                AnswerText = "TRUE",
+                                                IsTrue = false
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "FALSE",
+                                                AnswerText = "FALSE",
+                                                IsTrue = false
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "NOT GIVEN",
+                                                AnswerText = "NOT GIVEN",
+                                                IsTrue = true
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 9,
+                                        QuestionDesc = "Captain Smith knew there was ice in the area.",
+                                        IsMultipleChoice = true,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "TRUE",
+                                                AnswerText = "TRUE",
+                                                IsTrue = false
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "FALSE",
+                                                AnswerText = "FALSE",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "NOT GIVEN",
+                                                AnswerText = "NOT GIVEN",
+                                                IsTrue = false
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 10,
+                                        QuestionDesc = "Captain Smith knew there was ice in the area.",
+                                        IsMultipleChoice = true,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "TRUE",
+                                                AnswerText = "TRUE",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "FALSE",
+                                                AnswerText = "FALSE",
+                                                IsTrue = false
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "NOT GIVEN",
+                                                AnswerText = "NOT GIVEN",
+                                                IsTrue = false
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 11,
+                                        QuestionDesc = "Howell believed the captains failure to reduce speed was an irresponsible action.",
+                                        IsMultipleChoice = true,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "TRUE",
+                                                AnswerText = "TRUE",
+                                                IsTrue = false
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "FALSE",
+                                                AnswerText = "FALSE",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "NOT GIVEN",
+                                                AnswerText = "NOT GIVEN",
+                                                IsTrue = false
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 12,
+                                        QuestionDesc = "The Titanic was able to seat more passengers in lifeboats than the Board of Trade required.",
+                                        IsMultipleChoice = true,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "TRUE",
+                                                AnswerText = "TRUE",
+                                                IsTrue = true
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "FALSE",
+                                                AnswerText = "FALSE",
+                                                IsTrue = false
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "NOT GIVEN",
+                                                AnswerText = "NOT GIVEN",
+                                                IsTrue = false
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        QuestionNumber = 13,
+                                        QuestionDesc = "A lifeboat drill would have saved more lives.",
+                                        IsMultipleChoice = true,
+                                        QuestionAnswers = new List<QuestionAnswer>()
+                                        {
+                                            new()
+                                            {
+                                                AnswerDisplay = "TRUE",
+                                                AnswerText = "TRUE",
+                                                IsTrue = false
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "FALSE",
+                                                AnswerText = "FALSE",
+                                                IsTrue = false
+                                            },
+                                            new()
+                                            {
+                                                AnswerDisplay = "NOT GIVEN",
+                                                AnswerText = "NOT GIVEN",
+                                                IsTrue = true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
             new()
             {
@@ -657,8 +1174,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 CloudResource = new()
                                 {
                                     Url = "http://example.com/image.jpeg",
@@ -782,7 +1299,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -820,7 +1338,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Multiple Choice" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -962,8 +1481,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1001,7 +1520,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1053,8 +1573,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Summary/Flow chart Completion" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1092,7 +1612,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Matching" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1165,8 +1686,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1285,7 +1806,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1323,7 +1845,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Multiple Choice" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1465,8 +1988,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1504,7 +2027,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1556,8 +2080,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Summary/Flow chart Completion" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1595,7 +2119,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                             new()
                             {
                                 PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Matching" },
+                                PartitionTagId = listeningPartitionTags[
+                                    rnd.Next(listeningPartitionTags.Count)].PartitionTagId,
                                 Questions = new List<Question>()
                                 {
                                     new()
@@ -1650,497 +2175,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     ))).ToList(),
                 CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
                 UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
-                IsDraft = false,
-                TestSections = new List<TestSection>()
-                {
-                    new()
-                    {
-                        TestSectionName = "Recording 1",
-                        CloudResource = new CloudResource()
-                        {
-                            Url = "http://example.com/audio1.mp3",
-                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
-                        },
-                        TotalQuestion = 10,
-                        SectionTranscript = "This section includes various passages...",
-                        TestSectionPartitions = new List<TestSectionPartition>()
-                        {
-                            new()
-                            {
-                                PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
-                                CloudResource = new()
-                                {
-                                    Url = "http://example.com/image.jpeg",
-                                    CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
-                                },
-                                Questions = new List<Question>()
-                                {
-                                    new()
-                                    {
-                                        QuestionNumber = 1,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                        {
-                                            new()
-                                            {
-                                                IsTrue = true,
-                                                AnswerText = "26TH",
-                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = true,
-                                                AnswerText = "26TH JULY",
-                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = true,
-                                                AnswerText = "26TH OF JULY",
-                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = true,
-                                                AnswerText = "JULY 26",
-                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = true,
-                                                AnswerText = "JULY 26TH",
-                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = true,
-                                                AnswerText = "26 JULY",
-                                                AnswerDisplay = "26TH (OF) JULY [OR] JULY 26(TH) [OR] 26 JULY"
-                                            }
-                                        }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 2,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 3,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "B", AnswerDisplay = "B" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 4,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 5,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 6,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 7,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 8,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "B", AnswerDisplay = "B" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 9,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 10,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 2",
-                        CloudResource = new CloudResource()
-                        {
-                            Url = "http://example.com/audio2.mp3",
-                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
-                        },
-                        TotalQuestion = 10,
-                        SectionTranscript = "This section will test your listening skills...",
-                        TestSectionPartitions = new List<TestSectionPartition>()
-                        {
-                            new()
-                            {
-                                PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
-                                Questions = new List<Question>()
-                                {
-                                    new()
-                                    {
-                                        QuestionNumber = 11,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 12,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 13,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 14,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 15,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
-                                    }
-                                }
-                            },
-                            new()
-                            {
-                                PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Multiple Choice" },
-                                Questions = new List<Question>()
-                                {
-                                    new()
-                                    {
-                                        QuestionNumber = 16,
-                                        IsMultipleChoice = true,
-                                        QuestionDesc = "Multiple Choice 1",
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                        {
-                                            new()
-                                            {
-                                                IsTrue = true, AnswerText = "The Earth revolves around the Sun",
-                                                AnswerDisplay = "The Earth revolves around the Sun"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = false, AnswerText = "The Sun revolves around the Earth",
-                                                AnswerDisplay = "The Sun revolves around the Earth"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = false, AnswerText = "The Earth is stationary",
-                                                AnswerDisplay = "The Earth is stationary"
-                                            }
-                                        }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 17,
-                                        IsMultipleChoice = true,
-                                        QuestionDesc = "Multiple Choice 2",
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                        {
-                                            new()
-                                            {
-                                                IsTrue = false, AnswerText = "Water boils at 50 degrees Celsius",
-                                                AnswerDisplay = "Water boils at 50 degrees Celsius"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = true, AnswerText = "Water boils at 100 degrees Celsius",
-                                                AnswerDisplay = "Water boils at 100 degrees Celsius"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = false, AnswerText = "Water boils at 150 degrees Celsius",
-                                                AnswerDisplay = "Water boils at 150 degrees Celsius"
-                                            }
-                                        }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 18,
-                                        IsMultipleChoice = true,
-                                        QuestionDesc = "Multiple Choice 3",
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                        {
-                                            new()
-                                            {
-                                                IsTrue = false, AnswerText = "The capital of France is Berlin",
-                                                AnswerDisplay = "The capital of France is Berlin"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = true, AnswerText = "The capital of France is Paris",
-                                                AnswerDisplay = "The capital of France is Paris"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = false, AnswerText = "The capital of France is Madrid",
-                                                AnswerDisplay = "The capital of France is Madrid"
-                                            }
-                                        }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 19,
-                                        IsMultipleChoice = true,
-                                        QuestionDesc = "Multiple Choice 3",
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                        {
-                                            new()
-                                            {
-                                                IsTrue = true, AnswerText = "Photosynthesis occurs in plants",
-                                                AnswerDisplay = "Photosynthesis occurs in plants"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = false, AnswerText = "Photosynthesis occurs in animals",
-                                                AnswerDisplay = "Photosynthesis occurs in animals"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = false, AnswerText = "Photosynthesis occurs in fungi",
-                                                AnswerDisplay = "Photosynthesis occurs in fungi"
-                                            }
-                                        }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 20,
-                                        IsMultipleChoice = true,
-                                        QuestionDesc = "Multiple Choice 3",
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                        {
-                                            new()
-                                            {
-                                                IsTrue = false, AnswerText = "The speed of light is 300,000 km/s",
-                                                AnswerDisplay = "The speed of light is 300,000 km/s"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = true, AnswerText = "The speed of light is 299,792 km/s",
-                                                AnswerDisplay = "The speed of light is 299,792 km/s"
-                                            },
-                                            new()
-                                            {
-                                                IsTrue = false, AnswerText = "The speed of light is 150,000 km/s",
-                                                AnswerDisplay = "The speed of light is 150,000 km/s"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 3",
-                        CloudResource = new CloudResource()
-                        {
-                            Url = "http://example.com/audio3.mp3",
-                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
-                        },
-                        TotalQuestion = 10,
-                        SectionTranscript = "Focus on grammar rules and vocabulary usage...",
-                        TestSectionPartitions = new List<TestSectionPartition>()
-                        {
-                            new()
-                            {
-                                PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Note/Form Completion" },
-                                Questions = new List<Question>()
-                                {
-                                    new()
-                                    {
-                                        QuestionNumber = 21,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 22,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 23,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 24,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 25,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
-                                    }
-                                }
-                            },
-                            new()
-                            {
-                                PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Table Completion" },
-                                Questions = new List<Question>()
-                                {
-                                    new()
-                                    {
-                                        QuestionNumber = 26,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 27,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 28,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 29,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 30,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 4",
-                        CloudResource = new CloudResource()
-                        {
-                            Url = "http://example.com/audio4.mp3",
-                            CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100))
-                        },
-                        TotalQuestion = 10,
-                        SectionTranscript = "This section requires you to write essays...",
-                        TestSectionPartitions = new List<TestSectionPartition>()
-                        {
-                            new()
-                            {
-                                PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag()
-                                    { PartitionTagDesc = "[Listening] Summary/Flow chart Completion" },
-                                Questions = new List<Question>()
-                                {
-                                    new()
-                                    {
-                                        QuestionNumber = 31,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 32,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 33,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 34,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 35,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
-                                    }
-                                }
-                            },
-                            new()
-                            {
-                                PartitionDesc = "Description for questions",
-                                PartitionTag = new PartitionTag() { PartitionTagDesc = "[Listening] Matching" },
-                                Questions = new List<Question>()
-                                {
-                                    new()
-                                    {
-                                        QuestionNumber = 36,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 37,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "A", AnswerDisplay = "A" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 38,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 39,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "C", AnswerDisplay = "C" } }
-                                    },
-                                    new()
-                                    {
-                                        QuestionNumber = 40,
-                                        QuestionAnswers = new List<QuestionAnswer>()
-                                            { new() { IsTrue = true, AnswerText = "D", AnswerDisplay = "D" } }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                IsDraft = false
             },
             new()
             {
@@ -2271,109 +2306,211 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
 
 
         // Seed test section partition for listening test 1
-        var listeningTest1 = await dbContext.Tests
+        var listeningTests = await dbContext.Tests
             .AsSplitQuery()
-            .Where(x => x.TestTitle.Contains("Listening Test 1"))
+            .Where(x => x.TestTitle.Contains("Listening Test 1") || x.TestTitle.Contains("Listening Test 2"))
             .Include(x => x.TestSections)
             .ThenInclude(x => x.TestSectionPartitions)
-            .FirstOrDefaultAsync();
+            .ToListAsync();
 
-        Console.WriteLine("Check Listening Test 1 name : " + listeningTest1!.TestTitle);
-
-        var testSections = listeningTest1!.TestSections.ToList();
-
-        for (int i = 0; i < 2; ++i)
+        if (!listeningTests.Any())
         {
-            listeningTest1!.TestHistories.Add(new()
-            {
-                TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
-                TotalCompletionTime = rnd.Next(3600),
-                TotalRightAnswer = 26,
-                TotalWrongAnswer = 13,
-                TotalSkipAnswer = 1,
-                TotalQuestion = 40,
-                AccuracyRate = double.Parse("0.65"),
-                TestType = listeningTest1.TestType,
-                BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
-                ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
-                IsFull = rnd.Next(0, 1) == 1,
-                TestCategoryId = listeningTest1.TestCategoryId,
-                UserId = users[0].UserId,
-                TestId = listeningTest1.TestId,
-                PartitionHistories = new List<PartitionHistory>()
+            Console.WriteLine("Not found test 1 or 2 to seed history");
+            return;
+        }
+        
+        var listeningTest1 = listeningTests.FirstOrDefault(x => x.TestTitle.Contains("Listening Test 1"));
+        if (listeningTest1 != null)
+        {
+            var test1Sections = listeningTest1.TestSections.ToList();
+    
+            listeningTest1.TestHistories.Add(new()
                 {
-                    new()
+                    TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                    TotalCompletionTime = rnd.Next(3600),
+                    TotalRightAnswer = 26,
+                    TotalWrongAnswer = 13,
+                    TotalSkipAnswer = 1,
+                    TotalQuestion = 40,
+                    AccuracyRate = double.Parse("0.65"),
+                    TestType = listeningTest1.TestType,
+                    BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
+                    ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
+                    IsFull = rnd.Next(0, 1) == 1,
+                    TestCategoryId = listeningTest1.TestCategoryId,
+                    UserId = users[0].UserId,
+                    TestId = listeningTest1.TestId,
+                    PartitionHistories = new List<PartitionHistory>()
                     {
-                        TestSectionName = "Recording 1",
-                        TotalRightAnswer = 8,
-                        TotalWrongAnswer = 2,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10,
-                        AccuracyRate = double.Parse("0.6"),
-                        TestSectionPartId = testSections[0].TestSectionPartitions.First().TestSectionPartId
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 2",
-                        TotalRightAnswer = 7,
-                        TotalWrongAnswer = 3,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10,
-                        AccuracyRate = double.Parse("0.375"),
-                        TestSectionPartId = testSections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 2",
-                        TotalRightAnswer = 6,
-                        TotalWrongAnswer = 4,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10,
-                        AccuracyRate = double.Parse("0.2"),
-                        TestSectionPartId = testSections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 3",
-                        TotalRightAnswer = 5,
-                        TotalWrongAnswer = 5,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10,
-                        AccuracyRate = double.Parse("0.4"),
-                        TestSectionPartId = testSections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 3",
-                        TotalRightAnswer = 9,
-                        TotalWrongAnswer = 1,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10,
-                        AccuracyRate = double.Parse("0.8"),
-                        TestSectionPartId = testSections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 4",
-                        TotalRightAnswer = 8,
-                        TotalWrongAnswer = 2,
-                        TotalSkipAnswer = 0,
-                        TotalQuestion = 10,
-                        AccuracyRate = double.Parse("0.1"),
-                        TestSectionPartId = testSections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
-                    },
-                    new()
-                    {
-                        TestSectionName = "Recording 4",
-                        TotalRightAnswer = 7,
-                        TotalWrongAnswer = 2,
-                        TotalSkipAnswer = 1,
-                        TotalQuestion = 10,
-                        AccuracyRate = double.Parse("0.00"),
-                        TestSectionPartId = testSections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
+                        new()
+                        {
+                            TestSectionName = "Recording 1",
+                            TotalRightAnswer = 8,
+                            TotalWrongAnswer = 2,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.6"),
+                            TestSectionPartId = test1Sections[0].TestSectionPartitions.First().TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 2",
+                            TotalRightAnswer = 7,
+                            TotalWrongAnswer = 3,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.375"),
+                            TestSectionPartId = test1Sections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 2",
+                            TotalRightAnswer = 6,
+                            TotalWrongAnswer = 4,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.2"),
+                            TestSectionPartId = test1Sections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 3",
+                            TotalRightAnswer = 5,
+                            TotalWrongAnswer = 5,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.4"),
+                            TestSectionPartId = test1Sections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 3",
+                            TotalRightAnswer = 9,
+                            TotalWrongAnswer = 1,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.8"),
+                            TestSectionPartId = test1Sections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 4",
+                            TotalRightAnswer = 8,
+                            TotalWrongAnswer = 2,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.1"),
+                            TestSectionPartId = test1Sections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 4",
+                            TotalRightAnswer = 7,
+                            TotalWrongAnswer = 2,
+                            TotalSkipAnswer = 1,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.00"),
+                            TestSectionPartId = test1Sections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
+                        }
                     }
-                }
-            });
+                });
+        }
+        
+        var listeningTest2 = listeningTests.FirstOrDefault(x => x.TestTitle.Contains("Listening Test 2"));
+        if (listeningTest2 != null)
+        {
+            var test2Sections = listeningTest2.TestSections.ToList();
+    
+            listeningTest2.TestHistories.Add(new()
+                {
+                    TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                    TotalCompletionTime = rnd.Next(3600),
+                    TotalRightAnswer = 26,
+                    TotalWrongAnswer = 13,
+                    TotalSkipAnswer = 1,
+                    TotalQuestion = 40,
+                    AccuracyRate = double.Parse("0.65"),
+                    TestType = listeningTest2.TestType,
+                    BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
+                    ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
+                    IsFull = rnd.Next(0, 1) == 1,
+                    TestCategoryId = listeningTest2.TestCategoryId,
+                    UserId = users[0].UserId,
+                    TestId = listeningTest2.TestId,
+                    PartitionHistories = new List<PartitionHistory>()
+                    {
+                        new()
+                        {
+                            TestSectionName = "Recording 1",
+                            TotalRightAnswer = 8,
+                            TotalWrongAnswer = 2,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.6"),
+                            TestSectionPartId = test2Sections[0].TestSectionPartitions.First().TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 2",
+                            TotalRightAnswer = 7,
+                            TotalWrongAnswer = 3,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.375"),
+                            TestSectionPartId = test2Sections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 2",
+                            TotalRightAnswer = 6,
+                            TotalWrongAnswer = 4,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.2"),
+                            TestSectionPartId = test2Sections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 3",
+                            TotalRightAnswer = 5,
+                            TotalWrongAnswer = 5,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.4"),
+                            TestSectionPartId = test2Sections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 3",
+                            TotalRightAnswer = 9,
+                            TotalWrongAnswer = 1,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.8"),
+                            TestSectionPartId = test2Sections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 4",
+                            TotalRightAnswer = 8,
+                            TotalWrongAnswer = 2,
+                            TotalSkipAnswer = 0,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.1"),
+                            TestSectionPartId = test2Sections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
+                        },
+                        new()
+                        {
+                            TestSectionName = "Recording 4",
+                            TotalRightAnswer = 7,
+                            TotalWrongAnswer = 2,
+                            TotalSkipAnswer = 1,
+                            TotalQuestion = 10,
+                            AccuracyRate = double.Parse("0.00"),
+                            TestSectionPartId = test2Sections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
+                        }
+                    }
+                });
         }
 
         await dbContext.SaveChangesAsync();

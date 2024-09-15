@@ -20,6 +20,8 @@ public static class ApiRoute
         public const string PracticeById = Base + "/tests/{id}/practice";
         public const string StartTest = Base + "/tests/{id}/start";
         public const string GetForReSubmit = Base + "/tests/{id}/re-submit";
+        public const string GetAnalyticsTimeFilter = Base + "/tests/analytics/time-filter";
+        public const string GetAnalytics = Base + "/tests/analytics";
         
         // [HTTP POST]
         public const string Submission = Base + "/tests/submission";

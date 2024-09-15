@@ -555,6 +555,7 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.TotalSkipAnswer).HasColumnName("total_skip_answer");
             entity.Property(e => e.TotalWrongAnswer).HasColumnName("total_wrong_answer");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.IsResubmitted).HasColumnName("is_resubmitted");
 
             entity.HasOne(d => d.ScoreCalculation).WithMany(p => p.TestHistories)
                 .HasForeignKey(d => d.ScoreCalculationId)

@@ -307,10 +307,16 @@ public class TestService(
                     }
                     else // Is multiple choice question
                     {
-                        // Compare with answer display
-                        isSelectedAnswerCorrect =
-                            questionDto.QuestionAnswers.Any(x =>
-                                x.AnswerDisplay.ToUpper().Equals(qa.SelectedAnswer.ToUpper()) && x.IsTrue);
+                        // Check is reading test  
+                        var isReadingTest = singleTestEntity.TestType.Equals(TestType.Reading.GetDescription());
+
+                        isSelectedAnswerCorrect = isReadingTest // Is reading test
+                            // Compare with answer text
+                            ? questionDto.QuestionAnswers.Any(x =>
+                                x.AnswerText.ToUpper().Equals(qa.SelectedAnswer.ToUpper()) && x.IsTrue)
+                            // Compare with answer display
+                            : questionDto.QuestionAnswers.Any(x =>
+                                x.AnswerDisplay.ToUpper().Equals(qa.SelectedAnswer.ToUpper()) && x.IsTrue); 
                     }
 
                     // Create grade status whether the selected answer is correct or not 
