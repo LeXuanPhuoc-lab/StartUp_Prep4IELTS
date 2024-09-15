@@ -81,6 +81,13 @@ public class TestHistoryService(UnitOfWork unitOfWork) : ITestHistoryService
         return testHistoryEntities.Adapt<List<TestHistoryDto>>(); 
     }
 
+    public async Task<IList<TestHistoryDto>> FindAllByUserIdWithDaysRangeAsync(Guid userId, int days)
+    {
+        var testHistoryEntities = 
+            await unitOfWork.TestHistoryRepository.FindAllByUserIdWithDaysRangeAsync(userId, days);
+        return testHistoryEntities.Adapt<List<TestHistoryDto>>(); 
+    }
+
     public async Task<TestHistoryDto> FindByIdWithIncludePartitionAndGradeAsync(int testHistoryId)
     {
         var testHistoryEntity = 

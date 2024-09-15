@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prep4IELTS.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InititalDatabase : Migration
+    public partial class IntitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -424,7 +424,8 @@ namespace Prep4IELTS.Data.Migrations
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     test_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     score_calculation_id = table.Column<int>(type: "int", nullable: true),
-                    test_category_id = table.Column<int>(type: "int", nullable: false)
+                    test_category_id = table.Column<int>(type: "int", nullable: false),
+                    is_resubmitted = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {

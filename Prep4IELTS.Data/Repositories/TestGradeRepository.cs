@@ -24,10 +24,12 @@ public class TestGradeRepository : GenericRepository<TestGrade>
     }
 
 
-    public async Task<bool> UpdateTestGradesAsync(List<TestGrade> testGrades, int testHistoryId, int totalCompletionTime, DateTime takenDate)
+    public async Task<bool> UpdateTestGradesAsync(List<TestGrade> testGrades, int testHistoryId, 
+        int totalCompletionTime, DateTime takenDate)
     {
         // Update test and partition history report
         var testHistory = DbContext.TestHistories
+            .Include(th => th.Test)
             .Include(th => th.PartitionHistories)
             .ThenInclude(tph => tph.TestGrades)
             .FirstOrDefault(t => t.TestHistoryId == testHistoryId);
@@ -78,13 +80,19 @@ public class TestGradeRepository : GenericRepository<TestGrade>
                 // Retrieve list answers by question id
                 var questionAnswers =
                     await DbContext.QuestionAnswers.Where(qa => qa.QuestionId == tg.QuestionId).ToListAsync();
-
+                
+                // Check test type
+                var isReadingTestType = testHistory.Test.TestType.Equals(TestType.Reading.GetDescription());
+                
                 // Check correctness
                 var isCorrect = !isMultipleChoice // Is not multiple choice
                     // Compare with answer text
                     ? questionAnswers.Any(qa => qa.AnswerText.Equals(tg.InputedAnswer))
-                    // Compare with answer display (A, B, C, D, ...)
-                    : questionAnswers.Any(qa => qa.AnswerDisplay.Equals(tg.InputedAnswer));
+                    : isReadingTestType // Check is reading test type
+                        // Compare with answer text
+                        ? questionAnswers.Any(qa => qa.AnswerText.Equals(tg.InputedAnswer))
+                        // Compare with answer display (A, B, C, D, ...)
+                        : questionAnswers.Any(qa => qa.AnswerDisplay.Equals(tg.InputedAnswer));
 
                 // Check empty answer
                 if (string.IsNullOrEmpty(tg.InputedAnswer))
@@ -125,24 +133,26 @@ public class TestGradeRepository : GenericRepository<TestGrade>
             ? 0
             : testHistory.TotalRightAnswer / (double)testHistory.TotalQuestion;
 
-        // Get score calculation
-        var totalRightAnswer = testHistory.TotalRightAnswer!.Value;
-        var scoreCalculation = 
-            await DbContext.ScoreCalculations.FirstOrDefaultAsync(sc =>
-                sc.FromTotalRight <= totalRightAnswer && sc.ToTotalRight >= totalRightAnswer &&
-                sc.TestType.Equals(testHistory.TestType));
-
-        // Update history band score 
-        if (scoreCalculation != null!)
-        {
-            testHistory.BandScore = scoreCalculation.BandScore;
-            testHistory.ScoreCalculationId = scoreCalculation.ScoreCalculationId;
-        }
-        else
-        {
-            testHistory.BandScore = "0";
-        }
+        // Get score calculation (DO NOT UPDATE SCORE WHEN USER RESUBMIT TEST)
+        // var totalRightAnswer = testHistory.TotalRightAnswer!.Value;
+        // var scoreCalculation = 
+        //     await DbContext.ScoreCalculations.FirstOrDefaultAsync(sc =>
+        //         sc.FromTotalRight <= totalRightAnswer && sc.ToTotalRight >= totalRightAnswer &&
+        //         sc.TestType.Equals(testHistory.TestType));
+        //
+        // // Update history band score 
+        // if (scoreCalculation != null!)
+        // {
+        //     testHistory.BandScore = scoreCalculation.BandScore;
+        //     testHistory.ScoreCalculationId = scoreCalculation.ScoreCalculationId;
+        // }
+        // else
+        // {
+        //     testHistory.BandScore = "0";
+        // }
         
+        // Mark as resubmitted test
+        testHistory.IsResubmitted = true;
         // Update total completion time
         testHistory.TotalCompletionTime = totalCompletionTime;
         // Update taken date

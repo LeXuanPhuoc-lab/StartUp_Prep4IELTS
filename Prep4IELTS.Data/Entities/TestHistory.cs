@@ -34,6 +34,7 @@ public partial class TestHistory
     public int? ScoreCalculationId { get; set; }
 
     public int TestCategoryId { get; set; }
+    public bool? IsResubmitted { get; set; }
 
     public virtual ICollection<PartitionHistory> PartitionHistories { get; set; } = new List<PartitionHistory>();
 

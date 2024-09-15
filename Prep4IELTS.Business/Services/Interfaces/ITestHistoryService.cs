@@ -24,6 +24,7 @@ public interface ITestHistoryService
     // Additional
     Task<IList<TestHistoryDto>> FindAllByTestAndUserAsync(Guid testId, Guid userId);
     Task<IList<TestHistoryDto>> FindAllUserIdAsync(Guid userId);
+    Task<IList<TestHistoryDto>> FindAllByUserIdWithDaysRangeAsync(Guid userId, int days);
     Task<TestHistoryDto> FindByIdWithIncludePartitionAndGradeAsync(int testHistoryId);
     Task<bool> RemoveAllByTestId(Guid testId);
     Task<bool> IsExistTestHistoryAsync(int testHistoryId);

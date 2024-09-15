@@ -8,7 +8,6 @@ using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Prep4IELTS.Business.Constants;
 using Prep4IELTS.Business.Models;
 using Prep4IELTS.Business.Services.Interfaces;
@@ -17,7 +16,7 @@ using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;
 using Prep4IELTS.Data.Enum;
 using Prep4IELTS.Data.Extensions;
-using Serilog;
+using SystemRole = Prep4IELTS.Data.Enum.SystemRole;
 
 namespace EXE202_Prep4IELTS.Controllers;
 
@@ -121,8 +120,8 @@ public class TestController(
     [ClerkAuthorize(Roles = [SystemRoleConstants.Staff])]
     public async Task<IActionResult> GetAllTestDraftAsync([FromQuery] TestFilterRequest req)
     {
-        // Get staff information
-        var staffDto = HttpContext.Items["User"] as User;
+        // Check authentication & authorization
+        var staffDto = HttpContext.Items["User"] as UserDto;
         if (staffDto == null) return Unauthorized();
         
         // Get all test (draft) for particular staff
@@ -167,7 +166,7 @@ public class TestController(
             ? NotFound(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = "Not found any tests."
+                Message = $"Not found any tests as draft"
             })
             : Ok(new BaseResponse()
             {
@@ -520,9 +519,9 @@ public class TestController(
             // READING TEST
             case TestTypeConstants.Reading:
                 
-                // Check for audio resource in each sections
+                // Check for reading desc in each sections
                 var totalReadingDesc = testSections.Count(ts => 
-                    string.IsNullOrEmpty(ts.ReadingDesc));
+                    !string.IsNullOrEmpty(ts.ReadingDesc));
                 
                 // Invoke error
                 if (totalReadingDesc != testSections.Count)
@@ -741,5 +740,142 @@ public class TestController(
         return isHideSuccess
             ? NoContent()
             : StatusCode(StatusCodes.Status500InternalServerError);
+    }
+    
+    //  Summary:
+    //      Test analytics time filter
+    [HttpGet(ApiRoute.Test.GetAnalyticsTimeFilter, Name = nameof(GetAnalyticsTimeFilterAsync))]
+    public async Task<IActionResult> GetAnalyticsTimeFilterAsync([FromQuery] string lang)
+    {
+        var isVietnamese = lang.ToLower().Equals("vn");
+        var isEnglish = lang.ToLower().Equals("en");
+        
+        if(!isVietnamese && !isEnglish) return BadRequest(new BaseResponse()
+        {
+            StatusCode = StatusCodes.Status400BadRequest,
+            Message = "Not found any language match"
+        });
+
+        List<object> timeFilters =
+        [
+            new
+            {
+                Desc = isEnglish ? "The last 3 days" : "3 ngày gần nhất",
+                FilterPattern = TestAnalyticsFilterConstants.ThreeDays
+            },
+            new
+            {
+                Desc = isEnglish ? "The last 7 days" : "7 ngày gần nhất",
+                FilterPattern = TestAnalyticsFilterConstants.SevenDays
+            },
+            new
+            {
+                Desc = isEnglish ? "30 days" : "30 ngày",
+                FilterPattern = TestAnalyticsFilterConstants.AMonth
+            },
+            new
+            {
+                Desc = isEnglish ? "60 days" : "60 ngày",
+                FilterPattern = TestAnalyticsFilterConstants.TwoMonth
+            },
+            new
+            {
+                Desc = isEnglish ? "90 days" : "90 ngày",
+                FilterPattern = TestAnalyticsFilterConstants.ThreeMonth
+            },
+            new
+            {
+                Desc = isEnglish ? "6 months" : "6 tháng",
+                FilterPattern = TestAnalyticsFilterConstants.SixMonth
+            },
+            new
+            {
+                Desc = isEnglish ? "A year" : "1 năm",
+                FilterPattern = TestAnalyticsFilterConstants.AYear
+            }
+        ];
+
+        return await Task.FromResult(Ok(new BaseResponse()
+        {
+            StatusCode = StatusCodes.Status200OK,
+            Data = timeFilters
+        }));
+    }
+    
+    //  Summary:
+    //      Test analytics
+    [HttpGet(ApiRoute.Test.GetAnalytics, Name = nameof(GetTestAnalyticsAsync))]
+    [ClerkAuthorize(Roles = [SystemRoleConstants.Student, SystemRoleConstants.Staff])]
+    public async Task<IActionResult> GetTestAnalyticsAsync([FromQuery] string qDays)
+    {
+        // Check user authentication
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if(userDto == null) return Unauthorized();
+        
+        // Check time filter
+        var additionalDays = 0;
+        switch (qDays)
+        {
+            case TestAnalyticsFilterConstants.ThreeDays:
+                additionalDays = 3;
+                break;
+            case TestAnalyticsFilterConstants.SevenDays:
+                additionalDays = 7;
+                break;
+            case TestAnalyticsFilterConstants.AMonth:
+                additionalDays = 30;
+                break;
+            case TestAnalyticsFilterConstants.TwoMonth:
+                additionalDays = 60;
+                break;
+            case TestAnalyticsFilterConstants.ThreeMonth:
+                additionalDays = 90;
+                break;
+            case TestAnalyticsFilterConstants.SixMonth:
+                additionalDays = 180;
+                break;
+            case TestAnalyticsFilterConstants.AYear:
+                additionalDays = 360;
+                break;
+            default:
+                return UnprocessableEntity("qDays parameter is invalid");
+        }
+        // Get all test history by user 
+        var testHistoryDtos = await testHistoryService.FindAllByUserIdWithDaysRangeAsync(
+            userDto.UserId, additionalDays);
+        
+        // Not found any analytics
+        if (!testHistoryDtos.Any())
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found any test analytics"
+            });
+        }
+        
+        // Group history by test category
+        var groupHistoriesByCategory = 
+            testHistoryDtos
+                .GroupBy(g => g.TestCategory)
+                .Select(g => new TestCategoryAnalyticsResponse()
+                    .AddTestAnalyticsAsync(
+                        testTakenDate: userDto.TestTakenDate ?? null,
+                        targetScore: userDto.TargetScore ?? string.Empty,
+                        testCategoryName: g.Key.TestCategoryName ?? string.Empty, 
+                        testHistoryDtos: g.Select(th => th).ToList()));
+        
+        // Get all history by user id 
+        var userTestHistories = await testHistoryService.FindAllUserIdAsync(userDto.UserId);
+        
+        return Ok(new BaseResponse()
+        {
+            StatusCode = StatusCodes.Status200OK,
+            Data = new
+            {
+                TestCategoryAnalytics = groupHistoriesByCategory,
+                TestHistories = userTestHistories
+            }
+        });
     }
 }
