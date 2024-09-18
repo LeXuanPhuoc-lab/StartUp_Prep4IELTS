@@ -935,15 +935,39 @@ namespace Prep4IELTS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
 
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("cancellation_reason");
+
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("cancelled_at");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("create_at");
+
                     b.Property<decimal>("PaymentAmount")
                         .HasColumnType("decimal(10, 2)")
                         .HasColumnName("payment_amount");
+
+                    b.Property<string>("PaymentLinkId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("payment_link_id");
 
                     b.Property<int>("PaymentTypeId")
                         .HasColumnType("int")
                         .HasColumnName("payment_type_id");
 
-                    b.Property<DateTime>("TransactionDate")
+                    b.Property<string>("TransactionCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("transaction_code");
+
+                    b.Property<DateTime?>("TransactionDate")
                         .HasColumnType("datetime")
                         .HasColumnName("transaction_date");
 
@@ -1046,6 +1070,12 @@ namespace Prep4IELTS.Data.Migrations
                     b.Property<DateTime?>("TestTakenDate")
                         .HasColumnType("datetime")
                         .HasColumnName("test_taken_date");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("username");
 
                     b.HasKey("UserId");
 
@@ -1439,6 +1469,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.UserPremiumPackage", "UserPremiumPackage")
                         .WithMany("Transactions")
                         .HasForeignKey("UserPremiumPackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Transaction_UserPremiumPackage");
 
@@ -1502,6 +1533,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.PremiumPackage", "PremiumPackage")
                         .WithMany("UserPremiumPackages")
                         .HasForeignKey("PremiumPackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("PK_UserPremiumPackage_PremiumPackage");
 

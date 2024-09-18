@@ -87,12 +87,15 @@ public class TestGradeRepository : GenericRepository<TestGrade>
                 // Check correctness
                 var isCorrect = !isMultipleChoice // Is not multiple choice
                     // Compare with answer text
-                    ? questionAnswers.Any(qa => qa.AnswerText.Equals(tg.InputedAnswer))
+                    ? questionAnswers.Any(qa => qa.AnswerText.ToUpper()
+                        .Equals(tg.InputedAnswer.Trim().ToUpper()) && qa.IsTrue)
                     : isReadingTestType // Check is reading test type
                         // Compare with answer text
-                        ? questionAnswers.Any(qa => qa.AnswerText.Equals(tg.InputedAnswer))
+                        ? questionAnswers.Any(qa => qa.AnswerText.ToUpper()
+                            .Equals(tg.InputedAnswer.Trim().ToUpper()) && qa.IsTrue)
                         // Compare with answer display (A, B, C, D, ...)
-                        : questionAnswers.Any(qa => qa.AnswerDisplay.Equals(tg.InputedAnswer));
+                        : questionAnswers.Any(qa => qa.AnswerDisplay.ToUpper()
+                            .Equals(tg.InputedAnswer.Trim().ToUpper()) && qa.IsTrue);
 
                 // Check empty answer
                 if (string.IsNullOrEmpty(tg.InputedAnswer))

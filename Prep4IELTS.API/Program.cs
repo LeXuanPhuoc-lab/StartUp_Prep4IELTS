@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using System.Text.Json;
 using EXE202_Prep4IELTS.Extensions;
 using EXE202_Prep4IELTS.Middlewares;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +48,15 @@ builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
         options.InvalidModelStateResponseFactory = context =>
-            new BadRequestObjectResult(context.ModelState)
+        {
+            // Convert model state keys to camel case
+            var errors = context.ModelState
+                .ToDictionary(
+                    kvp => JsonNamingPolicy.CamelCase.ConvertName(kvp.Key), // Convert key to camel case
+                    kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray() // Get the error messages
+                );
+
+            var result = new UnprocessableEntityObjectResult(errors)
             {
                 ContentTypes =
                 {
@@ -55,6 +64,17 @@ builder.Services.AddControllers()
                     MediaTypeNames.Application.Xml,
                 }
             };
+
+            return result;
+            // new UnprocessableEntityObjectResult(context.ModelState)
+            // {
+            //     ContentTypes =
+            //     {
+            //         MediaTypeNames.Application.Json,
+            //         MediaTypeNames.Application.Xml,
+            //     }
+            // };
+        };
     })
     .AddXmlSerializerFormatters();
 

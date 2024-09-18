@@ -8,6 +8,8 @@ public class PayOSConfiguration
     public string CancelUrl { get; set; } = string.Empty;
     public string ChecksumKey { get; set; } = string.Empty;
     public string PaymentUrl { get; set; } = string.Empty;
+    // public string WebHookUrl { get; set; } = string.Empty;
+    public string ConfirmWebHookUrl { get; set; } = string.Empty;
     public string GetPaymentLinkInformationUrl { get; set; } = string.Empty;
     public string CancelPaymentUrl { get; set; } = string.Empty;
 }

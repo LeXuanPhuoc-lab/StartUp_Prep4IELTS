@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Prep4IELTS.Data.Entities;
 
@@ -15,9 +16,11 @@ public partial class UserPremiumPackage
 
     public bool IsActive { get; set; }
 
+    [JsonIgnore]
     public virtual PremiumPackage PremiumPackage { get; set; } = null!;
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-
+    
+    [JsonIgnore]
     public virtual User User { get; set; } = null!;
 }

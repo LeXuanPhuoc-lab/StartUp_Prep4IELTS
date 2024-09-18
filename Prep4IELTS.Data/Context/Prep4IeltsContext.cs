@@ -147,6 +147,7 @@ public partial class Prep4IeltsContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Comment_User");
         });
 
@@ -559,7 +560,7 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.ScoreCalculation).WithMany(p => p.TestHistories)
                 .HasForeignKey(d => d.ScoreCalculationId)
-                .HasConstraintName("FK_TestHistory_ScoreCaculation");
+                .HasConstraintName("FK_TestHistory_ScoreCalculation");
 
             entity.HasOne(d => d.TestCategory).WithMany(p => p.TestHistories)
                 .HasForeignKey(d => d.TestCategoryId)
@@ -573,7 +574,7 @@ public partial class Prep4IeltsContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.TestHistories)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TestHitory_User");
+                .HasConstraintName("FK_TestHistory_User");
         });
 
         modelBuilder.Entity<TestSection>(entity =>
@@ -644,10 +645,25 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.TransactionDate)
                 .HasColumnType("datetime")
                 .HasColumnName("transaction_date");
+            entity.Property(e => e.CreateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("create_at");
+            entity.Property(e => e.CancellationReason)
+                .HasMaxLength(50)
+                .HasColumnName("cancellation_reason");
+            entity.Property(e => e.CancelledAt)
+                .HasColumnType("datetime")
+                .HasColumnName("cancelled_at");
             entity.Property(e => e.TransactionStatus)
                 .HasMaxLength(100)
                 .HasColumnName("transaction_status");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.TransactionCode)
+                .HasMaxLength(50)
+                .HasColumnName("transaction_code");
+            entity.Property(e => e.PaymentLinkId)
+                .HasMaxLength(50)
+                .HasColumnName("payment_link_id");
             entity.Property(e => e.UserPremiumPackageId).HasColumnName("user_premium_package_id");
 
             entity.HasOne(d => d.PaymentType).WithMany(p => p.Transactions)
@@ -662,7 +678,8 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.UserPremiumPackage).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.UserPremiumPackageId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Transaction_UserPremiumPackage");
         });
 
@@ -677,6 +694,9 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.UserId)
                 .HasDefaultValueSql("(newsequentialid())")
                 .HasColumnName("user_id");
+            entity.Property(e => e.Username)
+                .HasMaxLength(50)
+                .HasColumnName("username");
             entity.Property(e => e.AvatarImage)
                 .HasMaxLength(2048)
                 .IsUnicode(false)
@@ -782,7 +802,8 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.PremiumPackage).WithMany(p => p.UserPremiumPackages)
                 .HasForeignKey(d => d.PremiumPackageId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("PK_UserPremiumPackage_PremiumPackage");
 
             entity.HasOne(d => d.User).WithOne(p => p.UserPremiumPackage)

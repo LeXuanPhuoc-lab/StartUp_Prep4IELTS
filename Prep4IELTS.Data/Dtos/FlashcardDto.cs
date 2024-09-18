@@ -12,6 +12,8 @@ public record FlashcardDto(
     bool IsPublic,
     ICollection<FlashcardDetail> FlashcardDetails)
 {
-    public Guid UserId { get; set; }
-    [JsonIgnore] public UserDto User { get; set; } = null!;
+    
+    
+    // public Guid UserId { get; set; }
+    // [JsonIgnore] public UserDto User { get; set; } = null!;
 };
