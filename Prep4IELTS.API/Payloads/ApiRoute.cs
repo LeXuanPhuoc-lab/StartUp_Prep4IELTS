@@ -4,9 +4,18 @@ public static class ApiRoute
 {
     private const string Base = "api";
 
+    public static class Clerk
+    {
+        public const string UserSyncWebhook = Base + "/webhook/clerk";
+    }
+    
     public static class User
     {
         public const string WhoAmI = Base + "/users/who-am-i";
+        public const string Create = Base + "/users/create";
+        public const string Update = Base + "/users/{userId}/update";
+        public const string Delete = Base + "/users/{userId}/delete";
+        public const string GetAllUserRole = Base + "/user-roles";
     }
 
     public static class Test
@@ -62,6 +71,7 @@ public static class ApiRoute
     {
         public const string CreatePaymentWithMethod = Base + "/payment/create";
         public const string GetPaymentIssuers = Base + "/payment/issuers";
+        public const string GetAllPaymentType = Base + "/payment/types";
         
         // MOMO
         public const string GetMomoPaymentMethods = Base + "/payment/momo-methods";
@@ -74,6 +84,9 @@ public static class ApiRoute
         // PayOS
         public const string GetPayOsPaymentLinkInformation = Base + "/payment/pay-os/payment-link-information/{paymentLinkId}";
         public const string CancelPayOsPayment = Base + "/payment/pay-os/cancel-payment/{paymentLinkId}";
+        public const string VerifyPaymentWebhookData = "/payment/pay-os/verify-payment-webhook-data";
+        public const string WebhookPayOsReturn = Base + "/payment/pay-os/return";
+        public const string WebhookPayOsCancel = Base + "/payment/pay-os/cancel";
     }
 
     public static class Resource
@@ -84,5 +97,16 @@ public static class ApiRoute
         public const string UpdateImage = Base + "/resources/image/update";
         public const string UpdateAudio = Base + "/resources/audio/update";
         public const string Delete = Base + "/resources/delete";
+    }
+
+    public static class PremiumPackage
+    {
+        public const string GetAll = Base + "/premium-packages";
+        public const string GetAllDraft = Base + "/premium-packages/draft";
+        public const string Create = Base + "/premium-packages/create";
+        public const string Publish = Base + "/premium-packages/{premiumPackageId}/publish";
+        public const string Hidden = Base + "/premium-packages/{premiumPackageId}/hidden";
+        public const string Update = Base + "/premium-packages/{premiumPackageId}/update";
+        public const string Delete = Base + "/premium-packages/{premiumPackageId}/delete";
     }
 }

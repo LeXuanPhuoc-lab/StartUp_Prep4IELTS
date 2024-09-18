@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prep4IELTS.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class IntitialDatabase : Migration
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -217,6 +217,7 @@ namespace Prep4IELTS.Data.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     clerk_id = table.Column<string>(type: "nvarchar(155)", maxLength: 155, nullable: false),
+                    username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     first_name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     last_name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
@@ -343,7 +344,8 @@ namespace Prep4IELTS.Data.Migrations
                         name: "PK_UserPremiumPackage_PremiumPackage",
                         column: x => x.premium_package_id,
                         principalTable: "Premium_Package",
-                        principalColumn: "premium_package_id");
+                        principalColumn: "premium_package_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -537,9 +539,14 @@ namespace Prep4IELTS.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     user_premium_package_id = table.Column<int>(type: "int", nullable: false),
+                    transaction_code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    payment_link_id = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     payment_amount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     transaction_status = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    transaction_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    transaction_date = table.Column<DateTime>(type: "datetime", nullable: true),
+                    create_at = table.Column<DateTime>(type: "datetime", nullable: false),
+                    cancellation_reason = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    cancelled_at = table.Column<DateTime>(type: "datetime", nullable: true),
                     payment_type_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -559,7 +566,8 @@ namespace Prep4IELTS.Data.Migrations
                         name: "FK_Transaction_UserPremiumPackage",
                         column: x => x.user_premium_package_id,
                         principalTable: "User_Premium_Package",
-                        principalColumn: "user_premium_package_id");
+                        principalColumn: "user_premium_package_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

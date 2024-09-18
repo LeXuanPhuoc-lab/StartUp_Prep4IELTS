@@ -2,6 +2,7 @@ using System.Reflection;
 using CloudinaryDotNet;
 using dotenv.net;
 using EXE202_Prep4IELTS.Payloads.Requests;
+using EXE202_Prep4IELTS.Payloads.Requests.PremiumPackage;
 using EXE202_Prep4IELTS.Payloads.Requests.Tests;
 using Mapster;
 using MapsterMapper;
@@ -37,6 +38,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITestGradeService, TestGradeService>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
         services.AddScoped<ICloudinaryService, CloudinaryService>();
+        services.AddScoped<ITransactionService, TransactionService>();
+        services.AddScoped<IUserPremiumPackageService, UserPremiumPackageService>();
+        services.AddScoped<IPremiumPackageService, PremiumPackageService>();
+        services.AddScoped<IPaymentTypeService, PaymentTypeService>();
+        services.AddScoped<ISystemRoleService, SystemRoleService>();
+        // services.AddScoped<ITransactionService, TransactionService>();
         
         // Register IHttpContextAccessor 
         services.AddHttpContextAccessor();
@@ -70,7 +77,8 @@ public static class ServiceCollectionExtensions
         typeAdapterConfig.NewConfig<UpdateTestRequest, Test>();
         typeAdapterConfig.NewConfig<CloudResourceRequest, CloudResource>();
         typeAdapterConfig.NewConfig<UpdateTestGradeRequest, TestGrade>();
-        
+        typeAdapterConfig.NewConfig<CreatePremiumPackageRequest, PremiumPackage>();
+        typeAdapterConfig.NewConfig<UpdatePremiumPackageRequest, PremiumPackage>();
         
         // Register the mapper as Singleton service for my application
         var mapperConfig = new Mapper(typeAdapterConfig);
@@ -109,9 +117,12 @@ public static class ServiceCollectionExtensions
             var paymentUrl = $"{payGate}/v2/payment-requests";
             var getPaymentLinkInformation = "https://api-merchant.payos.vn/v2/payment-requests/{0}";
             var cancelPaymentUrl = "https://api-merchant.payos.vn/v2/payment-requests/{0}/cancel";
-            var returnUrl = "https://localhost:6000/api/payment/payOs-return";
-            var cancelUrl = "https://localhost:6000/api/payment/payOs-cancel";
-
+            var confirmWebHookUrl = "https://api-merchant.payos.vn/confirm-webhook";
+            var returnUrl = "https://localhost:3000/payment-return";
+            var cancelUrl = "https://localhost:3000/payment-cancel";
+                            
+            // var webHookUrl = "https://localhost:6000/api/payment/pay-os/webhook-return";
+            
             services.Configure<PayOSConfiguration>(options =>
             {
                 options.ClientId = payOsConfig.ClientId;
@@ -122,6 +133,8 @@ public static class ServiceCollectionExtensions
                 options.PaymentUrl = paymentUrl;
                 options.GetPaymentLinkInformationUrl = getPaymentLinkInformation;
                 options.CancelPaymentUrl = cancelPaymentUrl;
+                // options.WebHookUrl = webHookUrl;
+                options.ConfirmWebHookUrl = confirmWebHookUrl;
             });
         }
         
@@ -133,7 +146,7 @@ public static class ServiceCollectionExtensions
         {
             // var returnUrl = "http://localhost:7000/api/payment/momo-return";
             var payGate = "https://test-payment.momo.vn";
-            var ipnUrl = "http://localhost:7000/api/payment/momo-ipn";
+            var ipnUrl = "https://localhost:6000/api/payment/momo-ipn";
             var paymentUrl = $"{payGate}/v2/gateway/api/create";
             var checkTransactionStatusUrl = $"{payGate}/v2/gateway/api/query";
             var paymentConfirmUrl = $"{payGate}/v2/gateway/api/confirm";

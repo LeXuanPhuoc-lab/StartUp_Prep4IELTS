@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using EXE202_Prep4IELTS.Payloads.Responses.Payments.Momo;
 using EXE202_Prep4IELTS.Payloads.Responses.Payments.PayOS;
+using Net.payOS.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Prep4IELTS.Business.Constants;
@@ -13,7 +14,7 @@ namespace EXE202_Prep4IELTS.Payloads.Requests.Payments.PayOS;
 public class PayOSPaymentRequest
 {
     public int OrderCode { get; set; } 
-    public decimal Amount { get; set; }
+    public int Amount { get; set; }
     public string Description { get; set; } = string.Empty;
     public string BuyerName { get; set; } = string.Empty;
     public string BuyerEmail { get; set; } = string.Empty;

@@ -1,26 +1,28 @@
 ﻿using System.Net;
+using EXE202_Prep4IELTS.Payloads;
 using EXE202_Prep4IELTS.Payloads.Requests;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Prep4IELTS.Business.Services.Interfaces;
+using Prep4IELTS.Data.Dtos;
+using Prep4IELTS.Data.Entities;
 using Svix;
+using SystemRole = Prep4IELTS.Data.Enum.SystemRole;
 
 namespace EXE202_Prep4IELTS.Controllers
 {
     [ApiController]
-    [Route("/api/webhook/clerk")]
-    public class ClerkController : ControllerBase
+    [Route(ApiRoute.Clerk.UserSyncWebhook)]
+    public class ClerkController(
+        IConfiguration configuration,
+        ISystemRoleService roleService,
+        IUserService userService) : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-
-        public ClerkController(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         [HttpPost]
         public async Task<IActionResult> HandleWebhook()
         {
-            var clerkWebhookSecret = _configuration["Clerk:WebHookSecret"]!;
+            var clerkWebhookSecret = configuration["Clerk:WebHookSecret"] ?? string.Empty;
 
             if (string.IsNullOrEmpty(clerkWebhookSecret))
             {
@@ -63,7 +65,7 @@ namespace EXE202_Prep4IELTS.Controllers
 
             if (webhookPayload is null)
             {
-                return BadRequest($"Missing payload");
+                return BadRequest("Missing payload");
             }
 
             if (webhookPayload.Type == "user.created")
@@ -73,8 +75,52 @@ namespace EXE202_Prep4IELTS.Controllers
                 var clerkId = webhookPayload.Data.Id;
                 var avatar = webhookPayload.Data.ImageUrl;
 
-                //create user here
-                return Ok(new { success = true, message = "User created", clerkId, email });
+                if (string.IsNullOrEmpty(clerkId)) return BadRequest("Missing clerk ID");
+                
+                // Mark whether user created or updated 
+                bool isRowEffected = false;
+                // Check exist user by email 
+                var userDto = await userService.FindByEmailAsync(email);
+                if (userDto != null) // User basic information already initiated 
+                {
+                    // Initiate new userDto to update already exist user information
+                    var toUpdateUser = new UserDto(
+                        userDto.Id, userDto.UserId, clerkId,
+                        FirstName: userDto.FirstName, LastName: userDto.LastName,
+                        Email: email, Username: username, Phone: userDto.Phone,
+                        AvatarImage: avatar, IsActive: userDto.IsActive,
+                        DateOfBirth: userDto.DateOfBirth, CreateDate: userDto.CreateDate,
+                        TestTakenDate: userDto.TestTakenDate, TargetScore: userDto.TargetScore, 
+                        RoleId: userDto.RoleId, Role: userDto.Role);
+                    // Progress update user information
+                    isRowEffected = await userService.UpdateAsync(
+                        toUpdateUser, isUpdateClerkId: true, isUpdateRole: true);
+                }
+                else
+                {
+                    // Get student role 
+                    var studentRole = await roleService.FindByRoleNameAsync(SystemRole.Student);
+                    // Create new user 
+                    var toInsertUser = new UserDto(
+                        Id:0, UserId: Guid.Empty, clerkId,
+                        FirstName: string.Empty, LastName: string.Empty,
+                        Email: email, Username: username, Phone: null,
+                        AvatarImage: avatar, IsActive: null,
+                        DateOfBirth: null, CreateDate: DateTime.UtcNow,
+                        TestTakenDate: null, TargetScore: null, 
+                        // Default is [Student] role
+                        RoleId: studentRole.RoleId,
+                        Role: null!);
+                    // Progress create new user 
+                    isRowEffected = await userService.InsertAsync(toInsertUser);
+                }
+                
+                if(isRowEffected)
+                    //create user here
+                    return Ok(new { success = true, message = "User created", clerkId, email });
+                
+                // Invoke error while create or update user 
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
 
             if (webhookPayload.Type == "user.updated")
@@ -83,10 +129,33 @@ namespace EXE202_Prep4IELTS.Controllers
                 var username = webhookPayload.Data.Username;
                 var clerkId = webhookPayload.Data.Id;
                 var avatar = webhookPayload.Data.ImageUrl;
-
-                //update user here, find user by clerkId and update
-
-                return Ok(new { success = true, message = "User updated", clerkId, email });
+                
+                if (string.IsNullOrEmpty(clerkId)) return BadRequest("Missing clerk ID");
+                
+                // Check exist user by email 
+                var userDto = await userService.FindByEmailAsync(email);
+                if (userDto != null) // User basic information already initiated 
+                {
+                    // Initiate new userDto to update already exist user information
+                    var toUpdateUser = new UserDto(
+                        userDto.Id, userDto.UserId, clerkId,
+                        FirstName: userDto.FirstName, LastName: userDto.LastName,
+                        Email: email, Username: username, Phone: userDto.Phone,
+                        AvatarImage: avatar, IsActive: userDto.IsActive,
+                        DateOfBirth: userDto.DateOfBirth, CreateDate: userDto.CreateDate,
+                        TestTakenDate: userDto.TestTakenDate, TargetScore: userDto.TargetScore, 
+                        RoleId: userDto.RoleId, Role: userDto.Role);
+                    // Progress update user information
+                    var isUpdated = await userService.UpdateAsync(
+                        toUpdateUser, isUpdateClerkId: false, isUpdateRole: false);
+                    
+                    return isUpdated // Is update successfully
+                        ? Ok(new { success = true, message = "User updated", clerkId, email })
+                        : StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+                }
+                
+                // Not found any user match
+                return NotFound($"Not found any user match email: {email}");
             }
 
             return Ok(new { success = true, message = "Webhook received" });

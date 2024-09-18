@@ -17,11 +17,35 @@ public class UserRepository : GenericRepository<User>
         return await _dbSet.AnyAsync(x => x.UserId.Equals(userId));
     }
 
-    public async Task<User?> GetUserByClerkId(string clerkId)
+    public async Task<User?> FindUserByClerkId(string clerkId)
     {
         return await _dbSet
             .Where(u => u.ClerkId == clerkId)
             .Include(u => u.Role)
             .SingleOrDefaultAsync();
     }
+
+    public async Task<User?> FindByEmailAsync(string email)
+    {
+        return await _dbSet.FirstOrDefaultAsync(u => u.Email.Equals(email));
+    }
+
+    public async Task RemoveByDeActiveAsync(Guid userId)
+    {
+        var user = await _dbSet.FirstOrDefaultAsync(u => u.UserId == userId);
+        
+        if(user == null) throw new NullReferenceException("User not found");
+        
+        // Remove by de-active
+        user.IsActive = false;
+    }
+
+    // Task<bool> RemoveAsync(Guid userId)
+    // {
+    //     var toDeleteUser = _dbSet
+    //         // .Include(u => u.Comments)
+    //         // .Include(u => u.TestHistories)
+    //         
+    //         .FirstOrDefaultAsync(u => u.UserId == userId);
+    // }
 }

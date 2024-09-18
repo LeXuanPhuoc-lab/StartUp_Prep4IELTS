@@ -73,7 +73,7 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
 
     public async Task<IEnumerable<TestHistory>> FindAllByUserIdWithDaysRangeAsync(Guid userId, int days)
     {
-        var currentDate = DateTime.Now;
+        var currentDate = DateTime.UtcNow;
         var timeSpan = TimeSpan.FromDays(days);
         var backDate = currentDate.Subtract(timeSpan);
         
@@ -162,6 +162,8 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
                     TestTitle = th.Test.TestTitle,
                     TestSections = th.Test.TestSections.Select(ts => new TestSection()
                     {
+                        // Free-tier include section transcript
+                        SectionTranscript = ts. SectionTranscript,
                         TestSectionId = ts.TestSectionId,
                         CloudResource = ts.CloudResource,
                     }).ToList(),   

@@ -104,10 +104,12 @@ public class TestRepository : GenericRepository<Test>
             .ToListAsync();
         
         // Add cloud sources of test sections
-        partitionCloudResources.AddRange(test.TestSections.Select(tsp => tsp.CloudResource));
+        partitionCloudResources.AddRange(test.TestSections
+            .Select(tsp => tsp.CloudResource));
 
         // Remove range
-        DbContext.CloudResources.RemoveRange(partitionCloudResources);
+        if(partitionCloudResources.Any())
+            DbContext.CloudResources.RemoveRange(partitionCloudResources.Where(cr => cr != null)!);
         // Save change
         return await SaveChangeWithTransactionAsync() > 0;
     }

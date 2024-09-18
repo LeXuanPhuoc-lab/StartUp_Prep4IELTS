@@ -7,10 +7,10 @@ namespace Prep4IELTS.Business.Services;
 
 public class TestPartitionHistoryService(UnitOfWork unitOfWork) : ITestPartitionHistoryService
 {
-    public async Task<PartitionHistoryDto> FindByIdAndGradeAsync(int id, int testGradeId)
+    public async Task<PartitionHistoryDto> FindByIdAndGradeAsync(int id, int testGradeId, bool? hasPremiumPackage)
     {
         var partitionHistoryEntity = 
-            await unitOfWork.PartitionHistoryRepository.FindByIdAndGradeAsync(id, testGradeId);
+            await unitOfWork.PartitionHistoryRepository.FindByIdAndGradeAsync(id, testGradeId, hasPremiumPackage);
         return partitionHistoryEntity.Adapt<PartitionHistoryDto>();
     }
 }

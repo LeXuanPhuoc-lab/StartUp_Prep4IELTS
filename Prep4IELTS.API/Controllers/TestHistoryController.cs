@@ -1,12 +1,15 @@
+using EXE202_Prep4IELTS.Attributes;
 using EXE202_Prep4IELTS.Payloads;
 using EXE202_Prep4IELTS.Payloads.Responses;
 using EXE202_Prep4IELTS.Payloads.Responses.Tests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Prep4IELTS.Business.Constants;
 using Prep4IELTS.Business.Models;
 using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Business.Utils;
 using Prep4IELTS.Data.Dtos;
+using Prep4IELTS.Data.Enum;
 
 namespace EXE202_Prep4IELTS.Controllers;
 
@@ -14,6 +17,7 @@ namespace EXE202_Prep4IELTS.Controllers;
 public class TestHistoryController(
     ITestHistoryService testHistoryService,
     ITestPartitionHistoryService testPartitionHistoryService,
+    IUserPremiumPackageService userPremiumPackageService,
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
 {
     private readonly AppSettings _appSettings = monitor.CurrentValue;
@@ -121,9 +125,18 @@ public class TestHistoryController(
     //  Summary:
     //      Get detail for particular grade
     [HttpGet(ApiRoute.TestHistory.GetPartitionHistoryWithGradeById, Name = nameof(GetPartitionHistoryWithGradeByIdAsync))]
+    [ClerkAuthorize(Roles = [SystemRoleConstants.Staff, SystemRoleConstants.Student])]
     public async Task<IActionResult> GetPartitionHistoryWithGradeByIdAsync([FromRoute] int partitionId, [FromRoute] int testGradeId)
     {
-        var partitionHistoryDto = await testPartitionHistoryService.FindByIdAndGradeAsync(partitionId, testGradeId);
+        // User
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if(userDto == null) return Unauthorized();
+        // Check for premium package
+        var userPremiumPackage = await userPremiumPackageService.FindUserPremiumPackageAsync(userDto.UserId);
+        // Has premium package and is activated
+        bool hasPremiumPackage = userPremiumPackage != null && userPremiumPackage.IsActive;
+        
+        var partitionHistoryDto = await testPartitionHistoryService.FindByIdAndGradeAsync(partitionId, testGradeId, hasPremiumPackage);
         
         return partitionHistoryDto == null!
             ? NotFound(new BaseResponse()

@@ -10,6 +10,6 @@ public class UpdateTestGradeRequest
     [Required(ErrorMessage = "QuestionId is required.")]
     public int QuestionId { get; set; }
     
-    [Required(ErrorMessage = "InputedAnswer is required.")]
-    public string InputedAnswer { get; set; } = null!;
+    // [Required(ErrorMessage = "InputedAnswer is required.")]
+    public string? InputedAnswer { get; set; } = null;
 }

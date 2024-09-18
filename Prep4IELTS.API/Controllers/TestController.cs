@@ -350,7 +350,7 @@ public class TestController(
     {
         var testDto = await testService.FindByIdForPracticeAsync(id, section);
 
-        if (testDto == null!)
+        if (testDto == null)
         {
             return NotFound(new BaseResponse()
             {
@@ -472,7 +472,7 @@ public class TestController(
         testEntity.IsDraft = true;
         
         // Create date
-        testEntity.CreateDate = DateTime.Now;
+        testEntity.CreateDate = DateTime.UtcNow;
         
         // Get all test sections
         var testSections = testEntity.TestSections.ToList();
@@ -535,7 +535,7 @@ public class TestController(
         }
         
         // Update Test properties
-        testEntity.CreateDate = DateTime.Now;
+        testEntity.CreateDate = DateTime.UtcNow;
         testEntity.TotalEngaged = 0;
         
         // Check for resource exists
@@ -548,7 +548,7 @@ public class TestController(
                 {
                     PublicId = testSectionReq[i].CloudResource!.PublicId,
                     Url = testSectionReq[i].CloudResource?.Url!,
-                    CreateDate = DateTime.Now
+                    CreateDate = DateTime.UtcNow
                 };
             }
             
@@ -562,7 +562,7 @@ public class TestController(
                     {
                         PublicId = testSectionPartitionReq[j].CloudResource!.PublicId,
                         Url = testSectionPartitionReq[j].CloudResource?.Url!,
-                        CreateDate = DateTime.Now
+                        CreateDate = DateTime.UtcNow
                     };
                 }
             }
@@ -724,7 +724,7 @@ public class TestController(
         
         // Check exist any history in test 
         var isExistAnyHistory = await testService.IsExistAnyHistoryAsync(id);
-        if (!isExistAnyHistory)
+        if (isExistAnyHistory)
         {
             return BadRequest(new BaseResponse()
             {

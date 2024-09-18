@@ -33,6 +33,13 @@ public class UnitOfWork(Prep4IeltsContext unitOfWorkContext) : IDisposable
     private PartitionTagRepository _partitionTagRepository = null!;
     #endregion
 
+    #region Payment Related
+    private PremiumPackageRepository _premiumPackageRepository = null!;
+    private TransactionRepository _transactionRepository = null!;
+    private UserPremiumPackageRepository _userPremiumPackageRepository = null!;
+    private PaymentTypeRepository _paymentTypeRepository = null!;
+    #endregion
+    
     #region Others
     private CommentRepository _commentRepository = null!;
     private FlashcardRepository _flashcardRepository = null!;
@@ -93,6 +100,17 @@ public class UnitOfWork(Prep4IeltsContext unitOfWorkContext) : IDisposable
     public ScoreCalculationRepository ScoreCalculationRepository
         => _scoreCalculationRepostiroy ??= new(unitOfWorkContext);
     
+    public PremiumPackageRepository PremiumPackageRepository
+        => _premiumPackageRepository ??= new(unitOfWorkContext);
+    
+    public TransactionRepository TransactionRepository
+        => _transactionRepository ??= new(unitOfWorkContext);
+    
+    public UserPremiumPackageRepository UserPremiumPackageRepository
+        => _userPremiumPackageRepository ??= new(unitOfWorkContext);
+    
+    public PaymentTypeRepository PaymentTypeRepository
+        => _paymentTypeRepository ??= new(unitOfWorkContext);
     #endregion
     
     private bool _disposed = false;

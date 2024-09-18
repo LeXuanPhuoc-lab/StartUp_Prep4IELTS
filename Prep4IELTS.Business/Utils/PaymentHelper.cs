@@ -9,7 +9,7 @@ public class PaymentHelper
 
     public static int GenerateRandomOrderCodeDigits(int length)
     {
-        return int.Parse(GenerateRandomDigits(length));
+        return int.Parse(GenerateRandomDigitsWithTimeStamp(length));
     }
 
     public static string GenerateOrderId(string requestId)
@@ -37,5 +37,26 @@ public class PaymentHelper
         }
 
         return digits;
+    }
+    
+    private static string GenerateRandomDigitsWithTimeStamp(int length)
+    {
+        var rnd = new Random();
+    
+        // Get a timestamp (ticks)
+        long timestamp = DateTime.Now.Ticks;
+    
+        // Use the last part of the timestamp to ensure limited size 
+        string timestampPart = timestamp.ToString().Substring(timestamp.ToString().Length - Math.Min(8, length));
+
+        // Generate the random digits portion
+        string digits = string.Empty;
+        for (int i = 0; i < length - timestampPart.Length; ++i)
+        {
+            digits += rnd.Next(0, 10); 
+        }
+
+        // Combine random digits with timestamp part
+        return digits + timestampPart;
     }
 }

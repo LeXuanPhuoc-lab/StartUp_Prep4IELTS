@@ -13,7 +13,7 @@ public class PartitionHistoryRepository : GenericRepository<PartitionHistory>
     {
     }
 
-    public async Task<PartitionHistory?> FindByIdAndGradeAsync(int id, int testGradeId)
+    public async Task<PartitionHistory?> FindByIdAndGradeAsync(int id, int testGradeId, bool? hasPremiumPackage)
     {
         return await _dbSet.Where(ph => ph.PartitionHistoryId == id)
             .AsSplitQuery()
@@ -77,19 +77,20 @@ public class PartitionHistoryRepository : GenericRepository<PartitionHistory>
                         InputedAnswer = tg.InputedAnswer,
                         QuestionId = tg.QuestionId,
                         PartitionHistoryId = tg.PartitionHistoryId,
-                        Question = tg.Question.IsMultipleChoice
-                            ? new Question()
-                            {
-                                QuestionId = tg.Question.QuestionId,
-                                QuestionDesc = tg.Question.QuestionDesc,
-                                QuestionNumber = tg.Question.QuestionNumber,
-                                IsMultipleChoice = tg.Question.IsMultipleChoice,
-                                TestSectionPartId = tg.Question.TestSectionPartId,
-                                QuestionAnswers = tg.Question.QuestionAnswers
-                            }
-                            : null!,
+                        Question = new Question()
+                        {
+                            QuestionId = tg.Question.QuestionId,
+                            QuestionDesc = tg.Question.QuestionDesc,
+                            QuestionNumber = tg.Question.QuestionNumber,
+                            IsMultipleChoice = tg.Question.IsMultipleChoice,
+                            TestSectionPartId = tg.Question.TestSectionPartId,
+                            QuestionAnswers = tg.Question.QuestionAnswers,
+                            QuestionAnswerExplanation = hasPremiumPackage.HasValue && hasPremiumPackage.Value
+                                ? tg.Question.QuestionAnswerExplanation : null
+                        }
                     })
                     .ToList()
             }).FirstOrDefaultAsync();
     }
+    
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace Prep4IELTS.Data.Entities;
 
@@ -9,13 +11,15 @@ public partial class User
 
     public Guid UserId { get; set; }
 
-    public string ClerkId { get; set; } = null!;
+    public string ClerkId { get; set; } = string.Empty;
 
-    public string FirstName { get; set; } = null!;
+    public string Username { get; set; } = string.Empty;
+    
+    public string FirstName { get; set; } = string.Empty;
 
-    public string LastName { get; set; } = null!;
+    public string LastName { get; set; } = string.Empty;
 
-    public string Email { get; set; } = null!;
+    public string Email { get; set; } = string.Empty;
 
     public DateTime? DateOfBirth { get; set; }
 
@@ -45,6 +49,7 @@ public partial class User
 
     public virtual ICollection<UserFlashcard> UserFlashcards { get; set; } = new List<UserFlashcard>();
 
+    [JsonIgnore]
     public virtual UserPremiumPackage? UserPremiumPackage { get; set; }
 
     public virtual ICollection<UserSpeakingSampleHistory> UserSpeakingSampleHistories { get; set; } = new List<UserSpeakingSampleHistory>();

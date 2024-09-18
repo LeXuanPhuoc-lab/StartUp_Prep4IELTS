@@ -26,6 +26,10 @@ public class MappingRegistration : IRegister
         config.NewConfig<SystemRole, SystemRoleDto>();
         config.NewConfig<User, UserDto>();
         config.NewConfig<Flashcard, FlashcardDto>();
+        config.NewConfig<Transaction, TransactionDto>();
+        config.NewConfig<PaymentType, PaymentTypeDto>();
+        config.NewConfig<PremiumPackage, PremiumPackageDto>();
+        config.NewConfig<UserPremiumPackage, UserPremiumPackageDto>();
         // config.NewConfig<FlashcardDetail, FlashcardDetailDto>();
     }
 }
