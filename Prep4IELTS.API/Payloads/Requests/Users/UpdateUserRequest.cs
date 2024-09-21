@@ -8,9 +8,11 @@ public class UpdateUserRequest
     public string? Username { get; set; } = string.Empty;
     
     [MaxLength(length: 50, ErrorMessage = "FirstName length less than 50 characters.")]
+    [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "FirstName cannot contain numbers or special characters.")]
     public string? FirstName { get; set; } = string.Empty;
     
     [MaxLength(length: 50, ErrorMessage = "LastName length less than 50 characters.")]
+    [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "LastName cannot contain numbers or special characters.")]
     public string? LastName { get; set; } = string.Empty;
 
     public DateTime? DateOfBirth { get; set; }
@@ -21,4 +23,6 @@ public class UpdateUserRequest
     public DateTime? TestTakenDate { get; set; }
 
     public string? TargetScore { get; set; }
+
+    public int? RoleId { get; set; }
 }

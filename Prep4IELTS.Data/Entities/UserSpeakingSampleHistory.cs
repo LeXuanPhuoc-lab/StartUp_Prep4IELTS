@@ -9,9 +9,9 @@ public partial class UserSpeakingSampleHistory
 
     public Guid UserId { get; set; }
 
-    public int TopicSampleId { get; set; }
-
-    public virtual SpeakingTopicSample TopicSample { get; set; } = null!;
+    public int SpeakingSampleId { get; set; }
+    
+    public virtual SpeakingSample SpeakingSample { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

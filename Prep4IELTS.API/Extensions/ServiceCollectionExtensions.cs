@@ -43,6 +43,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPremiumPackageService, PremiumPackageService>();
         services.AddScoped<IPaymentTypeService, PaymentTypeService>();
         services.AddScoped<ISystemRoleService, SystemRoleService>();
+        services.AddScoped<ISpeakingSampleService, SpeakingSampleService>();
         // services.AddScoped<ITransactionService, TransactionService>();
         
         // Register IHttpContextAccessor 

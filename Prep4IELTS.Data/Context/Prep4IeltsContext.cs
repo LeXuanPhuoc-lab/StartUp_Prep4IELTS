@@ -39,9 +39,9 @@ public partial class Prep4IeltsContext : DbContext
 
     public virtual DbSet<SpeakingPart> SpeakingParts { get; set; }
 
-    public virtual DbSet<SpeakingTopic> SpeakingTopics { get; set; }
+    // public virtual DbSet<SpeakingTopic> SpeakingTopics { get; set; }
 
-    public virtual DbSet<SpeakingTopicSample> SpeakingTopicSamples { get; set; }
+    public virtual DbSet<SpeakingSample> SpeakingSamples { get; set; }
 
     public virtual DbSet<SystemRole> SystemRoles { get; set; }
 
@@ -340,33 +340,52 @@ public partial class Prep4IeltsContext : DbContext
 
         modelBuilder.Entity<SpeakingPart>(entity =>
         {
-            entity.HasKey(e => e.PartId).HasName("PK_SpeakingPart");
+            entity.HasKey(e => e.SpeakingPartId).HasName("PK_SpeakingPart");
 
             entity.ToTable("Speaking_Part");
 
-            entity.Property(e => e.PartId).HasColumnName("part_id");
+            entity.Property(e => e.SpeakingPartId).HasColumnName("speaking_part_id");
             entity.Property(e => e.CreateDate)
                 .HasColumnType("datetime")
                 .HasColumnName("create_date");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.PartDescription)
+            entity.Property(e => e.SpeakingPartDescription)
                 .HasMaxLength(1000)
-                .HasColumnName("part_description");
-            entity.Property(e => e.PartNumber).HasColumnName("part_number");
-            entity.Property(e => e.TopicSampleId).HasColumnName("topic_sample_id");
+                .HasColumnName("speaking_part_description");
+            entity.Property(e => e.SpeakingPartNumber).HasColumnName("speaking_part_number");
+            entity.Property(e => e.SpeakingSampleId).HasColumnName("speaking_sample_id");
 
-            entity.HasOne(d => d.TopicSample).WithMany(p => p.SpeakingParts)
-                .HasForeignKey(d => d.TopicSampleId)
+            entity.HasOne(d => d.SpeakingSample).WithMany(p => p.SpeakingParts)
+                .HasForeignKey(d => d.SpeakingSampleId)
                 .HasConstraintName("FK_SpeakingPart_Sample");
         });
 
-        modelBuilder.Entity<SpeakingTopic>(entity =>
+        // modelBuilder.Entity<SpeakingTopic>(entity =>
+        // {
+        //     entity.HasKey(e => e.TopicId).HasName("PK_SpeakingTopic");
+        //
+        //     entity.ToTable("Speaking_Topic");
+        //
+        //     entity.Property(e => e.TopicId).HasColumnName("topic_id");
+        //     entity.Property(e => e.CreateDate)
+        //         .HasColumnType("datetime")
+        //         .HasColumnName("create_date");
+        //     entity.Property(e => e.Description)
+        //         .HasMaxLength(255)
+        //         .HasColumnName("description");
+        //     entity.Property(e => e.IsActive).HasColumnName("is_active");
+        //     entity.Property(e => e.TopicName)
+        //         .HasMaxLength(255)
+        //         .HasColumnName("topic_name");
+        // });
+
+        modelBuilder.Entity<SpeakingSample>(entity =>
         {
-            entity.HasKey(e => e.TopicId).HasName("PK_SpeakingTopic");
+            entity.HasKey(e => e.SpeakingSampleId).HasName("PK_SpeakingSample");
 
-            entity.ToTable("Speaking_Topic");
+            entity.ToTable("Speaking_Sample");
 
-            entity.Property(e => e.TopicId).HasColumnName("topic_id");
+            entity.Property(e => e.SpeakingSampleId).HasColumnName("speaking_sample_id");
             entity.Property(e => e.CreateDate)
                 .HasColumnType("datetime")
                 .HasColumnName("create_date");
@@ -374,33 +393,14 @@ public partial class Prep4IeltsContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("description");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.TopicName)
+            // entity.Property(e => e.TopicId).HasColumnName("topic_id");
+            entity.Property(e => e.SpeakingSampleName)
                 .HasMaxLength(255)
-                .HasColumnName("topic_name");
-        });
+                .HasColumnName("speaking_sample_name");
 
-        modelBuilder.Entity<SpeakingTopicSample>(entity =>
-        {
-            entity.HasKey(e => e.TopicSampleId).HasName("PK_SpeakingTopicSample");
-
-            entity.ToTable("Speaking_Topic_Sample");
-
-            entity.Property(e => e.TopicSampleId).HasColumnName("topic_sample_id");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.Description)
-                .HasMaxLength(255)
-                .HasColumnName("description");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.TopicId).HasColumnName("topic_id");
-            entity.Property(e => e.TopicSampleName)
-                .HasMaxLength(255)
-                .HasColumnName("topic_sample_name");
-
-            entity.HasOne(d => d.Topic).WithMany(p => p.SpeakingTopicSamples)
-                .HasForeignKey(d => d.TopicId)
-                .HasConstraintName("FK_SpeakingTopicSample_Topic");
+            // entity.HasOne(d => d.Topic).WithMany(p => p.SpeakingTopicSamples)
+            //     .HasForeignKey(d => d.TopicId)
+            //     .HasConstraintName("FK_SpeakingTopicSample_Topic");
         });
 
         modelBuilder.Entity<SystemRole>(entity =>
@@ -819,11 +819,11 @@ public partial class Prep4IeltsContext : DbContext
             entity.ToTable("User_Speaking_Sample_History");
 
             entity.Property(e => e.UserSampleHistoryId).HasColumnName("user_sample_history_id");
-            entity.Property(e => e.TopicSampleId).HasColumnName("topic_sample_id");
+            entity.Property(e => e.SpeakingSampleId).HasColumnName("speaking_sample_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.TopicSample).WithMany(p => p.UserSpeakingSampleHistories)
-                .HasForeignKey(d => d.TopicSampleId)
+            entity.HasOne(d => d.SpeakingSample).WithMany(p => p.UserSpeakingSampleHistories)
+                .HasForeignKey(d => d.SpeakingSampleId)
                 .HasConstraintName("FK_UserSpeakingSampleHistory_Sample");
 
             entity.HasOne(d => d.User).WithMany(p => p.UserSpeakingSampleHistories)
