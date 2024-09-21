@@ -438,6 +438,16 @@ public class TestRepository : GenericRepository<Test>
     {
         return await _dbSet.CountAsync();
     }
+    
+    public async Task<int> CountTotalDraftAsync()
+    {
+        return await _dbSet.Where(t => t.IsDraft).CountAsync();
+    }
+    
+    public async Task<int> CountTotalPublishAsync()
+    {
+        return await _dbSet.Where(t => !t.IsDraft).CountAsync();
+    }
 
     public async Task<bool> IsExistTestAsync(int id)
     {

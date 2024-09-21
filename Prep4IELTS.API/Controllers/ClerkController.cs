@@ -94,7 +94,7 @@ namespace EXE202_Prep4IELTS.Controllers
                         RoleId: userDto.RoleId, Role: userDto.Role);
                     // Progress update user information
                     isRowEffected = await userService.UpdateAsync(
-                        toUpdateUser, isUpdateClerkId: true, isUpdateRole: true);
+                        toUpdateUser, isUpdateClerkId: true, isUpdateRole: false);
                 }
                 else
                 {

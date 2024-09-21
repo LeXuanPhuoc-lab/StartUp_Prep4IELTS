@@ -15,5 +15,5 @@ public partial class SpeakingTopic
 
     public DateTime CreateDate { get; set; }
 
-    public virtual ICollection<SpeakingTopicSample> SpeakingTopicSamples { get; set; } = new List<SpeakingTopicSample>();
+    public virtual ICollection<SpeakingSample> SpeakingSamples { get; set; } = new List<SpeakingSample>();
 }

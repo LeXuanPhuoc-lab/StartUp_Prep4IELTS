@@ -12,8 +12,8 @@ using Prep4IELTS.Data.Context;
 namespace Prep4IELTS.Data.Migrations
 {
     [DbContext(typeof(Prep4IeltsContext))]
-    [Migration("20240918121349_Initial Database")]
-    partial class InitialDatabase
+    [Migration("20240921162633_Intitial Database")]
+    partial class IntitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -461,12 +461,12 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingPart", b =>
                 {
-                    b.Property<int>("PartId")
+                    b.Property<int>("SpeakingPartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("part_id");
+                        .HasColumnName("speaking_part_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PartId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SpeakingPartId"));
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime")
@@ -476,35 +476,35 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("is_active");
 
-                    b.Property<string>("PartDescription")
+                    b.Property<string>("SpeakingPartDescription")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)")
-                        .HasColumnName("part_description");
+                        .HasColumnName("speaking_part_description");
 
-                    b.Property<int>("PartNumber")
+                    b.Property<int>("SpeakingPartNumber")
                         .HasColumnType("int")
-                        .HasColumnName("part_number");
+                        .HasColumnName("speaking_part_number");
 
-                    b.Property<int>("TopicSampleId")
+                    b.Property<int>("SpeakingSampleId")
                         .HasColumnType("int")
-                        .HasColumnName("topic_sample_id");
+                        .HasColumnName("speaking_sample_id");
 
-                    b.HasKey("PartId")
+                    b.HasKey("SpeakingPartId")
                         .HasName("PK_SpeakingPart");
 
-                    b.HasIndex("TopicSampleId");
+                    b.HasIndex("SpeakingSampleId");
 
                     b.ToTable("Speaking_Part", (string)null);
                 });
 
-            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingTopic", b =>
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingSample", b =>
                 {
-                    b.Property<int>("TopicId")
+                    b.Property<int>("SpeakingSampleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("topic_id");
+                        .HasColumnName("speaking_sample_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TopicId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SpeakingSampleId"));
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime")
@@ -519,56 +519,16 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("is_active");
 
-                    b.Property<string>("TopicName")
+                    b.Property<string>("SpeakingSampleName")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasColumnName("topic_name");
+                        .HasColumnName("speaking_sample_name");
 
-                    b.HasKey("TopicId")
-                        .HasName("PK_SpeakingTopic");
+                    b.HasKey("SpeakingSampleId")
+                        .HasName("PK_SpeakingSample");
 
-                    b.ToTable("Speaking_Topic", (string)null);
-                });
-
-            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingTopicSample", b =>
-                {
-                    b.Property<int>("TopicSampleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("topic_sample_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TopicSampleId"));
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime")
-                        .HasColumnName("create_date");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("description");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasColumnName("is_active");
-
-                    b.Property<int>("TopicId")
-                        .HasColumnType("int")
-                        .HasColumnName("topic_id");
-
-                    b.Property<string>("TopicSampleName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("topic_sample_name");
-
-                    b.HasKey("TopicSampleId")
-                        .HasName("PK_SpeakingTopicSample");
-
-                    b.HasIndex("TopicId");
-
-                    b.ToTable("Speaking_Topic_Sample", (string)null);
+                    b.ToTable("Speaking_Sample", (string)null);
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.SystemRole", b =>
@@ -1195,9 +1155,9 @@ namespace Prep4IELTS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserSampleHistoryId"));
 
-                    b.Property<int>("TopicSampleId")
+                    b.Property<int>("SpeakingSampleId")
                         .HasColumnType("int")
-                        .HasColumnName("topic_sample_id");
+                        .HasColumnName("speaking_sample_id");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier")
@@ -1206,7 +1166,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasKey("UserSampleHistoryId")
                         .HasName("PK_UserSpeakingSampleHistory");
 
-                    b.HasIndex("TopicSampleId");
+                    b.HasIndex("SpeakingSampleId");
 
                     b.HasIndex("UserId");
 
@@ -1313,26 +1273,14 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingPart", b =>
                 {
-                    b.HasOne("Prep4IELTS.Data.Entities.SpeakingTopicSample", "TopicSample")
+                    b.HasOne("Prep4IELTS.Data.Entities.SpeakingSample", "SpeakingSample")
                         .WithMany("SpeakingParts")
-                        .HasForeignKey("TopicSampleId")
+                        .HasForeignKey("SpeakingSampleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_SpeakingPart_Sample");
 
-                    b.Navigation("TopicSample");
-                });
-
-            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingTopicSample", b =>
-                {
-                    b.HasOne("Prep4IELTS.Data.Entities.SpeakingTopic", "Topic")
-                        .WithMany("SpeakingTopicSamples")
-                        .HasForeignKey("TopicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_SpeakingTopicSample_Topic");
-
-                    b.Navigation("Topic");
+                    b.Navigation("SpeakingSample");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.Test", b =>
@@ -1379,7 +1327,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.ScoreCalculation", "ScoreCalculation")
                         .WithMany("TestHistories")
                         .HasForeignKey("ScoreCalculationId")
-                        .HasConstraintName("FK_TestHistory_ScoreCaculation");
+                        .HasConstraintName("FK_TestHistory_ScoreCalculation");
 
                     b.HasOne("Prep4IELTS.Data.Entities.TestCategory", "TestCategory")
                         .WithMany("TestHistories")
@@ -1398,7 +1346,7 @@ namespace Prep4IELTS.Data.Migrations
                         .WithMany("TestHistories")
                         .HasForeignKey("UserId")
                         .IsRequired()
-                        .HasConstraintName("FK_TestHitory_User");
+                        .HasConstraintName("FK_TestHistory_User");
 
                     b.Navigation("ScoreCalculation");
 
@@ -1553,9 +1501,9 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.UserSpeakingSampleHistory", b =>
                 {
-                    b.HasOne("Prep4IELTS.Data.Entities.SpeakingTopicSample", "TopicSample")
+                    b.HasOne("Prep4IELTS.Data.Entities.SpeakingSample", "SpeakingSample")
                         .WithMany("UserSpeakingSampleHistories")
-                        .HasForeignKey("TopicSampleId")
+                        .HasForeignKey("SpeakingSampleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_UserSpeakingSampleHistory_Sample");
@@ -1566,7 +1514,7 @@ namespace Prep4IELTS.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_UserSpeakingSampleHistory_User");
 
-                    b.Navigation("TopicSample");
+                    b.Navigation("SpeakingSample");
 
                     b.Navigation("User");
                 });
@@ -1642,12 +1590,7 @@ namespace Prep4IELTS.Data.Migrations
                     b.Navigation("TestHistories");
                 });
 
-            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingTopic", b =>
-                {
-                    b.Navigation("SpeakingTopicSamples");
-                });
-
-            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingTopicSample", b =>
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.SpeakingSample", b =>
                 {
                     b.Navigation("SpeakingParts");
 

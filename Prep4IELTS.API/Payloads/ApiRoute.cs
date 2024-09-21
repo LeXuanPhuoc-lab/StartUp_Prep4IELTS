@@ -14,8 +14,11 @@ public static class ApiRoute
         public const string WhoAmI = Base + "/users/who-am-i";
         public const string Create = Base + "/users/create";
         public const string Update = Base + "/users/{userId}/update";
+        public const string AuthorizeUpdate = Base + "/users/{userId}/authorize-update";
         public const string Delete = Base + "/users/{userId}/delete";
         public const string GetAllUserRole = Base + "/user-roles";
+        public const string GetAll = Base + "/users";
+        public const string GetAllInActive = Base + "/users-inactive";
     }
 
     public static class Test
@@ -108,5 +111,12 @@ public static class ApiRoute
         public const string Hidden = Base + "/premium-packages/{premiumPackageId}/hidden";
         public const string Update = Base + "/premium-packages/{premiumPackageId}/update";
         public const string Delete = Base + "/premium-packages/{premiumPackageId}/delete";
+    }
+
+    public static class SpeakingSample
+    {
+        public const string GetAll = Base + "/speaking-samples";
+        public const string GetById = Base + "/speaking-samples/{id}";
+        public const string AddUserSpeakingSampleHistory = Base + "/speaking-samples/{id}/history";
     }
 }

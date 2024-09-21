@@ -49,6 +49,8 @@ public interface ITestService
     Task<bool> PublishTestAsync(Guid id);
     Task<bool> HideTestAsync(Guid id);
     Task<int> CountTotalAsync();
+    Task<int> CountTotalDraftAsync();
+    Task<int> CountTotalPublishAsync();
     Task<bool> IsExistTestAsync(int id);
     Task<bool> IsExistTestAsync(Guid id);
     Task<bool> IsPublishedAsync(Guid id);

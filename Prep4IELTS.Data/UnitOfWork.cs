@@ -39,6 +39,11 @@ public class UnitOfWork(Prep4IeltsContext unitOfWorkContext) : IDisposable
     private UserPremiumPackageRepository _userPremiumPackageRepository = null!;
     private PaymentTypeRepository _paymentTypeRepository = null!;
     #endregion
+
+    #region Speaking
+
+    private SpeakingSampleRepository _speakingSampleRepository = null!;
+    #endregion
     
     #region Others
     private CommentRepository _commentRepository = null!;
@@ -111,6 +116,9 @@ public class UnitOfWork(Prep4IeltsContext unitOfWorkContext) : IDisposable
     
     public PaymentTypeRepository PaymentTypeRepository
         => _paymentTypeRepository ??= new(unitOfWorkContext);
+    
+    public SpeakingSampleRepository SpeakingSampleRepository
+        => _speakingSampleRepository ??= new(unitOfWorkContext);
     #endregion
     
     private bool _disposed = false;

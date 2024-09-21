@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prep4IELTS.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDatabase : Migration
+    public partial class IntitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -107,19 +107,19 @@ namespace Prep4IELTS.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Speaking_Topic",
+                name: "Speaking_Sample",
                 columns: table => new
                 {
-                    topic_id = table.Column<int>(type: "int", nullable: false)
+                    speaking_sample_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    topic_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    speaking_sample_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     is_active = table.Column<bool>(type: "bit", nullable: false),
                     create_date = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SpeakingTopic", x => x.topic_id);
+                    table.PrimaryKey("PK_SpeakingSample", x => x.speaking_sample_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -187,25 +187,25 @@ namespace Prep4IELTS.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Speaking_Topic_Sample",
+                name: "Speaking_Part",
                 columns: table => new
                 {
-                    topic_sample_id = table.Column<int>(type: "int", nullable: false)
+                    speaking_part_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    topic_sample_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    speaking_part_number = table.Column<int>(type: "int", nullable: false),
+                    speaking_part_description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     is_active = table.Column<bool>(type: "bit", nullable: false),
                     create_date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    topic_id = table.Column<int>(type: "int", nullable: false)
+                    speaking_sample_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SpeakingTopicSample", x => x.topic_sample_id);
+                    table.PrimaryKey("PK_SpeakingPart", x => x.speaking_part_id);
                     table.ForeignKey(
-                        name: "FK_SpeakingTopicSample_Topic",
-                        column: x => x.topic_id,
-                        principalTable: "Speaking_Topic",
-                        principalColumn: "topic_id",
+                        name: "FK_SpeakingPart_Sample",
+                        column: x => x.speaking_sample_id,
+                        principalTable: "Speaking_Sample",
+                        principalColumn: "speaking_sample_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -238,29 +238,6 @@ namespace Prep4IELTS.Data.Migrations
                         column: x => x.role_id,
                         principalTable: "System_Role",
                         principalColumn: "role_id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Speaking_Part",
-                columns: table => new
-                {
-                    part_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    part_number = table.Column<int>(type: "int", nullable: false),
-                    part_description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    is_active = table.Column<bool>(type: "bit", nullable: false),
-                    create_date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    topic_sample_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SpeakingPart", x => x.part_id);
-                    table.ForeignKey(
-                        name: "FK_SpeakingPart_Sample",
-                        column: x => x.topic_sample_id,
-                        principalTable: "Speaking_Topic_Sample",
-                        principalColumn: "topic_sample_id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -355,16 +332,16 @@ namespace Prep4IELTS.Data.Migrations
                     user_sample_history_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    topic_sample_id = table.Column<int>(type: "int", nullable: false)
+                    speaking_sample_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserSpeakingSampleHistory", x => x.user_sample_history_id);
                     table.ForeignKey(
                         name: "FK_UserSpeakingSampleHistory_Sample",
-                        column: x => x.topic_sample_id,
-                        principalTable: "Speaking_Topic_Sample",
-                        principalColumn: "topic_sample_id",
+                        column: x => x.speaking_sample_id,
+                        principalTable: "Speaking_Sample",
+                        principalColumn: "speaking_sample_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserSpeakingSampleHistory_User",
@@ -433,7 +410,7 @@ namespace Prep4IELTS.Data.Migrations
                 {
                     table.PrimaryKey("PK_TestHistory", x => x.test_history_id);
                     table.ForeignKey(
-                        name: "FK_TestHistory_ScoreCaculation",
+                        name: "FK_TestHistory_ScoreCalculation",
                         column: x => x.score_calculation_id,
                         principalTable: "Score_Calculation",
                         principalColumn: "score_calculation_id");
@@ -449,7 +426,7 @@ namespace Prep4IELTS.Data.Migrations
                         principalTable: "Test_Category",
                         principalColumn: "test_category_id");
                     table.ForeignKey(
-                        name: "FK_TestHitory_User",
+                        name: "FK_TestHistory_User",
                         column: x => x.user_id,
                         principalTable: "User",
                         principalColumn: "user_id");
@@ -750,14 +727,9 @@ namespace Prep4IELTS.Data.Migrations
                 column: "question_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Speaking_Part_topic_sample_id",
+                name: "IX_Speaking_Part_speaking_sample_id",
                 table: "Speaking_Part",
-                column: "topic_sample_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Speaking_Topic_Sample_topic_id",
-                table: "Speaking_Topic_Sample",
-                column: "topic_id");
+                column: "speaking_sample_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Test_test_category_id",
@@ -887,9 +859,9 @@ namespace Prep4IELTS.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_Speaking_Sample_History_topic_sample_id",
+                name: "IX_User_Speaking_Sample_History_speaking_sample_id",
                 table: "User_Speaking_Sample_History",
-                column: "topic_sample_id");
+                column: "speaking_sample_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Speaking_Sample_History_user_id",
@@ -946,7 +918,7 @@ namespace Prep4IELTS.Data.Migrations
                 name: "User_Flashcard");
 
             migrationBuilder.DropTable(
-                name: "Speaking_Topic_Sample");
+                name: "Speaking_Sample");
 
             migrationBuilder.DropTable(
                 name: "Test_History");
@@ -959,9 +931,6 @@ namespace Prep4IELTS.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Flashcard");
-
-            migrationBuilder.DropTable(
-                name: "Speaking_Topic");
 
             migrationBuilder.DropTable(
                 name: "Score_Calculation");

@@ -89,6 +89,8 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             if (!dbContext.PremiumPackages.Any()) await SeedPremiumPackageAsync();
             // Payment Types
             if (!dbContext.PaymentTypes.Any()) await SeedPaymentTypeAsync();
+            // Speaking samples
+            if (!dbContext.SpeakingSamples.Any()) await SeedSpeakingSamples();
             
             await Task.CompletedTask;
         }
@@ -98,6 +100,169 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         }
     }
     
+    
+    //  Summary:
+    //      Seeding speaking samples
+    private async Task SeedSpeakingSamples()
+    {
+        List<SpeakingSample> speakingSamples = new()
+        {
+            new()
+            {
+                SpeakingSampleName = "Speaking Sample 1",
+                IsActive = true,
+                CreateDate = DateTime.UtcNow,
+                SpeakingParts = new List<SpeakingPart>()
+                {
+                    new()
+                    {
+                        SpeakingPartNumber = 1,
+                        SpeakingPartDescription = "<h3><strong>Computer and Tablet</strong></h3>\n<div>1. What do you most often use a computer or a tablet for? (Why/Why not?)</div>\n<div>2. Can you remember when you first started using a computer or tablet?(When/Why not?)</div>\n<div>3. Do you sometimes find computers or tablets difficult to use?( Why/Why not?)</div>\n<div>4. How would your life be different if there were no computers?(Why/Why not?)</div>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new()
+                    {
+                        SpeakingPartNumber = 2,
+                        SpeakingPartDescription = "<h3><strong>Describe something you own that you want to replace</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>What it is</li>\n<li>Where it is</li>\n<li>How you got it</li>\n<li>And explain why you want to replace it</li>\n</ul>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new()
+                    {
+                        SpeakingPartNumber = 3,
+                        SpeakingPartDescription = "<ol>\n<li>What are other things that you want to replace?&nbsp;</li>\n<li>What kinds of things do young people like to replace?</li>\n<li>Do old people in VietNam like to collect and store things?</li>\n<li>Who do you think will want new things, children or old people?</li>\n<li>What's the difference between new things and old things?</li>\n</ol>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    }
+                }
+            },
+            new()
+            {
+                SpeakingSampleName = "Speaking Sample 2",
+                IsActive = true,
+                CreateDate = DateTime.UtcNow,
+                SpeakingParts = new List<SpeakingPart>()
+                {
+                    new()
+                    {
+                        SpeakingPartNumber = 1,
+                        SpeakingPartDescription = "<h3><strong>Free Time &amp; Weekend</strong></h3>\n<ol>\n<li> Do you like to go to the cinema/movies at weekends?(Why/Why not?)</li>\n<li> Who do you go with? Alone or with others?</li>\n<li> What do you enjoy doing most on weekends?( Why/Why not?)</li>\n<li> Are you planning to do anything special next weekend?( Why/Why not?)</li>\n<li> What kinds of activities do you often do in your spare time?</li>\n<li> How do you often relax yourself on weekends?</li>\n<li> How do your surrounding friends relax?</li>\n</ol>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new()
+                    {
+                        SpeakingPartNumber = 2,
+                        SpeakingPartDescription = "<h3><strong>Describe a person who often buy at the street market at cheaper price</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Who this person is</li>\n<li>What this person likes to buy</li>\n<li>Where this person likes to buy things</li>\n<li>And explain why this person likes cheap goods</li>\n</ul>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new()
+                    {
+                        SpeakingPartNumber = 3,
+                        SpeakingPartDescription = "<ol>\n<li>What are the differences between shopping in a shopping mall and in a street market?</li>\n<li>Which is more commonly visited in VietNam, shopping malls or street markets?</li>\n<li>Is advertising important?</li>\n<li>What are the disadvantages of shopping in a street market?</li>\n<li>How do you buy cheap products?</li>\n<li>Do you think things are more expensive in big shopping malls?</li>\n</ol>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    }
+                }
+            },
+            new()
+            {
+                SpeakingSampleName = "Speaking Sample 3",
+                IsActive = true,
+                CreateDate = DateTime.UtcNow,
+                SpeakingParts = new List<SpeakingPart>()
+                {
+                    new()
+                    {
+                        SpeakingPartNumber = 1,
+                        SpeakingPartDescription = "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new()
+                    {
+                        SpeakingPartNumber = 2,
+                        SpeakingPartDescription = "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new()
+                    {
+                        SpeakingPartNumber = 3,
+                        SpeakingPartDescription = "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    }
+                }
+            },
+            new()
+            {
+                SpeakingSampleName = "Speaking Sample 4",
+                IsActive = true,
+                CreateDate = DateTime.UtcNow,
+                SpeakingParts = new List<SpeakingPart>()
+                {
+                    new()
+                    {
+                        SpeakingPartNumber = 1,
+                        SpeakingPartDescription = "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new()
+                    {
+                        SpeakingPartNumber = 2,
+                        SpeakingPartDescription = "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new()
+                    {
+                        SpeakingPartNumber = 3,
+                        SpeakingPartDescription = "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    }
+                }
+            },
+             new()
+            {
+                SpeakingSampleName = "Speaking Sample 5",
+                IsActive = true,
+                CreateDate = DateTime.UtcNow,
+                SpeakingParts = new List<SpeakingPart>()
+                {
+                    new()
+                    {
+                        SpeakingPartNumber = 1,
+                        SpeakingPartDescription = "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new()
+                    {
+                        SpeakingPartNumber = 2,
+                        SpeakingPartDescription = "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new()
+                    {
+                        SpeakingPartNumber = 3,
+                        SpeakingPartDescription = "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
+                        CreateDate = DateTime.UtcNow,
+                        IsActive = true
+                    }
+                }
+            }
+        };
+        
+        await dbContext.SpeakingSamples.AddRangeAsync(speakingSamples);
+        await dbContext.SaveChangesAsync();
+    }
+
     //  Summary:
     //      Seeding system roles
     private async Task SeedSystemRoleAsync()

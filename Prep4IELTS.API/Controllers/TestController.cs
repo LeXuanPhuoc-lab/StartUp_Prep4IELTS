@@ -70,7 +70,8 @@ public class TestController(
                          // filter with test category name
                          (string.IsNullOrEmpty(req.Category) ||
                           x.TestCategory.TestCategoryName!.Equals(req.Category.Replace("%", " "))),
-            orderBy: null,
+            // Default order by create date
+            orderBy: x => x.OrderByDescending(t => t.CreateDate),
             // Include Tags
             includeProperties: "Tags",
             // With page index
@@ -81,7 +82,7 @@ public class TestController(
             userId: req.UserId);
 
         // Total actual tests
-        var actualTotal = await testService.CountTotalAsync();
+        var actualTotal = await testService.CountTotalPublishAsync();
 
         // Sorting 
         if (!string.IsNullOrEmpty(req.OrderBy))
@@ -147,7 +148,7 @@ public class TestController(
             userId: req.UserId);
 
         // Total actual tests
-        var actualTotal = await testService.CountTotalAsync();
+        var actualTotal = await testService.CountTotalDraftAsync();
 
         // Sorting 
         if (!string.IsNullOrEmpty(req.OrderBy))
@@ -472,7 +473,10 @@ public class TestController(
         testEntity.IsDraft = true;
         
         // Create date
-        testEntity.CreateDate = DateTime.UtcNow;
+        var createDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, 
+            // Vietnam timezone
+            TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+        testEntity.CreateDate = createDate;
         
         // Get all test sections
         var testSections = testEntity.TestSections.ToList();
@@ -548,7 +552,7 @@ public class TestController(
                 {
                     PublicId = testSectionReq[i].CloudResource!.PublicId,
                     Url = testSectionReq[i].CloudResource?.Url!,
-                    CreateDate = DateTime.UtcNow
+                    CreateDate = createDate
                 };
             }
             
@@ -562,7 +566,7 @@ public class TestController(
                     {
                         PublicId = testSectionPartitionReq[j].CloudResource!.PublicId,
                         Url = testSectionPartitionReq[j].CloudResource?.Url!,
-                        CreateDate = DateTime.UtcNow
+                        CreateDate = createDate
                     };
                 }
             }

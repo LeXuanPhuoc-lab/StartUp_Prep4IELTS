@@ -30,6 +30,9 @@ public class MappingRegistration : IRegister
         config.NewConfig<PaymentType, PaymentTypeDto>();
         config.NewConfig<PremiumPackage, PremiumPackageDto>();
         config.NewConfig<UserPremiumPackage, UserPremiumPackageDto>();
+        config.NewConfig<SpeakingSample, SpeakingSampleDto>();
+        config.NewConfig<SpeakingPart, SpeakingPartDto>();
+        config.NewConfig<UserSpeakingSampleHistory, UserSpeakingSampleHistoryDto>();
         // config.NewConfig<FlashcardDetail, FlashcardDetailDto>();
     }
 }

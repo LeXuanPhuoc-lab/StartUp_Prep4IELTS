@@ -176,7 +176,9 @@ public class PaymentController(
                 var userPremiumPackageDto =
                     await transactionService.FindUserPremiumPackageByUserIdAsync(userDto.UserId);
                 // Initiate user premium package
-                var currentTime = TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow);
+                // var currentTime = TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow);
+                var currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, 
+                    TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
                 if (userPremiumPackageDto != null)
                 {
                     // Check expired date
@@ -670,7 +672,7 @@ public class PaymentController(
         // var confirmWebhookUrl = await payOs.confirmWebhook("https://7b3b-2402-800-63b6-b04f-e85b-5329-2528-3e5f.ngrok-free.app/api/payment/pay-os/return");
         var confirmWebhookUrl =
             await payOs.confirmWebhook(
-                "https://7b3b-2402-800-63b6-b04f-e85b-5329-2528-3e5f.ngrok-free.app/api/payment/pay-os/cancel?code=00&id=eb776244be6640b19bf62b28e963d3e5&cancel=true&status=CANCELLED&orderCode=59272n");
+                "https://7b3b-2402-800-63b6-b04f-e85b-5329-2528-3e5f.ngrok-free.app/api/payment/pay-os/cancel?code=00&id=eb776244be6640b19bf62b28e963d3e5&cancel=true&status=CANCELLED&orderCode=59272");
 
         return !string.IsNullOrEmpty(confirmWebhookUrl)
             ? Ok()

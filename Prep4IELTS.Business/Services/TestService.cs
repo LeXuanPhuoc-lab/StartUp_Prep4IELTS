@@ -433,6 +433,16 @@ public class TestService(
     {
         return await unitOfWork.TestRepository.CountTotalAsync();
     }
+    
+    public async Task<int> CountTotalDraftAsync()
+    {
+        return await unitOfWork.TestRepository.CountTotalDraftAsync();
+    }
+    
+    public async Task<int> CountTotalPublishAsync()
+    {
+        return await unitOfWork.TestRepository.CountTotalPublishAsync();
+    }
 
     public async Task<bool> IsExistTestAsync(int id)
     {

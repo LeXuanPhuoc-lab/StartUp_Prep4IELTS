@@ -31,4 +31,59 @@ public static class SortHelper
 
         return await Task.FromResult(sources);
     }
+
+    public static async Task<IEnumerable<UserDto>> SortUserByColumnAsync(this IEnumerable<UserDto> sources,
+        string sortPattern)
+    {
+        var isDescending = sortPattern.StartsWith("-");
+        if (isDescending)
+        {
+            sortPattern = sortPattern.Trim('-');
+        }
+        
+        // Define sorting pattern
+        var sortMappings = new Dictionary<string, Func<UserDto, object>>()
+        {
+            {"CREATEDATE", u => u.CreateDate ?? null! },
+            {"FULLNAME", u => string.Join(" ", u.FirstName, u.LastName) }
+        };
+        
+        // Get sorting pattern
+        if (sortMappings.TryGetValue(sortPattern.ToUpper(), 
+                out var sortExpression))
+        {
+            return await Task.FromResult(isDescending
+                ? sources.OrderByDescending(sortExpression)
+                : sources.OrderBy(sortExpression));
+        }
+
+        return await Task.FromResult(sources);
+    }
+    
+    public static async Task<IEnumerable<SpeakingSampleDto>> SortSpeakingSampleByColumnAsync(this IEnumerable<SpeakingSampleDto> sources,
+        string sortPattern)
+    {
+        var isDescending = sortPattern.StartsWith("-");
+        if (isDescending)
+        {
+            sortPattern = sortPattern.Trim('-');
+        }
+        
+        // Define sorting pattern
+        var sortMappings = new Dictionary<string, Func<SpeakingSampleDto, object>>()
+        {
+            {"CREATEDATE", u => u.CreateDate },
+        };
+        
+        // Get sorting pattern
+        if (sortMappings.TryGetValue(sortPattern.ToUpper(), 
+                out var sortExpression))
+        {
+            return await Task.FromResult(isDescending
+                ? sources.OrderByDescending(sortExpression)
+                : sources.OrderBy(sortExpression));
+        }
+
+        return await Task.FromResult(sources);
+    }
 }
