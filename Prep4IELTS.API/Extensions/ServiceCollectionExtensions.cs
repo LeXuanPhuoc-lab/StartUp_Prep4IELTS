@@ -119,8 +119,8 @@ public static class ServiceCollectionExtensions
             var getPaymentLinkInformation = "https://api-merchant.payos.vn/v2/payment-requests/{0}";
             var cancelPaymentUrl = "https://api-merchant.payos.vn/v2/payment-requests/{0}/cancel";
             var confirmWebHookUrl = "https://api-merchant.payos.vn/confirm-webhook";
-            var returnUrl = "https://localhost:3000/payment-return";
-            var cancelUrl = "https://localhost:3000/payment-cancel";
+            var returnUrl = "http://localhost:3000/payment-return";
+            var cancelUrl = "http://localhost:3000/payment-cancel";
                             
             // var webHookUrl = "https://localhost:6000/api/payment/pay-os/webhook-return";
             
