@@ -14,6 +14,9 @@ public class UserPremiumPackageRepository : GenericRepository<UserPremiumPackage
 
     public Task<UserPremiumPackage?> FindUserPremiumPackageAsync(Guid userId)
     {
-        return _dbSet.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId);
+        return _dbSet
+            .AsNoTracking()
+            .Include(pp => pp.PremiumPackage)
+            .FirstOrDefaultAsync(x => x.UserId == userId);
     }
 }
