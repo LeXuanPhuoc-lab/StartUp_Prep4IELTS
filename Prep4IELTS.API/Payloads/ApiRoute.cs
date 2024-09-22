@@ -19,6 +19,7 @@ public static class ApiRoute
         public const string GetAllUserRole = Base + "/user-roles";
         public const string GetAll = Base + "/users";
         public const string GetAllInActive = Base + "/users-inactive";
+        public const string GetPremiumPackage = Base + "/user-premium";
     }
 
     public static class Test

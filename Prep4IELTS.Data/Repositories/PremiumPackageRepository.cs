@@ -16,7 +16,7 @@ public class PremiumPackageRepository : GenericRepository<PremiumPackage>
     {
         return await _dbSet.Where(pp => !pp.IsActive).ToListAsync();
     }
-    
+
     public async Task<bool> IsExistPremiumPackageAsync(int premiumPackageId)
     {
         return await _dbSet.AnyAsync(pp => pp.PremiumPackageId == premiumPackageId);

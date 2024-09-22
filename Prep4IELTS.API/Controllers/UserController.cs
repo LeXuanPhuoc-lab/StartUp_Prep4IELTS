@@ -4,6 +4,8 @@ using EXE202_Prep4IELTS.Payloads;
 using EXE202_Prep4IELTS.Payloads.Filters;
 using EXE202_Prep4IELTS.Payloads.Requests.Users;
 using EXE202_Prep4IELTS.Payloads.Responses;
+using EXE202_Prep4IELTS.Payloads.Responses.PremiumPackage;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Prep4IELTS.Business.Constants;
@@ -19,6 +21,7 @@ namespace EXE202_Prep4IELTS.Controllers;
 public class UserController(
     IUserService userService, 
     ISystemRoleService roleService,
+    IUserPremiumPackageService userPremiumPackageService,
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
 {
     private readonly AppSettings _appSettings = monitor.CurrentValue;
@@ -398,5 +401,43 @@ public class UserController(
             ? NoContent()
             : StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
     }
+
+    [Authorize]
+    [HttpGet(ApiRoute.User.GetPremiumPackage, Name = nameof(GetUserPremiumPackageAsync))]
+    public async Task<IActionResult> GetUserPremiumPackageAsync()
+    {
+        // Check exist user
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if (userDto == null) return Unauthorized();
+        
+        // Get user premium package
+        var userPremiumPackage = await userPremiumPackageService.FindUserPremiumPackageAsync(userDto.UserId);
     
+        // Initiate user premium package
+        var userPremiumPackageResp = new UserPremiumPackageResponse();
+        if (userPremiumPackage != null)
+        {
+            var currentDatetime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, 
+                TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+            
+            userPremiumPackageResp = new UserPremiumPackageResponse()
+            {
+                PremiumPackageId = userPremiumPackage.PremiumPackageId,
+                PremiumPackageName = userPremiumPackage.PremiumPackage.PremiumPackageName,
+                CreateDate = userPremiumPackage.PremiumPackage.CreateDate,
+                Description = userPremiumPackage.PremiumPackage.Description,
+                ExpireDate = userPremiumPackage.ExpireDate,
+                IsPremiumActive = userPremiumPackage.ExpireDate >= currentDatetime,
+            };
+        }
+
+        return Ok(new BaseResponse()
+        {
+            StatusCode = StatusCodes.Status200OK,
+            Message = userPremiumPackageResp == null! 
+                ? "User not premium package activated" 
+                : string.Empty,
+            Data = userPremiumPackageResp
+        });
+    }
 }
