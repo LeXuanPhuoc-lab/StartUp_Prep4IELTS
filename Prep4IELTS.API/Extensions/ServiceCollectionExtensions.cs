@@ -45,10 +45,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISystemRoleService, SystemRoleService>();
         services.AddScoped<ISpeakingSampleService, SpeakingSampleService>();
         // services.AddScoped<ITransactionService, TransactionService>();
-        
+
         // Register IHttpContextAccessor 
         services.AddHttpContextAccessor();
-        
+
         return services;
     }
 
@@ -67,7 +67,7 @@ public static class ServiceCollectionExtensions
         var typeAdapterConfig = TypeAdapterConfig.GlobalSettings;
         // Scans the assembly and gets the IRegister, adding the registration to the TypeAdapterConfig
         typeAdapterConfig.Scan(Assembly.GetExecutingAssembly());
-        
+
         // Additional mapping custom from API to Business layer
         typeAdapterConfig.NewConfig<QuestionAnswerSubmissionRequest, QuestionAnswerSubmissionModel>();
         typeAdapterConfig.NewConfig<CreateTestRequest, Test>();
@@ -80,7 +80,7 @@ public static class ServiceCollectionExtensions
         typeAdapterConfig.NewConfig<UpdateTestGradeRequest, TestGrade>();
         typeAdapterConfig.NewConfig<CreatePremiumPackageRequest, PremiumPackage>();
         typeAdapterConfig.NewConfig<UpdatePremiumPackageRequest, PremiumPackage>();
-        
+
         // Register the mapper as Singleton service for my application
         var mapperConfig = new Mapper(typeAdapterConfig);
         services.AddSingleton<IMapper>(mapperConfig);
@@ -88,10 +88,9 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection ConfigureCloudinary(this IServiceCollection services)
+    public static IServiceCollection ConfigureCloudinary(this IServiceCollection services, IConfiguration configuration)
     {
-        DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-        Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"))
+        Cloudinary cloudinary = new Cloudinary(configuration["Cloudinary:CloudinaryUrl"]!)
         {
             Api = { Secure = true }
         };
@@ -100,15 +99,15 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-    
-    public static IServiceCollection EstablishApplicationConfiguration(this IServiceCollection services, 
+
+    public static IServiceCollection EstablishApplicationConfiguration(this IServiceCollection services,
         IConfiguration configuration,
         IWebHostEnvironment env)
     {
         // Configure App settings
         services.Configure<AppSettings>(
             configuration.GetSection("AppSettings"));
-        
+
         // Configure PayOS
         var payOsConfigSection = configuration.GetSection("PayOS");
         var payOsConfig = payOsConfigSection.Get<PayOSConfiguration>();
@@ -121,9 +120,9 @@ public static class ServiceCollectionExtensions
             var confirmWebHookUrl = "https://api-merchant.payos.vn/confirm-webhook";
             var returnUrl = "http://localhost:3000/payment-return";
             var cancelUrl = "http://localhost:3000/payment-cancel";
-                            
+
             // var webHookUrl = "https://localhost:6000/api/payment/pay-os/webhook-return";
-            
+
             services.Configure<PayOSConfiguration>(options =>
             {
                 options.ClientId = payOsConfig.ClientId;
@@ -138,8 +137,8 @@ public static class ServiceCollectionExtensions
                 options.ConfirmWebHookUrl = confirmWebHookUrl;
             });
         }
-        
-        
+
+
         // Configure Momo
         var momoConfigSection = configuration.GetSection("Momo");
         var momoConfig = momoConfigSection.Get<MomoConfiguration>();
@@ -167,7 +166,7 @@ public static class ServiceCollectionExtensions
                 options.PaymentMethodName = PaymentIssuerConstants.Momo;
             });
         }
-        
+
         return services;
     }
 }

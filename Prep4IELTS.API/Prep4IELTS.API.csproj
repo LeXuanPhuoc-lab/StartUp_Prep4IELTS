@@ -5,6 +5,9 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>EXE202_Prep4IELTS</RootNamespace>
+        <UserSecretsId>667048da-7839-434b-a6f8-3c355ad3f7df</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,6 +15,7 @@
         <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
         <PackageReference Include="dotenv.net" Version="3.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="payOS" Version="1.0.6" />
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
