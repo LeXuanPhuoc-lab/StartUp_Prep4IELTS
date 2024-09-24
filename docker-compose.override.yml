@@ -1,0 +1,43 @@
+services:
+  prep4ieltsdb:
+    container_name: prep4ieltsdb
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Prep4IELTS12345
+    restart: always
+    ports:
+      - "1433:1433"
+  
+  prep4ielts.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__DefaultConnectionString=Server=prep4ieltsdb;Database=Prep4IELTS;User Id=sa;Password=Prep4IELTS12345;Encrypt=False;TrustServerCertificate=True;
+      - AppSettings__PageSize=20
+      - AppSettings__ImagePath=/Prep4Ielts/Images
+      - AppSettings__AudioPath=/Prep4Ielts/Audios
+      - Momo__AccessKey=F8BBA842ECF85
+      - Momo__SecretKey=K951B6PE1waDMi640xX08PD3vg6EkVlz
+      - Momo__IpnUrl=
+      - Momo__PaymentUrl=
+      - Momo__CheckTransactionUrl=
+      - Momo__PaymentConfirmUrl=
+      - Momo__InitiateTransactionUrl=
+      - Momo__PartnerCode=MOMO
+      - PayOS__ClientId=8da4d0c5-e525-49aa-84a1-6468b1aeea7e
+      - PayOS__ApiKey=17483ae6-2bca-4f1c-9f61-f7b524f2d294
+      - PayOS__ChecksumKey=a9d3277b6697c995d5dc23fac58af1330a730012778aa20aa15e555aebfbec13
+      - PayOS__returnUrl=
+      - PayOS__cancelUrl=
+      - PayOS__webhookUrl=
+      - Clerk__WebHookSecret=FakeWHSClerk
+      - Cloudinary__CloudinaryUrl=cloudinary://696626974749427:lCFYTlEPW4mo6HhsFjjVVhOTi1U@dbngsavtu
+    depends_on:
+      - prep4ieltsdb
+    ports:
+      - "7000:8080"
+      - "7070:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
