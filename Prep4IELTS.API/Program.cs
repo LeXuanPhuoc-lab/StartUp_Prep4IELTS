@@ -19,7 +19,7 @@ builder.Services.EstablishApplicationConfiguration(
 
 // Configure Cloudinary
 builder.Services.ConfigureCloudinary(builder.Configuration);
-    
+
 // Configure CORS
 builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
 {

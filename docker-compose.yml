@@ -1,0 +1,9 @@
+services:
+  prep4ielts.api:
+    image: ${DOCKER_REGISTRY-}prep4ieltsapi
+    build:
+      context: .
+      dockerfile: Prep4IELTS.API/Dockerfile
+      
+  prep4ieltsdb:
+    image: mcr.microsoft.com/mssql/server

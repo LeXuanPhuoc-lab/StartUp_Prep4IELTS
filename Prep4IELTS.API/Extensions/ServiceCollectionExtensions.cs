@@ -83,7 +83,6 @@ public static class ServiceCollectionExtensions
         typeAdapterConfig.NewConfig<UpdateTestGradeRequest, TestGrade>();
         typeAdapterConfig.NewConfig<CreatePremiumPackageRequest, PremiumPackage>();
         typeAdapterConfig.NewConfig<UpdatePremiumPackageRequest, PremiumPackage>();
-        typeAdapterConfig.NewConfig<UpdatePremiumPackageRequest, PremiumPackage>();
         
         // Register the mapper as Singleton service for my application
         var mapperConfig = new Mapper(typeAdapterConfig);
@@ -92,14 +91,9 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection ConfigureCloudinary(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection ConfigureCloudinary(this IServiceCollection services, IConfiguration configuration)
     {
-        DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-        //Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"))
-        //{
-        //    Api = { Secure = true }
-        //};
-        Cloudinary cloudinary = new Cloudinary(config["AppSettings:CloudinaryUrl"])
+        Cloudinary cloudinary = new Cloudinary(configuration["Cloudinary:CloudinaryUrl"]!)
         {
             Api = { Secure = true }
         };
