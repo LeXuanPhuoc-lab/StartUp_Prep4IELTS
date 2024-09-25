@@ -173,17 +173,23 @@ namespace Prep4IELTS.Data.Migrations
                     word_pronunciation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     example = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    image_url = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: true),
+                    cloud_resource_id = table.Column<int>(type: "int", nullable: true),
                     flashcard_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FlashcardDetail", x => x.flashcard_detail_id);
                     table.ForeignKey(
+                        name: "FK_FlashcardDetail_CloudResource",
+                        column: x => x.cloud_resource_id,
+                        principalTable: "Cloud_Resource",
+                        principalColumn: "cloud_resource_id");
+                    table.ForeignKey(
                         name: "FK_FlashcardDetail_Flashcard",
                         column: x => x.flashcard_id,
                         principalTable: "Flashcard",
-                        principalColumn: "flashcard_id");
+                        principalColumn: "flashcard_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -500,12 +506,14 @@ namespace Prep4IELTS.Data.Migrations
                         name: "FK_UserFlashcardProgress_FlashcardDetail",
                         column: x => x.flashcard_detail_id,
                         principalTable: "Flashcard_Detail",
-                        principalColumn: "flashcard_detail_id");
+                        principalColumn: "flashcard_detail_id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserFlashcardProgress_UserFlashcard",
                         column: x => x.user_flashcard_id,
                         principalTable: "User_Flashcard",
-                        principalColumn: "user_flashcard_id");
+                        principalColumn: "user_flashcard_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -700,6 +708,11 @@ namespace Prep4IELTS.Data.Migrations
                 name: "IX_Comment_user_id",
                 table: "Comment",
                 column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Flashcard_Detail_cloud_resource_id",
+                table: "Flashcard_Detail",
+                column: "cloud_resource_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Flashcard_Detail_flashcard_id",

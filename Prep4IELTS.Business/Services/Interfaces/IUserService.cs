@@ -18,6 +18,10 @@ public interface IUserService
         Expression<Func<User, bool>> filter,
         Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null, 
         string? includeProperties = "");
+    Task<List<UserDto>> FindAllWithConditionAsync(
+        Expression<Func<User, bool>> filter,
+        Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null, 
+        string? includeProperties = "");
     Task<UserDto?> GetUserByClerkId(string clerkId);
     Task<UserDto?> FindByEmailAsync(string email);
     Task<IList<UserDto>> FindAllAsync();

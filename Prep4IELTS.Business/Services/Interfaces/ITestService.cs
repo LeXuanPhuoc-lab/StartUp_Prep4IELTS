@@ -38,6 +38,13 @@ public interface ITestService
         int? pageIndex, int? pageSize,
         // Include test histories for user (if any)
         Guid? userId);
+    
+    Task<IList<TestDto>> FindAllWithConditionAsync(
+        Expression<Func<Test, bool>>? filter,
+        Func<IQueryable<Test>, IOrderedQueryable<Test>>? orderBy,
+        string? includeProperties,
+        // Include test histories for user (if any)
+        Guid? userId);
 
     Task<TestDto> FindByIdAsync(int id, Guid? userId);
     Task<TestDto> FindByIdForPracticeAsync(int id, int[] sectionIds);

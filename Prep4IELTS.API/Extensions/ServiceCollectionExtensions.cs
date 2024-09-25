@@ -44,6 +44,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPaymentTypeService, PaymentTypeService>();
         services.AddScoped<ISystemRoleService, SystemRoleService>();
         services.AddScoped<ISpeakingSampleService, SpeakingSampleService>();
+        services.AddScoped<IFlashcardService, FlashcardService>();
+        services.AddScoped<IFlashcardDetailService, FlashcardDetailService>();
+        services.AddScoped<IUserFlashcardService, UserFlashcardService>();
         // services.AddScoped<ITransactionService, TransactionService>();
         
         // Register IHttpContextAccessor 
@@ -80,6 +83,7 @@ public static class ServiceCollectionExtensions
         typeAdapterConfig.NewConfig<UpdateTestGradeRequest, TestGrade>();
         typeAdapterConfig.NewConfig<CreatePremiumPackageRequest, PremiumPackage>();
         typeAdapterConfig.NewConfig<UpdatePremiumPackageRequest, PremiumPackage>();
+        typeAdapterConfig.NewConfig<UpdatePremiumPackageRequest, PremiumPackage>();
         
         // Register the mapper as Singleton service for my application
         var mapperConfig = new Mapper(typeAdapterConfig);
@@ -88,10 +92,14 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection ConfigureCloudinary(this IServiceCollection services)
+    public static IServiceCollection ConfigureCloudinary(this IServiceCollection services, IConfiguration config)
     {
         DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-        Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"))
+        //Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"))
+        //{
+        //    Api = { Secure = true }
+        //};
+        Cloudinary cloudinary = new Cloudinary(config["AppSettings:CloudinaryUrl"])
         {
             Api = { Secure = true }
         };

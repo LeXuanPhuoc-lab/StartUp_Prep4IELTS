@@ -10,7 +10,7 @@ public partial class UserFlashcard
     public Guid UserId { get; set; }
 
     public int FlashcardId { get; set; }
-
+    
     public virtual Flashcard Flashcard { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;

@@ -79,7 +79,7 @@ public partial class Prep4IeltsContext : DbContext
     {
         IConfigurationBuilder builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .AddEnvironmentVariables();
 
         string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? null!;
@@ -187,10 +187,11 @@ public partial class Prep4IeltsContext : DbContext
                 .HasMaxLength(500)
                 .HasColumnName("example");
             entity.Property(e => e.FlashcardId).HasColumnName("flashcard_id");
-            entity.Property(e => e.ImageUrl)
-                .HasMaxLength(2048)
-                .IsUnicode(false)
-                .HasColumnName("image_url");
+            // entity.Property(e => e.ImageUrl)
+            //     .HasMaxLength(2048)
+            //     .IsUnicode(false)
+            //     .HasColumnName("image_url");
+            entity.Property(e => e.CloudResourceId).HasColumnName("cloud_resource_id");
             entity.Property(e => e.WordForm)
                 .HasMaxLength(50)
                 .HasColumnName("word_form");
@@ -203,8 +204,14 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.Flashcard).WithMany(p => p.FlashcardDetails)
                 .HasForeignKey(d => d.FlashcardId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FlashcardDetail_Flashcard");
+            
+            entity.HasOne(d => d.CloudResource).WithMany(p => p.FlashcardDetails)
+                .HasForeignKey(d => d.CloudResourceId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_FlashcardDetail_CloudResource");
         });
 
         modelBuilder.Entity<PartitionHistory>(entity =>
@@ -775,12 +782,14 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.FlashcardDetail).WithMany(p => p.UserFlashcardProgresses)
                 .HasForeignKey(d => d.FlashcardDetailId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_UserFlashcardProgress_FlashcardDetail");
 
             entity.HasOne(d => d.UserFlashcard).WithMany(p => p.UserFlashcardProgresses)
                 .HasForeignKey(d => d.UserFlashcardId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_UserFlashcardProgress_UserFlashcard");
         });
 

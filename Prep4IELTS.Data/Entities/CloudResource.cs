@@ -20,4 +20,5 @@ public partial class CloudResource
     public virtual ICollection<TestSectionPartition> TestSectionPartitions { get; set; } = new List<TestSectionPartition>();
 
     public virtual ICollection<TestSection> TestSections { get; set; } = new List<TestSection>();
+    public virtual ICollection<FlashcardDetail> FlashcardDetails { get; set; } = new List<FlashcardDetail>();
 }

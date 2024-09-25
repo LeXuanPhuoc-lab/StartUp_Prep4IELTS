@@ -82,25 +82,702 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             // Tests
             if (!dbContext.Tests.Any()) await SeedTestAsync();
             // Tests History
-            if (!dbContext.TestHistories.Any()) await SeedTestHistoryAsync();
+            // if (!dbContext.TestHistories.Any()) await SeedTestHistoryAsync();
             // Tests Grade
-            if (!dbContext.TestGrades.Any()) await SeedTestGradeAsync();
+            // if (!dbContext.TestGrades.Any()) await SeedTestGradeAsync();
             // Premium package
             if (!dbContext.PremiumPackages.Any()) await SeedPremiumPackageAsync();
             // Payment Types
             if (!dbContext.PaymentTypes.Any()) await SeedPaymentTypeAsync();
             // Speaking samples
             if (!dbContext.SpeakingSamples.Any()) await SeedSpeakingSamples();
-            
+            // Flashcard
+            if (!dbContext.Flashcards.Any()) await SeedFlashcardAsync();
+
             await Task.CompletedTask;
         }
         catch (Exception ex)
-        {
+        {   
             Console.WriteLine(ex.Message);
         }
     }
-    
-    
+
+
+    //  Summary:
+    //      Seeding flashcard
+    private async Task SeedFlashcardAsync()
+    {
+        List<Flashcard> flashcards = new()
+        {
+            new()
+            {
+                Title = "Cambridge Vocabulary for IELTS (20 units)",
+                TotalWords = 10,
+                TotalView = 0,
+                CreateDate = DateTime.UtcNow,
+                IsPublic = true,
+                FlashcardDetails = new List<FlashcardDetail>()
+                {
+                    new()
+                    {
+                        WordText = "Ambitious",
+                        Definition = "Having a strong desire for success or achievement.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/æmˈbɪʃəs/",
+                        Example = "She is an ambitious young lawyer.",
+                        Description = "Ambitious people often aim for success in their career or personal life.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/ambitious.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Benevolent",
+                        Definition = "Well-meaning and kindly.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/bəˈnɛvələnt/",
+                        Example = "A benevolent smile spread across her face.",
+                        Description = "Often used to describe people who are generous or charitable.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Concur",
+                        Definition = "To agree or have the same opinion.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/kənˈkɜːr/",
+                        Example = "I concur with your assessment.",
+                        Description = "Common in formal contexts.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Diligent",
+                        Definition = "Showing care and effort in work or duties.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈdɪlɪdʒənt/",
+                        Example = "She was a diligent student, always completing her assignments on time.",
+                        Description = "Describes someone hardworking and attentive.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Eccentric",
+                        Definition = "Unconventional and slightly strange.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪkˈsɛntrɪk/",
+                        Example = "His eccentric behavior often caught people off guard.",
+                        Description = "Typically refers to quirky or odd behavior.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Feasible",
+                        Definition = "Possible to do easily or conveniently.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈfiːzəbl/",
+                        Example = "A feasible plan was quickly put into action.",
+                        Description = "Used when talking about something achievable or realistic.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Gratify",
+                        Definition = "Give pleasure or satisfaction.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˈɡrætɪfaɪ/",
+                        Example = "It gratified her to see the children so happy.",
+                        Description = "Often used when referring to fulfilling someone’s desires.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Harmonious",
+                        Definition = "Forming a pleasing or consistent whole.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/hɑːˈmoʊniəs/",
+                        Example = "They live in a harmonious neighborhood.",
+                        Description = "Used when referring to peace and balance.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Impeccable",
+                        Definition = "In accordance with the highest standards; faultless.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪmˈpɛkəbl/",
+                        Example = "Her manners were impeccable.",
+                        Description = "Describes someone or something flawless.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Juxtapose",
+                        Definition = "Place or deal with close together for contrasting effect.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˌdʒʌkstəˈpoʊz/",
+                        Example = "The art pieces were juxtaposed for comparison.",
+                        Description = "Often used when placing contrasting things together.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Keen",
+                        Definition = "Having or showing eagerness or enthusiasm.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/kiːn/",
+                        Example = "She was keen to start her new job.",
+                        Description = "Used to describe strong interest or desire.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Lucid",
+                        Definition = "Expressed clearly; easy to understand.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈluːsɪd/",
+                        Example = "She gave a clear and lucid explanation.",
+                        Description = "Describes something easy to follow or understand.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Meticulous",
+                        Definition = "Showing great attention to detail; very careful and precise.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/məˈtɪkjʊləs/",
+                        Example = "The event was planned with meticulous attention to detail.",
+                        Description = "Often used when referring to careful and thorough work.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Notorious",
+                        Definition = "Famous or well known, typically for some bad quality or deed.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/noʊˈtɔːriəs/",
+                        Example = "The city is notorious for its traffic jams.",
+                        Description = "Used to describe fame for negative reasons.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Obsolete",
+                        Definition = "No longer produced or used; out of date.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˌɒbsəˈliːt/",
+                        Example = "The company replaced its obsolete machinery.",
+                        Description = "Refers to something that is outdated or no longer in use.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    }
+                }
+            },
+            new()
+            {
+                Title = "Từ vựng tiếng Anh giao tiếp nâng cao",
+                TotalWords = 10,
+                TotalView = 0,
+                CreateDate = DateTime.UtcNow,
+                IsPublic = true,
+                FlashcardDetails = new List<FlashcardDetail>()
+                {
+                    new()
+                    {
+                        WordText = "Ambitious",
+                        Definition = "Having a strong desire for success or achievement.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/æmˈbɪʃəs/",
+                        Example = "She is an ambitious young lawyer.",
+                        Description = "Ambitious people often aim for success in their career or personal life.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Benevolent",
+                        Definition = "Well-meaning and kindly.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/bəˈnɛvələnt/",
+                        Example = "A benevolent smile spread across her face.",
+                        Description = "Often used to describe people who are generous or charitable.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Concur",
+                        Definition = "To agree or have the same opinion.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/kənˈkɜːr/",
+                        Example = "I concur with your assessment.",
+                        Description = "Common in formal contexts.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Diligent",
+                        Definition = "Showing care and effort in work or duties.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈdɪlɪdʒənt/",
+                        Example = "She was a diligent student, always completing her assignments on time.",
+                        Description = "Describes someone hardworking and attentive.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Eccentric",
+                        Definition = "Unconventional and slightly strange.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪkˈsɛntrɪk/",
+                        Example = "His eccentric behavior often caught people off guard.",
+                        Description = "Typically refers to quirky or odd behavior.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Feasible",
+                        Definition = "Possible to do easily or conveniently.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈfiːzəbl/",
+                        Example = "A feasible plan was quickly put into action.",
+                        Description = "Used when talking about something achievable or realistic.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Gratify",
+                        Definition = "Give pleasure or satisfaction.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˈɡrætɪfaɪ/",
+                        Example = "It gratified her to see the children so happy.",
+                        Description = "Often used when referring to fulfilling someone’s desires.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Harmonious",
+                        Definition = "Forming a pleasing or consistent whole.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/hɑːˈmoʊniəs/",
+                        Example = "They live in a harmonious neighborhood.",
+                        Description = "Used when referring to peace and balance.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Impeccable",
+                        Definition = "In accordance with the highest standards; faultless.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪmˈpɛkəbl/",
+                        Example = "Her manners were impeccable.",
+                        Description = "Describes someone or something flawless.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Juxtapose",
+                        Definition = "Place or deal with close together for contrasting effect.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˌdʒʌkstəˈpoʊz/",
+                        Example = "The art pieces were juxtaposed for comparison.",
+                        Description = "Often used when placing contrasting things together.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Keen",
+                        Definition = "Having or showing eagerness or enthusiasm.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/kiːn/",
+                        Example = "She was keen to start her new job.",
+                        Description = "Used to describe strong interest or desire.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Lucid",
+                        Definition = "Expressed clearly; easy to understand.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈluːsɪd/",
+                        Example = "She gave a clear and lucid explanation.",
+                        Description = "Describes something easy to follow or understand.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Meticulous",
+                        Definition = "Showing great attention to detail; very careful and precise.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/məˈtɪkjʊləs/",
+                        Example = "The event was planned with meticulous attention to detail.",
+                        Description = "Often used when referring to careful and thorough work.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Notorious",
+                        Definition = "Famous or well known, typically for some bad quality or deed.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/noʊˈtɔːriəs/",
+                        Example = "The city is notorious for its traffic jams.",
+                        Description = "Used to describe fame for negative reasons.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Obsolete",
+                        Definition = "No longer produced or used; out of date.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˌɒbsəˈliːt/",
+                        Example = "The company replaced its obsolete machinery.",
+                        Description = "Refers to something that is outdated or no longer in use.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    }
+                }
+            },
+            new()
+            {
+                Title = "Từ vựng tiếng Anh văn phòng",
+                TotalWords = 10,
+                TotalView = 0,
+                CreateDate = DateTime.UtcNow,
+                IsPublic = true,
+                FlashcardDetails = new List<FlashcardDetail>()
+                {
+                    new()
+                    {
+                        WordText = "Ambitious",
+                        Definition = "Having a strong desire for success or achievement.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/æmˈbɪʃəs/",
+                        Example = "She is an ambitious young lawyer.",
+                        Description = "Ambitious people often aim for success in their career or personal life.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Benevolent",
+                        Definition = "Well-meaning and kindly.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/bəˈnɛvələnt/",
+                        Example = "A benevolent smile spread across her face.",
+                        Description = "Often used to describe people who are generous or charitable.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Concur",
+                        Definition = "To agree or have the same opinion.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/kənˈkɜːr/",
+                        Example = "I concur with your assessment.",
+                        Description = "Common in formal contexts.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Diligent",
+                        Definition = "Showing care and effort in work or duties.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈdɪlɪdʒənt/",
+                        Example = "She was a diligent student, always completing her assignments on time.",
+                        Description = "Describes someone hardworking and attentive.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Eccentric",
+                        Definition = "Unconventional and slightly strange.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪkˈsɛntrɪk/",
+                        Example = "His eccentric behavior often caught people off guard.",
+                        Description = "Typically refers to quirky or odd behavior.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Feasible",
+                        Definition = "Possible to do easily or conveniently.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈfiːzəbl/",
+                        Example = "A feasible plan was quickly put into action.",
+                        Description = "Used when talking about something achievable or realistic.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Gratify",
+                        Definition = "Give pleasure or satisfaction.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˈɡrætɪfaɪ/",
+                        Example = "It gratified her to see the children so happy.",
+                        Description = "Often used when referring to fulfilling someone’s desires.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Harmonious",
+                        Definition = "Forming a pleasing or consistent whole.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/hɑːˈmoʊniəs/",
+                        Example = "They live in a harmonious neighborhood.",
+                        Description = "Used when referring to peace and balance.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Impeccable",
+                        Definition = "In accordance with the highest standards; faultless.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪmˈpɛkəbl/",
+                        Example = "Her manners were impeccable.",
+                        Description = "Describes someone or something flawless.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Juxtapose",
+                        Definition = "Place or deal with close together for contrasting effect.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˌdʒʌkstəˈpoʊz/",
+                        Example = "The art pieces were juxtaposed for comparison.",
+                        Description = "Often used when placing contrasting things together.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Keen",
+                        Definition = "Having or showing eagerness or enthusiasm.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/kiːn/",
+                        Example = "She was keen to start her new job.",
+                        Description = "Used to describe strong interest or desire.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Lucid",
+                        Definition = "Expressed clearly; easy to understand.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈluːsɪd/",
+                        Example = "She gave a clear and lucid explanation.",
+                        Description = "Describes something easy to follow or understand.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Meticulous",
+                        Definition = "Showing great attention to detail; very careful and precise.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/məˈtɪkjʊləs/",
+                        Example = "The event was planned with meticulous attention to detail.",
+                        Description = "Often used when referring to careful and thorough work.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Notorious",
+                        Definition = "Famous or well known, typically for some bad quality or deed.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/noʊˈtɔːriəs/",
+                        Example = "The city is notorious for its traffic jams.",
+                        Description = "Used to describe fame for negative reasons.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Obsolete",
+                        Definition = "No longer produced or used; out of date.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˌɒbsəˈliːt/",
+                        Example = "The company replaced its obsolete machinery.",
+                        Description = "Refers to something that is outdated or no longer in use.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    }
+                }
+            }
+        };
+
+        await dbContext.Flashcards.AddRangeAsync(flashcards);
+        await dbContext.SaveChangesAsync();
+    }
+
     //  Summary:
     //      Seeding speaking samples
     private async Task SeedSpeakingSamples()
@@ -117,21 +794,24 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         SpeakingPartNumber = 1,
-                        SpeakingPartDescription = "<h3><strong>Computer and Tablet</strong></h3>\n<div>1. What do you most often use a computer or a tablet for? (Why/Why not?)</div>\n<div>2. Can you remember when you first started using a computer or tablet?(When/Why not?)</div>\n<div>3. Do you sometimes find computers or tablets difficult to use?( Why/Why not?)</div>\n<div>4. How would your life be different if there were no computers?(Why/Why not?)</div>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Computer and Tablet</strong></h3>\n<div>1. What do you most often use a computer or a tablet for? (Why/Why not?)</div>\n<div>2. Can you remember when you first started using a computer or tablet?(When/Why not?)</div>\n<div>3. Do you sometimes find computers or tablets difficult to use?( Why/Why not?)</div>\n<div>4. How would your life be different if there were no computers?(Why/Why not?)</div>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 2,
-                        SpeakingPartDescription = "<h3><strong>Describe something you own that you want to replace</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>What it is</li>\n<li>Where it is</li>\n<li>How you got it</li>\n<li>And explain why you want to replace it</li>\n</ul>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Describe something you own that you want to replace</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>What it is</li>\n<li>Where it is</li>\n<li>How you got it</li>\n<li>And explain why you want to replace it</li>\n</ul>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 3,
-                        SpeakingPartDescription = "<ol>\n<li>What are other things that you want to replace?&nbsp;</li>\n<li>What kinds of things do young people like to replace?</li>\n<li>Do old people in VietNam like to collect and store things?</li>\n<li>Who do you think will want new things, children or old people?</li>\n<li>What's the difference between new things and old things?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<ol>\n<li>What are other things that you want to replace?&nbsp;</li>\n<li>What kinds of things do young people like to replace?</li>\n<li>Do old people in VietNam like to collect and store things?</li>\n<li>Who do you think will want new things, children or old people?</li>\n<li>What's the difference between new things and old things?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     }
@@ -147,21 +827,24 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         SpeakingPartNumber = 1,
-                        SpeakingPartDescription = "<h3><strong>Free Time &amp; Weekend</strong></h3>\n<ol>\n<li> Do you like to go to the cinema/movies at weekends?(Why/Why not?)</li>\n<li> Who do you go with? Alone or with others?</li>\n<li> What do you enjoy doing most on weekends?( Why/Why not?)</li>\n<li> Are you planning to do anything special next weekend?( Why/Why not?)</li>\n<li> What kinds of activities do you often do in your spare time?</li>\n<li> How do you often relax yourself on weekends?</li>\n<li> How do your surrounding friends relax?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Free Time &amp; Weekend</strong></h3>\n<ol>\n<li> Do you like to go to the cinema/movies at weekends?(Why/Why not?)</li>\n<li> Who do you go with? Alone or with others?</li>\n<li> What do you enjoy doing most on weekends?( Why/Why not?)</li>\n<li> Are you planning to do anything special next weekend?( Why/Why not?)</li>\n<li> What kinds of activities do you often do in your spare time?</li>\n<li> How do you often relax yourself on weekends?</li>\n<li> How do your surrounding friends relax?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 2,
-                        SpeakingPartDescription = "<h3><strong>Describe a person who often buy at the street market at cheaper price</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Who this person is</li>\n<li>What this person likes to buy</li>\n<li>Where this person likes to buy things</li>\n<li>And explain why this person likes cheap goods</li>\n</ul>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Describe a person who often buy at the street market at cheaper price</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Who this person is</li>\n<li>What this person likes to buy</li>\n<li>Where this person likes to buy things</li>\n<li>And explain why this person likes cheap goods</li>\n</ul>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 3,
-                        SpeakingPartDescription = "<ol>\n<li>What are the differences between shopping in a shopping mall and in a street market?</li>\n<li>Which is more commonly visited in VietNam, shopping malls or street markets?</li>\n<li>Is advertising important?</li>\n<li>What are the disadvantages of shopping in a street market?</li>\n<li>How do you buy cheap products?</li>\n<li>Do you think things are more expensive in big shopping malls?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<ol>\n<li>What are the differences between shopping in a shopping mall and in a street market?</li>\n<li>Which is more commonly visited in VietNam, shopping malls or street markets?</li>\n<li>Is advertising important?</li>\n<li>What are the disadvantages of shopping in a street market?</li>\n<li>How do you buy cheap products?</li>\n<li>Do you think things are more expensive in big shopping malls?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     }
@@ -177,21 +860,24 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         SpeakingPartNumber = 1,
-                        SpeakingPartDescription = "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 2,
-                        SpeakingPartDescription = "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 3,
-                        SpeakingPartDescription = "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     }
@@ -207,27 +893,30 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         SpeakingPartNumber = 1,
-                        SpeakingPartDescription = "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 2,
-                        SpeakingPartDescription = "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 3,
-                        SpeakingPartDescription = "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     }
                 }
             },
-             new()
+            new()
             {
                 SpeakingSampleName = "Speaking Sample 5",
                 IsActive = true,
@@ -237,28 +926,31 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         SpeakingPartNumber = 1,
-                        SpeakingPartDescription = "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 2,
-                        SpeakingPartDescription = "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 3,
-                        SpeakingPartDescription = "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     }
                 }
             }
         };
-        
+
         await dbContext.SpeakingSamples.AddRangeAsync(speakingSamples);
         await dbContext.SaveChangesAsync();
     }
@@ -502,6 +1194,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         {
             new User
             {
+                UserId = Guid.Parse("be763aa5-9c46-479c-a694-7dd515f38281"),
+                ClerkId = "user_2mSp3nJ92WjUJfTeqwrCDJXRMCU",
+                FirstName = "Admin",
+                LastName = "Prep4Ielts",
+                Email = "admin.prep4ielts@gmail.com",
+                DateOfBirth = new DateTime(1990, 5, 15),
+                Phone = "0978112391",
+                IsActive = true,
+                CreateDate = DateTime.Now,
+                TestTakenDate = DateTime.Now.AddDays(-30),
+                TargetScore = "8.0",
+                RoleId = staffRoleId
+            },
+            new User
+            {
                 UserId = Guid.Parse("ee3da1ec-e2d1-458c-b6c9-23e76727da8d"),
                 ClerkId = "user_2ksTPdbJa8xQxojVQtM5FSPb5s1",
                 FirstName = "Admin",
@@ -742,11 +1449,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 PartitionTagDesc = Enum.PartitionTag.ReadingChoosingFromList.GetDescription(),
             }
         };
-        
+
         await dbContext.PartitionTags.AddRangeAsync(partitionTags);
         await dbContext.SaveChangesAsync();
     }
-    
+
     //  Summary:
     //      Seeding Test Categories
     private async Task SeedTestCategoryAsync()
@@ -786,14 +1493,14 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         var tags = await dbContext.Tags.ToListAsync();
 
         // Get all partition tag
-        var listeningPartitionTags = await dbContext.PartitionTags.Where(pt => 
-            pt.PartitionTagDesc != null && 
+        var listeningPartitionTags = await dbContext.PartitionTags.Where(pt =>
+            pt.PartitionTagDesc != null &&
             pt.PartitionTagDesc.Contains("[Listening]")).ToListAsync();
-        
-        var readingPartitionTags = await dbContext.PartitionTags.Where(pt => 
-            pt.PartitionTagDesc != null && 
+
+        var readingPartitionTags = await dbContext.PartitionTags.Where(pt =>
+            pt.PartitionTagDesc != null &&
             pt.PartitionTagDesc.Contains("[Reading]")).ToListAsync();
-        
+
         // Get all users
         var studentUsers = await dbContext.Users.Where(x =>
             x.Role != null &&
@@ -2487,199 +3194,199 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             Console.WriteLine("Not found test 1 or 2 to seed history");
             return;
         }
-        
+
         var listeningTest1 = listeningTests.FirstOrDefault(x => x.TestTitle.Contains("Listening Test 1"));
         if (listeningTest1 != null)
         {
             var test1Sections = listeningTest1.TestSections.ToList();
-    
+
             listeningTest1.TestHistories.Add(new()
+            {
+                TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                TotalCompletionTime = rnd.Next(3600),
+                TotalRightAnswer = 26,
+                TotalWrongAnswer = 13,
+                TotalSkipAnswer = 1,
+                TotalQuestion = 40,
+                AccuracyRate = double.Parse("0.65"),
+                TestType = listeningTest1.TestType,
+                BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
+                ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
+                IsFull = rnd.Next(0, 1) == 1,
+                TestCategoryId = listeningTest1.TestCategoryId,
+                UserId = users[0].UserId,
+                TestId = listeningTest1.TestId,
+                PartitionHistories = new List<PartitionHistory>()
                 {
-                    TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
-                    TotalCompletionTime = rnd.Next(3600),
-                    TotalRightAnswer = 26,
-                    TotalWrongAnswer = 13,
-                    TotalSkipAnswer = 1,
-                    TotalQuestion = 40,
-                    AccuracyRate = double.Parse("0.65"),
-                    TestType = listeningTest1.TestType,
-                    BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
-                    ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
-                    IsFull = rnd.Next(0, 1) == 1,
-                    TestCategoryId = listeningTest1.TestCategoryId,
-                    UserId = users[0].UserId,
-                    TestId = listeningTest1.TestId,
-                    PartitionHistories = new List<PartitionHistory>()
+                    new()
                     {
-                        new()
-                        {
-                            TestSectionName = "Recording 1",
-                            TotalRightAnswer = 8,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.6"),
-                            TestSectionPartId = test1Sections[0].TestSectionPartitions.First().TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 2",
-                            TotalRightAnswer = 7,
-                            TotalWrongAnswer = 3,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.375"),
-                            TestSectionPartId = test1Sections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 2",
-                            TotalRightAnswer = 6,
-                            TotalWrongAnswer = 4,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.2"),
-                            TestSectionPartId = test1Sections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 3",
-                            TotalRightAnswer = 5,
-                            TotalWrongAnswer = 5,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.4"),
-                            TestSectionPartId = test1Sections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 3",
-                            TotalRightAnswer = 9,
-                            TotalWrongAnswer = 1,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.8"),
-                            TestSectionPartId = test1Sections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 4",
-                            TotalRightAnswer = 8,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.1"),
-                            TestSectionPartId = test1Sections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 4",
-                            TotalRightAnswer = 7,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 1,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.00"),
-                            TestSectionPartId = test1Sections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        }
+                        TestSectionName = "Recording 1",
+                        TotalRightAnswer = 8,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.6"),
+                        TestSectionPartId = test1Sections[0].TestSectionPartitions.First().TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 2",
+                        TotalRightAnswer = 7,
+                        TotalWrongAnswer = 3,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.375"),
+                        TestSectionPartId = test1Sections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 2",
+                        TotalRightAnswer = 6,
+                        TotalWrongAnswer = 4,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.2"),
+                        TestSectionPartId = test1Sections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 3",
+                        TotalRightAnswer = 5,
+                        TotalWrongAnswer = 5,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.4"),
+                        TestSectionPartId = test1Sections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 3",
+                        TotalRightAnswer = 9,
+                        TotalWrongAnswer = 1,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.8"),
+                        TestSectionPartId = test1Sections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 4",
+                        TotalRightAnswer = 8,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.1"),
+                        TestSectionPartId = test1Sections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 4",
+                        TotalRightAnswer = 7,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 1,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.00"),
+                        TestSectionPartId = test1Sections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
                     }
-                });
+                }
+            });
         }
-        
+
         var listeningTest2 = listeningTests.FirstOrDefault(x => x.TestTitle.Contains("Listening Test 2"));
         if (listeningTest2 != null)
         {
             var test2Sections = listeningTest2.TestSections.ToList();
-    
+
             listeningTest2.TestHistories.Add(new()
+            {
+                TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                TotalCompletionTime = rnd.Next(3600),
+                TotalRightAnswer = 26,
+                TotalWrongAnswer = 13,
+                TotalSkipAnswer = 1,
+                TotalQuestion = 40,
+                AccuracyRate = double.Parse("0.65"),
+                TestType = listeningTest2.TestType,
+                BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
+                ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
+                IsFull = rnd.Next(0, 1) == 1,
+                TestCategoryId = listeningTest2.TestCategoryId,
+                UserId = users[0].UserId,
+                TestId = listeningTest2.TestId,
+                PartitionHistories = new List<PartitionHistory>()
                 {
-                    TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
-                    TotalCompletionTime = rnd.Next(3600),
-                    TotalRightAnswer = 26,
-                    TotalWrongAnswer = 13,
-                    TotalSkipAnswer = 1,
-                    TotalQuestion = 40,
-                    AccuracyRate = double.Parse("0.65"),
-                    TestType = listeningTest2.TestType,
-                    BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
-                    ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
-                    IsFull = rnd.Next(0, 1) == 1,
-                    TestCategoryId = listeningTest2.TestCategoryId,
-                    UserId = users[0].UserId,
-                    TestId = listeningTest2.TestId,
-                    PartitionHistories = new List<PartitionHistory>()
+                    new()
                     {
-                        new()
-                        {
-                            TestSectionName = "Recording 1",
-                            TotalRightAnswer = 8,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.6"),
-                            TestSectionPartId = test2Sections[0].TestSectionPartitions.First().TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 2",
-                            TotalRightAnswer = 7,
-                            TotalWrongAnswer = 3,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.375"),
-                            TestSectionPartId = test2Sections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 2",
-                            TotalRightAnswer = 6,
-                            TotalWrongAnswer = 4,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.2"),
-                            TestSectionPartId = test2Sections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 3",
-                            TotalRightAnswer = 5,
-                            TotalWrongAnswer = 5,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.4"),
-                            TestSectionPartId = test2Sections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 3",
-                            TotalRightAnswer = 9,
-                            TotalWrongAnswer = 1,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.8"),
-                            TestSectionPartId = test2Sections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 4",
-                            TotalRightAnswer = 8,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.1"),
-                            TestSectionPartId = test2Sections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 4",
-                            TotalRightAnswer = 7,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 1,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.00"),
-                            TestSectionPartId = test2Sections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        }
+                        TestSectionName = "Recording 1",
+                        TotalRightAnswer = 8,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.6"),
+                        TestSectionPartId = test2Sections[0].TestSectionPartitions.First().TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 2",
+                        TotalRightAnswer = 7,
+                        TotalWrongAnswer = 3,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.375"),
+                        TestSectionPartId = test2Sections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 2",
+                        TotalRightAnswer = 6,
+                        TotalWrongAnswer = 4,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.2"),
+                        TestSectionPartId = test2Sections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 3",
+                        TotalRightAnswer = 5,
+                        TotalWrongAnswer = 5,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.4"),
+                        TestSectionPartId = test2Sections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 3",
+                        TotalRightAnswer = 9,
+                        TotalWrongAnswer = 1,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.8"),
+                        TestSectionPartId = test2Sections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 4",
+                        TotalRightAnswer = 8,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.1"),
+                        TestSectionPartId = test2Sections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 4",
+                        TotalRightAnswer = 7,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 1,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.00"),
+                        TestSectionPartId = test2Sections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
                     }
-                });
+                }
+            });
         }
 
         await dbContext.SaveChangesAsync();
@@ -2718,9 +3425,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         foreach (var th in testHistories)
         {
             var partitionHistories = th!.PartitionHistories.ToList();
-            
-            if(!partitionHistories.Any()) continue;
-            
+
+            if (!partitionHistories.Any()) continue;
+
             List<TestGrade> testGrades = new()
             {
                 new()
@@ -3089,12 +3796,12 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             await dbContext.SaveChangesAsync();
         }
     }
-    
+
     // Summary:
     //      Seeding premium package
     private async Task SeedPremiumPackageAsync()
     {
-        var expiredAt = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, 
+        var expiredAt = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
             // Vietnam timezone
             TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
         List<PremiumPackage> premiumPackages = new()
@@ -3127,11 +3834,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 CreateDate = expiredAt,
             }
         };
-        
+
         await dbContext.PremiumPackages.AddRangeAsync(premiumPackages);
         await dbContext.SaveChangesAsync();
     }
-    
+
     //  Summary:
     //      Seeding Payment Type
     public async Task SeedPaymentTypeAsync()
@@ -3147,7 +3854,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 PaymentMethod = Enum.PaymentType.PayOs.GetDescription()
             }
         };
-        
+
         await dbContext.PaymentTypes.AddRangeAsync(paymentTypes);
         await dbContext.SaveChangesAsync();
     }

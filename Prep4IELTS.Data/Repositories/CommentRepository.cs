@@ -30,7 +30,7 @@ public class CommentRepository : GenericRepository<Comment>
     }
 
 
-    private async Task LoadInverseParentCommentRecursively(Comment comment)
+    public async Task LoadInverseParentCommentRecursively(Comment comment)
     {
         await _dbSet.Entry(comment)
             .Collection(x => x.InverseParentComment)
@@ -138,7 +138,7 @@ public class CommentRepository : GenericRepository<Comment>
 
         return results;
     }
-
+    
     public async Task<int> CountTotalByTestId(Guid testId)
     {
         return await _dbSet.CountAsync(x => x.TestId == testId);

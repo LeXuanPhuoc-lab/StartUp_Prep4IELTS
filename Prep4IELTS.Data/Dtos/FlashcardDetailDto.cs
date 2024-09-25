@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Prep4IELTS.Data.Dtos;
 
-public record FlashcardDetail(
+public record FlashcardDetailDto(
     int FlashcardDetailId,
     string WordText,
     string Definition,
@@ -10,8 +10,14 @@ public record FlashcardDetail(
     string? WordPronunciation,
     string? Example,
     string? Description,
-    string? ImageUrl)
+    // string? ImageUrl,
+    int? CloudResourceId,
+    CloudResourceDto? CloudResource,
+    int FlashcardId)
 {
-    public int FlashcardId{ get; set; }
     [JsonIgnore] public FlashcardDto Flashcard = null!;
-};
+
+    // [JsonIgnore] 
+    // public ICollection<UserFlashcardProgressDto> UserFlashcardProgresses =
+    //     new List<UserFlashcardProgressDto>();
+}

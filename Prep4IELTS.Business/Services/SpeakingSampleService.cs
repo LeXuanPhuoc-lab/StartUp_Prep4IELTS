@@ -47,6 +47,25 @@ public class SpeakingSampleService(UnitOfWork unitOfWork) : ISpeakingSampleServi
         return speakingSampleEntities.Adapt<List<SpeakingSampleDto>>();
     }
 
+    public async Task<List<SpeakingSampleDto>> FindAllWithConditionAsync(
+        Expression<Func<SpeakingSample, bool>> filter, 
+        Func<IQueryable<SpeakingSample>, IOrderedQueryable<SpeakingSample>>? orderBy,
+        string? includeProperties, Guid userId)
+    {
+        var speakingSampleEntities =
+            await unitOfWork.SpeakingSampleRepository.FindAllWithConditionAsync(filter, orderBy,
+                includeProperties);
+
+        foreach (var sm in speakingSampleEntities)
+        {
+            sm.UserSpeakingSampleHistories =
+                await unitOfWork.SpeakingSampleRepository.FindUserSpeakingSampleHistoryAsync(sm.SpeakingSampleId,
+                    userId);
+        }
+        
+        return speakingSampleEntities.Adapt<List<SpeakingSampleDto>>();
+    }
+
     public async Task<int> CountTotalAsync()
     {
         return await unitOfWork.SpeakingSampleRepository.CountTotalAsync();

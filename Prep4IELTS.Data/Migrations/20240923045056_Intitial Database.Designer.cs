@@ -12,7 +12,7 @@ using Prep4IELTS.Data.Context;
 namespace Prep4IELTS.Data.Migrations
 {
     [DbContext(typeof(Prep4IeltsContext))]
-    [Migration("20240921162633_Intitial Database")]
+    [Migration("20240923045056_Intitial Database")]
     partial class IntitialDatabase
     {
         /// <inheritdoc />
@@ -163,6 +163,10 @@ namespace Prep4IELTS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlashcardDetailId"));
 
+                    b.Property<int?>("CloudResourceId")
+                        .HasColumnType("int")
+                        .HasColumnName("cloud_resource_id");
+
                     b.Property<string>("Definition")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -183,12 +187,6 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("flashcard_id");
 
-                    b.Property<string>("ImageUrl")
-                        .HasMaxLength(2048)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(2048)")
-                        .HasColumnName("image_url");
-
                     b.Property<string>("WordForm")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -208,6 +206,8 @@ namespace Prep4IELTS.Data.Migrations
 
                     b.HasKey("FlashcardDetailId")
                         .HasName("PK_FlashcardDetail");
+
+                    b.HasIndex("CloudResourceId");
 
                     b.HasIndex("FlashcardId");
 
@@ -1218,11 +1218,19 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardDetail", b =>
                 {
+                    b.HasOne("Prep4IELTS.Data.Entities.CloudResource", "CloudResource")
+                        .WithMany("FlashcardDetails")
+                        .HasForeignKey("CloudResourceId")
+                        .HasConstraintName("FK_FlashcardDetail_CloudResource");
+
                     b.HasOne("Prep4IELTS.Data.Entities.Flashcard", "Flashcard")
                         .WithMany("FlashcardDetails")
                         .HasForeignKey("FlashcardId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_FlashcardDetail_Flashcard");
+
+                    b.Navigation("CloudResource");
 
                     b.Navigation("Flashcard");
                 });
@@ -1465,12 +1473,14 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.FlashcardDetail", "FlashcardDetail")
                         .WithMany("UserFlashcardProgresses")
                         .HasForeignKey("FlashcardDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_UserFlashcardProgress_FlashcardDetail");
 
                     b.HasOne("Prep4IELTS.Data.Entities.UserFlashcard", "UserFlashcard")
                         .WithMany("UserFlashcardProgresses")
                         .HasForeignKey("UserFlashcardId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_UserFlashcardProgress_UserFlashcard");
 
@@ -1536,6 +1546,8 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.CloudResource", b =>
                 {
+                    b.Navigation("FlashcardDetails");
+
                     b.Navigation("TestSectionPartitions");
 
                     b.Navigation("TestSections");

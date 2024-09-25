@@ -142,6 +142,13 @@ public class UserService(
         return userEntity.Adapt<UserDto>();
     }
 
+    public async Task<List<UserDto>> FindAllWithConditionAsync(Expression<Func<User, bool>> filter, Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null, string? includeProperties = "")
+    {
+        var userEntities = await unitOfWork.UserRepository.FindAllWithConditionAsync(
+            filter, orderBy, includeProperties);
+        return userEntities.Adapt<List<UserDto>>();
+    }
+
     public async Task<UserDto?> GetUserByClerkId(string clerkId)
     {
         var user = await unitOfWork.UserRepository.FindUserByClerkId(clerkId);
