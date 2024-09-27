@@ -197,7 +197,7 @@ public class UserController(
             ModelState.AddModelError("email", $"Email already exist.");
             return UnprocessableEntity(ModelState);
         }
-        
+
         // Initiate user dto
         var toInsertUser = new UserDto(
             Id:0, UserId: Guid.Empty, ClerkId: string.Empty,

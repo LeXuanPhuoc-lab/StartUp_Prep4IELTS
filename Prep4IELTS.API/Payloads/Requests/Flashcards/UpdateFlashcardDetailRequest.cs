@@ -47,6 +47,7 @@ public static class UpdateFlashcardDetailRequestExtensions
                     Bytes: fileBytes, 
                     CreateDate: DateTime.UtcNow, null) 
                 : null,
-            FlashcardId: 0);
+            FlashcardId: 0,
+            FlashcardDetailTagId: 0);
     }
 }

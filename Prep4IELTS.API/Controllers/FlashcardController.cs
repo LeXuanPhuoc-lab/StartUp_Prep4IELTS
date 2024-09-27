@@ -7,16 +7,20 @@ using EXE202_Prep4IELTS.Payloads.Responses.Flashcards;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Prep4IELTS.Business.Constants;
 using Prep4IELTS.Business.Models;
 using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Business.Utils;
 using Prep4IELTS.Data.Dtos;
+using Prep4IELTS.Data.Enum;
+using Prep4IELTS.Data.Extensions;
 
 namespace EXE202_Prep4IELTS.Controllers;
 
 [ApiController]
 public class FlashcardController(
     IFlashcardService flashcardService, 
+    IUserFlashcardService userFlashcardService,
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
 {
     private readonly AppSettings _appSettings = monitor.CurrentValue;
@@ -250,6 +254,137 @@ public class FlashcardController(
             ? NoContent()
             : StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
     }
+
+    [HttpGet(ApiRoute.Flashcard.GetAllFlashcardStatus, Name = nameof(GetAllFlashcardStatusAsync))]
+    public async Task<IActionResult> GetAllFlashcardStatusAsync()
+    {
+        List<string> flashcardStatuses = new()
+        {
+            FlashcardProgressStatus.New.GetDescription(),
+            FlashcardProgressStatus.Studying.GetDescription(),
+            FlashcardProgressStatus.Proficient.GetDescription(),
+        };
+
+        return await Task.FromResult(Ok(new BaseResponse()
+        {
+            StatusCode = StatusCodes.Status200OK,
+            Data = flashcardStatuses
+        }));
+    }
+
+    [ClerkAuthorize]
+    [HttpGet(ApiRoute.Flashcard.Practice, Name = nameof(PracticeFlashcardAsync))]
+    public async Task<IActionResult> PracticeFlashcardAsync([FromRoute] int id, 
+        [FromQuery] List<FlashcardProgressStatus>? status)
+    {
+        // Check exist user 
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if (userDto == null) return Unauthorized();
+    
+        // Check exist user flashcard
+        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
+        if (flashcardDto == null)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found user in this flashcard"
+            });
+        }
+        
+        // Initiate user flashcard response
+        UserFlashcardDto? userFlashcard = null;
+
+        if (status != null && status.Any())
+        {
+            userFlashcard = await userFlashcardService.GetUserPracticingProgressWithStatusAsync(
+                id, userDto.UserId, status);
+        }
+        else
+        {
+            userFlashcard = await userFlashcardService.GetUserPracticingProgressAsync(
+                id, userDto.UserId);
+        }
+        
+        return userFlashcard != null
+            ? Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = userFlashcard
+            })
+            : NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found flashcard progresses"
+            });
+    }
+
+    [ClerkAuthorize]
+    [HttpPatch(ApiRoute.Flashcard.UpdateFlashcardProgress, Name = nameof(UpdateFlashcardProgressAsync))]
+    public async Task<IActionResult> UpdateFlashcardProgressAsync([FromRoute] int id, 
+        [FromQuery] int userFlashcardProgressId,[FromQuery] string status)
+    {
+        // Check exist user 
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if (userDto == null) return Unauthorized();
+
+        // Check exist user flashcard
+        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
+        if (flashcardDto == null)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found user in this flashcard"
+            });
+        }
+
+        switch (status)
+        {
+            case FlashcardProgressConstants.Studying:
+                await flashcardService.UpdateUserFlashcardProgressStatusAsync(userFlashcardProgressId, FlashcardProgressStatus.Studying);                
+                break;
+            case FlashcardProgressConstants.Starred:
+                await flashcardService.UpdateUserFlashcardProgressStatusAsync(userFlashcardProgressId, FlashcardProgressStatus.Starred);                
+                break;
+        }
+
+        return NoContent();
+    }
+
+    [ClerkAuthorize]
+    [HttpPatch(ApiRoute.Flashcard.Reset, Name = nameof(ResetFlashcardProgressAsync))]
+    public async Task<IActionResult> ResetFlashcardProgressAsync([FromRoute] int id)
+    {
+        // Check exist user 
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if (userDto == null) return Unauthorized();
+
+        // Check exist user flashcard
+        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
+        if (flashcardDto == null)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found user in this flashcard"
+            });
+        }
+        
+        // Progress reset flashcard
+        await userFlashcardService.ResetFlashcardProgressAsync(id, userDto.UserId);
+        
+        // Response 
+        return NoContent();
+    }
+    
+    #endregion
+
+    #region Premium Only
+
+    // TRUE/FALSE, WRITTEN, MATCHING
+    // [HttpGet(ApiRoute.Flashcard.Exam, Name = nameof())]
+    
     
     #endregion
 }

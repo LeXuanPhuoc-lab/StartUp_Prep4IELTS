@@ -135,11 +135,15 @@ public static class ApiRoute
         public const string Hidden = Base + "/flashcards/{id}/hidden";
         // Privacy
         public const string GetAllPrivacy = Base + "/flashcards/privacy";
+        public const string GetAllFlashcardStatus = Base + "/flashcard-statuses";
         public const string GetByIdPrivacy = Base + "/flashcards/{id}/privacy";
         public const string PrivacyCreate = Base + "/flashcards/privacy/create";
         public const string AddUser = Base + "/flashcards/{id}/add-user";
         public const string DeleteUser = Base + "/flashcards/{id}/delete-user/{userId}";
-        public const string UpdateFlashcardProgress = Base + "/flashcards/{id}/update-flashcard-progress";
+        public const string UpdateFlashcardProgress = Base + "/flashcards/{id}/update-progress";
+        public const string Practice = Base + "/flashcards/{id}/practice";
+        public const string Exam = Base + "/flashcards/{id}/exam";
+        public const string Reset = Base + "/flashcards/{id}/reset";
     }
 
     public static class FlashcardDetail

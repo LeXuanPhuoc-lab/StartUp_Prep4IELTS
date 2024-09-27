@@ -140,6 +140,32 @@ public static class ServiceCollectionExtensions
                 options.ConfirmWebHookUrl = confirmWebHookUrl;
             });
         }
+        else
+        {
+            var payGate = "https://api-merchant.payos.vn";
+            var paymentUrl = $"{payGate}/v2/payment-requests";
+            var getPaymentLinkInformation = "https://api-merchant.payos.vn/v2/payment-requests/{0}";
+            var cancelPaymentUrl = "https://api-merchant.payos.vn/v2/payment-requests/{0}/cancel";
+            var confirmWebHookUrl = "https://api-merchant.payos.vn/confirm-webhook";
+            var returnUrl = "https://prep4ielts.vercel.app/payment-return";
+            var cancelUrl = "https://prep4ielts.vercel.app/payment-cancel";
+
+            // var webHookUrl = "https://localhost:6000/api/payment/pay-os/webhook-return";
+
+            services.Configure<PayOSConfiguration>(options =>
+            {
+                options.ClientId = payOsConfig!.ClientId;
+                options.ApiKey = payOsConfig.ApiKey;
+                options.ChecksumKey = payOsConfig.ChecksumKey;
+                options.ReturnUrl = returnUrl;
+                options.CancelUrl = cancelUrl;
+                options.PaymentUrl = paymentUrl;
+                options.GetPaymentLinkInformationUrl = getPaymentLinkInformation;
+                options.CancelPaymentUrl = cancelPaymentUrl;
+                // options.WebHookUrl = webHookUrl;
+                options.ConfirmWebHookUrl = confirmWebHookUrl;
+            });
+        }
         
         
         // Configure Momo
