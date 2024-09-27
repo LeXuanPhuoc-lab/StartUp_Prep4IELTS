@@ -35,6 +35,10 @@ public class MappingRegistration : IRegister
         config.NewConfig<SpeakingSample, SpeakingSampleDto>();
         config.NewConfig<SpeakingPart, SpeakingPartDto>();
         config.NewConfig<UserSpeakingSampleHistory, UserSpeakingSampleHistoryDto>();
+        config.NewConfig<FlashcardDetailTag, FlashcardDetailTagDto>();
+        config.NewConfig<FlashcardExamHistory, FlashcardExamHistoryDto>();
+        config.NewConfig<FlashcardExamGrade, FlashcardExamGradeDto>();
+        config.NewConfig<VocabularyUnitSchedule, VocabularyUnitScheduleDto>();
         // config.NewConfig<FlashcardDetail, FlashcardDetailDto>();
     }
 }

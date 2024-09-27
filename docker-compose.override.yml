@@ -10,10 +10,9 @@ services:
   
   prep4ielts.api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__DefaultConnectionString=Server=prep4ieltsdb;Database=Prep4IELTS;User Id=sa;Password=Prep4IELTS12345;Encrypt=False;TrustServerCertificate=True;
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnectionString=Server=phuoclx2003_SQLLogin_1;Initial Catalog=Prep4Ielts;uid=sa;pwd=Prep4Ielts123;TrustServerCertificate=True;Encrypt=False;
       - AppSettings__PageSize=20
       - AppSettings__ImagePath=/Prep4Ielts/Images
       - AppSettings__AudioPath=/Prep4Ielts/Audios

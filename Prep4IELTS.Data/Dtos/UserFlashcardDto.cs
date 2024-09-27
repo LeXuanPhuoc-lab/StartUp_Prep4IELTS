@@ -11,4 +11,8 @@ public record UserFlashcardDto(
     
     public int FlashcardId { get; set; }
     [JsonIgnore] public FlashcardDto Flashcard { get; set; } = null!;
+    
+    [JsonIgnore]
+    public virtual ICollection<FlashcardExamHistoryDto> FlashcardExamHistories { get; set; } 
+        = new List<FlashcardExamHistoryDto>();
 }
