@@ -12,6 +12,10 @@ public interface ICommentService
         Func<IQueryable<Comment>, IOrderedQueryable<Comment>>? orderBy,
         string? includeProperties,
         int? pageIndex, int? pageSize);
+    Task<List<CommentDto>> FindAllWithConditionAsync(
+        Expression<Func<Comment, bool>> filter,
+        Func<IQueryable<Comment>, IOrderedQueryable<Comment>>? orderBy = null, 
+        string? includeProperties = "");
 
     Task<bool> RemoveRangeCommentAndChildrenAsync(List<CommentDto> comments);   
     Task<int> CountTotalByTestId(Guid testId);

@@ -87,7 +87,7 @@ namespace EXE202_Prep4IELTS.Controllers
                     var toUpdateUser = new UserDto(
                         userDto.Id, userDto.UserId, clerkId,
                         FirstName: userDto.FirstName, LastName: userDto.LastName,
-                        Email: email, Username: username, Phone: userDto.Phone,
+                        Email: email, Username: username ?? string.Empty, Phone: userDto.Phone,
                         AvatarImage: avatar, IsActive: userDto.IsActive,
                         DateOfBirth: userDto.DateOfBirth, CreateDate: userDto.CreateDate,
                         TestTakenDate: userDto.TestTakenDate, TargetScore: userDto.TargetScore, 
@@ -102,9 +102,9 @@ namespace EXE202_Prep4IELTS.Controllers
                     var studentRole = await roleService.FindByRoleNameAsync(SystemRole.Student);
                     // Create new user 
                     var toInsertUser = new UserDto(
-                        Id:0, UserId: Guid.Empty, clerkId,
+                        Id:0, UserId: Guid.Empty, ClerkId: clerkId,
                         FirstName: string.Empty, LastName: string.Empty,
-                        Email: email, Username: username, Phone: null,
+                        Email: email, Username: username ?? string.Empty, Phone: null,
                         AvatarImage: avatar, IsActive: null,
                         DateOfBirth: null, CreateDate: DateTime.UtcNow,
                         TestTakenDate: null, TargetScore: null, 
@@ -140,7 +140,7 @@ namespace EXE202_Prep4IELTS.Controllers
                     var toUpdateUser = new UserDto(
                         userDto.Id, userDto.UserId, clerkId,
                         FirstName: userDto.FirstName, LastName: userDto.LastName,
-                        Email: email, Username: username, Phone: userDto.Phone,
+                        Email: email, Username: username ?? string.Empty, Phone: userDto.Phone,
                         AvatarImage: avatar, IsActive: userDto.IsActive,
                         DateOfBirth: userDto.DateOfBirth, CreateDate: userDto.CreateDate,
                         TestTakenDate: userDto.TestTakenDate, TargetScore: userDto.TargetScore, 

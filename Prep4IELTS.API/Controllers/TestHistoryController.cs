@@ -27,12 +27,16 @@ public class TestHistoryController(
     [HttpGet(ApiRoute.TestHistory.GetAllByUserId, Name = nameof(GetAllHistoryByUserIdAsync))]
     public async Task<IActionResult> GetAllHistoryByUserIdAsync(Guid userId, int? page, int? pageSize)
     {
+        // Get all user history
         var testHistoryDtos = await testHistoryService.FindAllUserIdAsync(userId);
 
+        // Initiate test response including test history
+        var listTestResp = testHistoryDtos.ToList().ToListTestResponse();
+        
         // Paging 
         var testHistoryPagingList =
-            PaginatedList<TestHistoryDto>.Paginate(
-                source: testHistoryDtos,
+            PaginatedList<TestResponse>.Paginate(
+                source: listTestResp,
                 pageIndex: page ?? 1,
                 pageSize: pageSize ?? _appSettings.PageSize);
 
@@ -47,7 +51,7 @@ public class TestHistoryController(
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
                 {
-                    TestHistories = testHistoryPagingList,
+                    UserTests = testHistoryPagingList,
                     PageIndex = testHistoryPagingList.PageIndex,
                     TotalPage = testHistoryPagingList.TotalPage
                 }

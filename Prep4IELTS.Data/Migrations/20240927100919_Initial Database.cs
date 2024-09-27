@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prep4IELTS.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class IntitialDatabase : Migration
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,6 +44,19 @@ namespace Prep4IELTS.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Flashcard", x => x.flashcard_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Flashcard_Detail_Tag",
+                columns: table => new
+                {
+                    flashcard_detail_tag_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    flashcard_detail_tag_desc = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FlashcardDetailTag", x => x.flashcard_detail_tag_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,17 +186,30 @@ namespace Prep4IELTS.Data.Migrations
                     word_pronunciation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     example = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    image_url = table.Column<string>(type: "varchar(2048)", unicode: false, maxLength: 2048, nullable: true),
-                    flashcard_id = table.Column<int>(type: "int", nullable: false)
+                    cloud_resource_id = table.Column<int>(type: "int", nullable: true),
+                    flashcard_id = table.Column<int>(type: "int", nullable: false),
+                    flashcard_detail_tag_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FlashcardDetail", x => x.flashcard_detail_id);
                     table.ForeignKey(
+                        name: "FK_FlashcardDetail_CloudResource",
+                        column: x => x.cloud_resource_id,
+                        principalTable: "Cloud_Resource",
+                        principalColumn: "cloud_resource_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_FlashcardDetail_Flashcard",
                         column: x => x.flashcard_id,
                         principalTable: "Flashcard",
-                        principalColumn: "flashcard_id");
+                        principalColumn: "flashcard_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FlashcardDetail_Tag",
+                        column: x => x.flashcard_detail_tag_id,
+                        principalTable: "Flashcard_Detail_Tag",
+                        principalColumn: "flashcard_detail_tag_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -238,6 +264,27 @@ namespace Prep4IELTS.Data.Migrations
                         column: x => x.role_id,
                         principalTable: "System_Role",
                         principalColumn: "role_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vocabulary_Unit_Schedule",
+                columns: table => new
+                {
+                    vocabulary_unit_schedule_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    weekday = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    comment = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    create_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    flashcard_detail_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("vocabulary_unit_schedule_id", x => x.vocabulary_unit_schedule_id);
+                    table.ForeignKey(
+                        name: "FK_VocabularyUnitSchedule_FlashcardDetail",
+                        column: x => x.flashcard_detail_id,
+                        principalTable: "Flashcard_Detail",
+                        principalColumn: "flashcard_detail_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -484,6 +531,31 @@ namespace Prep4IELTS.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Flashcard_Exam_History",
+                columns: table => new
+                {
+                    flashcard_exam_history_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    total_question = table.Column<int>(type: "int", nullable: true),
+                    total_right_answer = table.Column<int>(type: "int", nullable: true),
+                    total_wrong_answer = table.Column<int>(type: "int", nullable: true),
+                    TotalCompletionTime = table.Column<int>(type: "int", nullable: true),
+                    accuracy_rate = table.Column<double>(type: "float", nullable: true),
+                    taken_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    user_flashcard_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("flashcard_exam_history_id", x => x.flashcard_exam_history_id);
+                    table.ForeignKey(
+                        name: "FK_FlashcardExamHistories_UserFlashcard",
+                        column: x => x.user_flashcard_id,
+                        principalTable: "User_Flashcard",
+                        principalColumn: "user_flashcard_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User_Flashcard_Progress",
                 columns: table => new
                 {
@@ -500,12 +572,14 @@ namespace Prep4IELTS.Data.Migrations
                         name: "FK_UserFlashcardProgress_FlashcardDetail",
                         column: x => x.flashcard_detail_id,
                         principalTable: "Flashcard_Detail",
-                        principalColumn: "flashcard_detail_id");
+                        principalColumn: "flashcard_detail_id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserFlashcardProgress_UserFlashcard",
                         column: x => x.user_flashcard_id,
                         principalTable: "User_Flashcard",
-                        principalColumn: "user_flashcard_id");
+                        principalColumn: "user_flashcard_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -578,6 +652,33 @@ namespace Prep4IELTS.Data.Migrations
                         column: x => x.test_section_id,
                         principalTable: "Test_Section",
                         principalColumn: "test_section_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Flashcard_Exam_Grade",
+                columns: table => new
+                {
+                    flashcard_exam_grade_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    answer = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    flashcard_grade_status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    flashcard_exam_history_id = table.Column<int>(type: "int", nullable: false),
+                    flashcard_detail_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("flashcard_exam_grade_id", x => x.flashcard_exam_grade_id);
+                    table.ForeignKey(
+                        name: "FK_FlashcardExamGrade_FlashcardDetail",
+                        column: x => x.flashcard_detail_id,
+                        principalTable: "Flashcard_Detail",
+                        principalColumn: "flashcard_detail_id");
+                    table.ForeignKey(
+                        name: "FK_FlashcardExamGrade_History",
+                        column: x => x.flashcard_exam_history_id,
+                        principalTable: "Flashcard_Exam_History",
+                        principalColumn: "flashcard_exam_history_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -702,9 +803,34 @@ namespace Prep4IELTS.Data.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Flashcard_Detail_cloud_resource_id",
+                table: "Flashcard_Detail",
+                column: "cloud_resource_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Flashcard_Detail_flashcard_detail_tag_id",
+                table: "Flashcard_Detail",
+                column: "flashcard_detail_tag_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Flashcard_Detail_flashcard_id",
                 table: "Flashcard_Detail",
                 column: "flashcard_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Flashcard_Exam_Grade_flashcard_detail_id",
+                table: "Flashcard_Exam_Grade",
+                column: "flashcard_detail_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Flashcard_Exam_Grade_flashcard_exam_history_id",
+                table: "Flashcard_Exam_Grade",
+                column: "flashcard_exam_history_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Flashcard_Exam_History_user_flashcard_id",
+                table: "Flashcard_Exam_History",
+                column: "user_flashcard_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Partition_History_test_history_id",
@@ -867,6 +993,11 @@ namespace Prep4IELTS.Data.Migrations
                 name: "IX_User_Speaking_Sample_History_user_id",
                 table: "User_Speaking_Sample_History",
                 column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vocabulary_Unit_Schedule_flashcard_detail_id",
+                table: "Vocabulary_Unit_Schedule",
+                column: "flashcard_detail_id");
         }
 
         /// <inheritdoc />
@@ -874,6 +1005,9 @@ namespace Prep4IELTS.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Comment");
+
+            migrationBuilder.DropTable(
+                name: "Flashcard_Exam_Grade");
 
             migrationBuilder.DropTable(
                 name: "Question_Answer");
@@ -897,6 +1031,12 @@ namespace Prep4IELTS.Data.Migrations
                 name: "User_Speaking_Sample_History");
 
             migrationBuilder.DropTable(
+                name: "Vocabulary_Unit_Schedule");
+
+            migrationBuilder.DropTable(
+                name: "Flashcard_Exam_History");
+
+            migrationBuilder.DropTable(
                 name: "Partition_History");
 
             migrationBuilder.DropTable(
@@ -912,13 +1052,13 @@ namespace Prep4IELTS.Data.Migrations
                 name: "User_Premium_Package");
 
             migrationBuilder.DropTable(
+                name: "Speaking_Sample");
+
+            migrationBuilder.DropTable(
                 name: "Flashcard_Detail");
 
             migrationBuilder.DropTable(
                 name: "User_Flashcard");
-
-            migrationBuilder.DropTable(
-                name: "Speaking_Sample");
 
             migrationBuilder.DropTable(
                 name: "Test_History");
@@ -928,6 +1068,9 @@ namespace Prep4IELTS.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Premium_Package");
+
+            migrationBuilder.DropTable(
+                name: "Flashcard_Detail_Tag");
 
             migrationBuilder.DropTable(
                 name: "Flashcard");

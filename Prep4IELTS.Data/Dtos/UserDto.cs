@@ -23,6 +23,7 @@ public record UserDto(
     [JsonIgnore] public ICollection<TestHistoryDto> TestHistories { get; set; } = new List<TestHistoryDto>();
     [JsonIgnore] public ICollection<TestDto> Tests { get; set; } = new List<TestDto>();
     [JsonIgnore] public ICollection<TransactionDto> Transactions { get; set; } = new List<TransactionDto>();
+    // [JsonIgnore] public ICollection<UserFlashcardDto> UserFlashcards { get; set; } = new List<UserFlashcardDto>();
 
     [JsonIgnore] public UserPremiumPackageDto UserPremiumPackage = null!;
     // [JsonIgnore] public ICollection<FlashcardDto> Flashcards { get; set; } = new List<FlashcardDto>();

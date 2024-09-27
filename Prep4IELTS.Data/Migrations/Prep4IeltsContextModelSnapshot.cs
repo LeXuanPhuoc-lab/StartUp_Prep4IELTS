@@ -160,6 +160,10 @@ namespace Prep4IELTS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlashcardDetailId"));
 
+                    b.Property<int?>("CloudResourceId")
+                        .HasColumnType("int")
+                        .HasColumnName("cloud_resource_id");
+
                     b.Property<string>("Definition")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -176,15 +180,13 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("example");
 
+                    b.Property<int?>("FlashcardDetailTagId")
+                        .HasColumnType("int")
+                        .HasColumnName("flashcard_detail_tag_id");
+
                     b.Property<int>("FlashcardId")
                         .HasColumnType("int")
                         .HasColumnName("flashcard_id");
-
-                    b.Property<string>("ImageUrl")
-                        .HasMaxLength(2048)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(2048)")
-                        .HasColumnName("image_url");
 
                     b.Property<string>("WordForm")
                         .IsRequired()
@@ -206,9 +208,117 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasKey("FlashcardDetailId")
                         .HasName("PK_FlashcardDetail");
 
+                    b.HasIndex("CloudResourceId");
+
+                    b.HasIndex("FlashcardDetailTagId");
+
                     b.HasIndex("FlashcardId");
 
                     b.ToTable("Flashcard_Detail", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardDetailTag", b =>
+                {
+                    b.Property<int>("FlashcardDetailTagId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("flashcard_detail_tag_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlashcardDetailTagId"));
+
+                    b.Property<string>("FlashcardDetailDesc")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("flashcard_detail_tag_desc");
+
+                    b.HasKey("FlashcardDetailTagId")
+                        .HasName("PK_FlashcardDetailTag");
+
+                    b.ToTable("Flashcard_Detail_Tag", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardExamGrade", b =>
+                {
+                    b.Property<int>("FlashcardExamGradeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("flashcard_exam_grade_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlashcardExamGradeId"));
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("answer");
+
+                    b.Property<int>("FlashcardDetailId")
+                        .HasColumnType("int")
+                        .HasColumnName("flashcard_detail_id");
+
+                    b.Property<int>("FlashcardExamHistoryId")
+                        .HasColumnType("int")
+                        .HasColumnName("flashcard_exam_history_id");
+
+                    b.Property<string>("FlashcardGradeStatus")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("flashcard_grade_status");
+
+                    b.HasKey("FlashcardExamGradeId")
+                        .HasName("flashcard_exam_grade_id");
+
+                    b.HasIndex("FlashcardDetailId");
+
+                    b.HasIndex("FlashcardExamHistoryId");
+
+                    b.ToTable("Flashcard_Exam_Grade", (string)null);
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardExamHistory", b =>
+                {
+                    b.Property<int>("FlashcardExamHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("flashcard_exam_history_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlashcardExamHistoryId"));
+
+                    b.Property<double?>("AccuracyRate")
+                        .HasColumnType("float")
+                        .HasColumnName("accuracy_rate");
+
+                    b.Property<DateTime>("TakenDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("taken_date");
+
+                    b.Property<int?>("TotalCompletionTime")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TotalQuestion")
+                        .HasColumnType("int")
+                        .HasColumnName("total_question");
+
+                    b.Property<int?>("TotalRightAnswer")
+                        .HasColumnType("int")
+                        .HasColumnName("total_right_answer");
+
+                    b.Property<int?>("TotalWrongAnswer")
+                        .HasColumnType("int")
+                        .HasColumnName("total_wrong_answer");
+
+                    b.Property<int>("UserFlashcardId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_flashcard_id");
+
+                    b.HasKey("FlashcardExamHistoryId")
+                        .HasName("flashcard_exam_history_id");
+
+                    b.HasIndex("UserFlashcardId");
+
+                    b.ToTable("Flashcard_Exam_History", (string)null);
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.PartitionHistory", b =>
@@ -1170,6 +1280,43 @@ namespace Prep4IELTS.Data.Migrations
                     b.ToTable("User_Speaking_Sample_History", (string)null);
                 });
 
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.VocabularyUnitSchedule", b =>
+                {
+                    b.Property<int>("VocabularyUnitScheduleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("vocabulary_unit_schedule_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VocabularyUnitScheduleId"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)")
+                        .HasColumnName("comment");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("create_date");
+
+                    b.Property<int>("FlashcardDetailId")
+                        .HasColumnType("int")
+                        .HasColumnName("flashcard_detail_id");
+
+                    b.Property<string>("Weekday")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasColumnName("weekday");
+
+                    b.HasKey("VocabularyUnitScheduleId")
+                        .HasName("vocabulary_unit_schedule_id");
+
+                    b.HasIndex("FlashcardDetailId");
+
+                    b.ToTable("Vocabulary_Unit_Schedule", (string)null);
+                });
+
             modelBuilder.Entity("TestTag", b =>
                 {
                     b.Property<Guid>("TestId")
@@ -1215,13 +1362,61 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardDetail", b =>
                 {
+                    b.HasOne("Prep4IELTS.Data.Entities.CloudResource", "CloudResource")
+                        .WithMany("FlashcardDetails")
+                        .HasForeignKey("CloudResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_FlashcardDetail_CloudResource");
+
+                    b.HasOne("Prep4IELTS.Data.Entities.FlashcardDetailTag", "FlashcardDetailTag")
+                        .WithMany("FlashcardDetails")
+                        .HasForeignKey("FlashcardDetailTagId")
+                        .HasConstraintName("FK_FlashcardDetail_Tag");
+
                     b.HasOne("Prep4IELTS.Data.Entities.Flashcard", "Flashcard")
                         .WithMany("FlashcardDetails")
                         .HasForeignKey("FlashcardId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_FlashcardDetail_Flashcard");
 
+                    b.Navigation("CloudResource");
+
                     b.Navigation("Flashcard");
+
+                    b.Navigation("FlashcardDetailTag");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardExamGrade", b =>
+                {
+                    b.HasOne("Prep4IELTS.Data.Entities.FlashcardDetail", "FlashcardDetail")
+                        .WithMany("FlashcardExamGrades")
+                        .HasForeignKey("FlashcardDetailId")
+                        .IsRequired()
+                        .HasConstraintName("FK_FlashcardExamGrade_FlashcardDetail");
+
+                    b.HasOne("Prep4IELTS.Data.Entities.FlashcardExamHistory", "FlashcardExamHistory")
+                        .WithMany("FlashcardExamGrades")
+                        .HasForeignKey("FlashcardExamHistoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_FlashcardExamGrade_History");
+
+                    b.Navigation("FlashcardDetail");
+
+                    b.Navigation("FlashcardExamHistory");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardExamHistory", b =>
+                {
+                    b.HasOne("Prep4IELTS.Data.Entities.UserFlashcard", "UserFlashcard")
+                        .WithMany("FlashcardExamHistories")
+                        .HasForeignKey("UserFlashcardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_FlashcardExamHistories_UserFlashcard");
+
+                    b.Navigation("UserFlashcard");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.PartitionHistory", b =>
@@ -1462,12 +1657,14 @@ namespace Prep4IELTS.Data.Migrations
                     b.HasOne("Prep4IELTS.Data.Entities.FlashcardDetail", "FlashcardDetail")
                         .WithMany("UserFlashcardProgresses")
                         .HasForeignKey("FlashcardDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_UserFlashcardProgress_FlashcardDetail");
 
                     b.HasOne("Prep4IELTS.Data.Entities.UserFlashcard", "UserFlashcard")
                         .WithMany("UserFlashcardProgresses")
                         .HasForeignKey("UserFlashcardId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_UserFlashcardProgress_UserFlashcard");
 
@@ -1516,6 +1713,17 @@ namespace Prep4IELTS.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.VocabularyUnitSchedule", b =>
+                {
+                    b.HasOne("Prep4IELTS.Data.Entities.FlashcardDetail", "FlashcardDetail")
+                        .WithMany("VocabularyUnitSchedules")
+                        .HasForeignKey("FlashcardDetailId")
+                        .IsRequired()
+                        .HasConstraintName("FK_VocabularyUnitSchedule_FlashcardDetail");
+
+                    b.Navigation("FlashcardDetail");
+                });
+
             modelBuilder.Entity("TestTag", b =>
                 {
                     b.HasOne("Prep4IELTS.Data.Entities.Tag", null)
@@ -1533,6 +1741,8 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.CloudResource", b =>
                 {
+                    b.Navigation("FlashcardDetails");
+
                     b.Navigation("TestSectionPartitions");
 
                     b.Navigation("TestSections");
@@ -1552,7 +1762,21 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardDetail", b =>
                 {
+                    b.Navigation("FlashcardExamGrades");
+
                     b.Navigation("UserFlashcardProgresses");
+
+                    b.Navigation("VocabularyUnitSchedules");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardDetailTag", b =>
+                {
+                    b.Navigation("FlashcardDetails");
+                });
+
+            modelBuilder.Entity("Prep4IELTS.Data.Entities.FlashcardExamHistory", b =>
+                {
+                    b.Navigation("FlashcardExamGrades");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.PartitionHistory", b =>
@@ -1651,6 +1875,8 @@ namespace Prep4IELTS.Data.Migrations
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.UserFlashcard", b =>
                 {
+                    b.Navigation("FlashcardExamHistories");
+
                     b.Navigation("UserFlashcardProgresses");
                 });
 

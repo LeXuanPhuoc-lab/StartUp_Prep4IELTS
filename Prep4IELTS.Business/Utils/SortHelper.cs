@@ -86,4 +86,33 @@ public static class SortHelper
 
         return await Task.FromResult(sources);
     }
+    
+    public static async Task<IEnumerable<FlashcardDto>> SortFlashcardByColumnAsync(this IEnumerable<FlashcardDto> sources,
+        string sortPattern)
+    {
+        var isDescending = sortPattern.StartsWith("-");
+        if (isDescending)
+        {
+            sortPattern = sortPattern.Trim('-');
+        }
+        
+        // Define sorting pattern
+        var sortMappings = new Dictionary<string, Func<FlashcardDto, object>>()
+        {
+            {"CREATEDATE", u => u.CreateDate ?? null! },
+            {"TOTALVIEW", u => u.TotalView ?? null! },
+            {"TOTALWORD", u => u.TotalWords ?? null! },
+        };
+        
+        // Get sorting pattern
+        if (sortMappings.TryGetValue(sortPattern.ToUpper(), 
+                out var sortExpression))
+        {
+            return await Task.FromResult(isDescending
+                ? sources.OrderByDescending(sortExpression)
+                : sources.OrderBy(sortExpression));
+        }
+
+        return await Task.FromResult(sources);
+    }
 }

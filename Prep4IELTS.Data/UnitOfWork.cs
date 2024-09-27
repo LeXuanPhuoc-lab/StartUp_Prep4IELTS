@@ -49,6 +49,7 @@ public class UnitOfWork(Prep4IeltsContext unitOfWorkContext) : IDisposable
     private CommentRepository _commentRepository = null!;
     private FlashcardRepository _flashcardRepository = null!;
     private FlashcardDetailRepository _flashcardDetailRepository = null!;
+    private UserFlashcardRepository _userFlashcardRepository = null!;
     private ScoreCalculationRepository _scoreCalculationRepostiroy = null!;
     #endregion
 
@@ -119,6 +120,9 @@ public class UnitOfWork(Prep4IeltsContext unitOfWorkContext) : IDisposable
     
     public SpeakingSampleRepository SpeakingSampleRepository
         => _speakingSampleRepository ??= new(unitOfWorkContext);
+    
+    public UserFlashcardRepository UserFlashcardRepository
+        => _userFlashcardRepository ??= new(unitOfWorkContext);
     #endregion
     
     private bool _disposed = false;

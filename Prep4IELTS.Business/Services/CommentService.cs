@@ -27,6 +27,23 @@ public class CommentService(UnitOfWork unitOfWork) : ICommentService
         return commentEntities.Adapt<List<CommentDto>>();
     }
 
+    public async Task<List<CommentDto>> FindAllWithConditionAsync(
+        Expression<Func<Comment, bool>> filter,
+        Func<IQueryable<Comment>, IOrderedQueryable<Comment>>? orderBy = null, 
+        string? includeProperties = "")
+    {
+        var commentEntities =  
+            await unitOfWork.CommentRepository.FindAllWithConditionAsync(
+                filter, orderBy, includeProperties);
+        
+        foreach (var comment in commentEntities)
+        {
+            await unitOfWork.CommentRepository.LoadInverseParentCommentRecursively(comment);
+        }
+        
+        return commentEntities.Adapt<List<CommentDto>>();
+    }
+
     public async Task<bool> RemoveRangeCommentAndChildrenAsync(List<CommentDto> comments)
     {
         return await unitOfWork.CommentRepository.RemoveRangeCommentAndChildrenAsync(

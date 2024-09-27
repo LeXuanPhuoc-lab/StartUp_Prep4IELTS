@@ -120,4 +120,43 @@ public static class ApiRoute
         public const string GetById = Base + "/speaking-samples/{id}";
         public const string AddUserSpeakingSampleHistory = Base + "/speaking-samples/{id}/history";
     }
+
+    public static class Flashcard
+    {
+        
+        // Public 
+        public const string GetAll = Base + "/flashcards";
+        public const string GetById = Base + "/flashcards/{id}";
+        // Admin-staff only
+        public const string Create = Base + "/flashcards/create";
+        public const string Delete = Base + "/flashcards/{id}/delete";
+        public const string Update = Base + "/flashcards/update";
+        public const string Publish = Base + "/flashcards/{id}/publish";
+        public const string Hidden = Base + "/flashcards/{id}/hidden";
+        // Privacy
+        public const string GetAllPrivacy = Base + "/flashcards/privacy";
+        public const string GetAllFlashcardStatus = Base + "/flashcard-statuses";
+        public const string GetByIdPrivacy = Base + "/flashcards/{id}/privacy";
+        public const string PrivacyCreate = Base + "/flashcards/privacy/create";
+        public const string AddUser = Base + "/flashcards/{id}/add-user";
+        public const string DeleteUser = Base + "/flashcards/{id}/delete-user/{userId}";
+        public const string UpdateFlashcardProgress = Base + "/flashcards/{id}/update-progress";
+        public const string Practice = Base + "/flashcards/{id}/practice";
+        public const string Exam = Base + "/flashcards/{id}/exam";
+        public const string Reset = Base + "/flashcards/{id}/reset";
+    }
+
+    public static class FlashcardDetail
+    {
+        
+        // Admin-staff only
+        public const string Create = Base + "/flashcard-details/create";
+        public const string Delete = Base + "/flashcard-details/{id}/delete";
+        
+        // Privacy
+        public const string PrivacyCreate = Base + "/flashcard-details/privacy/create";
+        public const string PrivacyUpdate = Base + "/flashcard-details/{id}/privacy/update";
+        public const string PrivacyDelete = Base + "/flashcard-details/{id}/privacy/delete";
+        // public const string 
+    }
 }

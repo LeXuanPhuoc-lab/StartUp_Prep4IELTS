@@ -34,7 +34,7 @@ public class SpeakingSampleController(
         var searchTerm = req.Term?.Trim() ?? string.Empty;
         
         // Progress get all with filter, order, and paging
-        var speakingSampleDtos = await speakingSampleService.FindAllWithConditionAndPagingAsync(
+        var speakingSampleDtos = await speakingSampleService.FindAllWithConditionAsync(
             filter: u => 
                 // Search with speaking sample name
                 u.SpeakingSampleName.Contains(searchTerm) &&
@@ -43,10 +43,6 @@ public class SpeakingSampleController(
                 u.IsActive == true, 
             orderBy: null,
             includeProperties: "SpeakingParts",
-            // With page index
-            pageIndex: req.Page,
-            // With page size
-            pageSize: req.PageSize ?? _appSettings.PageSize,
             userId: userDto.UserId);
         
         
@@ -58,13 +54,12 @@ public class SpeakingSampleController(
         }
 
         // Total actual users
-        var actualTotal = await speakingSampleService.CountTotalAsync();
+        // var actualTotal = await speakingSampleService.CountTotalAsync();
         
         // Create paginated detail list 
-        var paginatedDetail = PaginatedDetailList<SpeakingSampleDto>.CreateInstance(speakingSampleDtos,
+        var paginatedDetail = PaginatedList<SpeakingSampleDto>.Paginate(speakingSampleDtos,
             pageIndex: req.Page ?? 1,
-            req.PageSize ?? _appSettings.PageSize,
-            actualItem: actualTotal);
+            req.PageSize ?? _appSettings.PageSize);
 
         return !speakingSampleDtos.Any() // Not exist any user
             ? NotFound(new BaseResponse()
@@ -77,7 +72,7 @@ public class SpeakingSampleController(
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
                 {
-                    Users = paginatedDetail,
+                    SpeakingSamples = paginatedDetail,
                     Page = paginatedDetail.PageIndex,
                     TotalPage = paginatedDetail.TotalPage
                 }

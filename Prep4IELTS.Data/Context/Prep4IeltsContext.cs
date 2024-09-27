@@ -170,6 +170,18 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.TotalWords).HasColumnName("total_words");
         });
 
+        modelBuilder.Entity<FlashcardDetailTag>(entity =>
+        {
+            entity.HasKey(e => e.FlashcardDetailTagId).HasName("PK_FlashcardDetailTag");
+            
+            entity.ToTable("Flashcard_Detail_Tag");
+            
+            entity.Property(e => e.FlashcardDetailTagId).HasColumnName("flashcard_detail_tag_id");
+            entity.Property(e => e.FlashcardDetailDesc)
+                .HasMaxLength(100)
+                .HasColumnName("flashcard_detail_tag_desc");
+        });
+
         modelBuilder.Entity<FlashcardDetail>(entity =>
         {
             entity.HasKey(e => e.FlashcardDetailId).HasName("PK_FlashcardDetail");
@@ -187,10 +199,12 @@ public partial class Prep4IeltsContext : DbContext
                 .HasMaxLength(500)
                 .HasColumnName("example");
             entity.Property(e => e.FlashcardId).HasColumnName("flashcard_id");
-            entity.Property(e => e.ImageUrl)
-                .HasMaxLength(2048)
-                .IsUnicode(false)
-                .HasColumnName("image_url");
+            // entity.Property(e => e.ImageUrl)
+            //     .HasMaxLength(2048)
+            //     .IsUnicode(false)
+            //     .HasColumnName("image_url");
+            entity.Property(e => e.CloudResourceId).HasColumnName("cloud_resource_id");
+            entity.Property(e => e.FlashcardDetailTagId).HasColumnName("flashcard_detail_tag_id");
             entity.Property(e => e.WordForm)
                 .HasMaxLength(50)
                 .HasColumnName("word_form");
@@ -203,8 +217,19 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.Flashcard).WithMany(p => p.FlashcardDetails)
                 .HasForeignKey(d => d.FlashcardId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FlashcardDetail_Flashcard");
+            
+            entity.HasOne(d => d.CloudResource).WithMany(p => p.FlashcardDetails)
+                .HasForeignKey(d => d.CloudResourceId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_FlashcardDetail_CloudResource");
+            
+            entity.HasOne(d => d.FlashcardDetailTag).WithMany(p => p.FlashcardDetails)
+                .HasForeignKey(d => d.FlashcardDetailTagId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FlashcardDetail_Tag");
         });
 
         modelBuilder.Entity<PartitionHistory>(entity =>
@@ -775,13 +800,88 @@ public partial class Prep4IeltsContext : DbContext
 
             entity.HasOne(d => d.FlashcardDetail).WithMany(p => p.UserFlashcardProgresses)
                 .HasForeignKey(d => d.FlashcardDetailId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_UserFlashcardProgress_FlashcardDetail");
 
             entity.HasOne(d => d.UserFlashcard).WithMany(p => p.UserFlashcardProgresses)
                 .HasForeignKey(d => d.UserFlashcardId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_UserFlashcardProgress_UserFlashcard");
+        });
+
+        modelBuilder.Entity<FlashcardExamHistory>(entity =>
+        {
+            entity.HasKey(e => e.FlashcardExamHistoryId).HasName("flashcard_exam_history_id");
+            
+            entity.ToTable("Flashcard_Exam_History");
+            
+            entity.Property(e => e.FlashcardExamHistoryId).HasColumnName("flashcard_exam_history_id");
+            entity.Property(e => e.TotalQuestion).HasColumnName("total_question");
+            entity.Property(e => e.TotalRightAnswer).HasColumnName("total_right_answer");
+            entity.Property(e => e.TotalWrongAnswer).HasColumnName("total_wrong_answer");
+            entity.Property(e => e.AccuracyRate).HasColumnName("accuracy_rate");
+            entity.Property(e => e.TakenDate)
+                .HasColumnType("datetime")
+                .HasColumnName("taken_date");
+            entity.Property(e => e.UserFlashcardId).HasColumnName("user_flashcard_id");
+            
+            entity.HasOne(e => e.UserFlashcard).WithMany(e => e.FlashcardExamHistories)
+                .HasForeignKey(e => e.UserFlashcardId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_FlashcardExamHistories_UserFlashcard");
+        });
+
+        modelBuilder.Entity<FlashcardExamGrade>(entity =>
+        {
+            entity.HasKey(e => e.FlashcardExamGradeId).HasName("flashcard_exam_grade_id");
+
+            entity.ToTable("Flashcard_Exam_Grade");
+            
+            entity.Property(e => e.FlashcardExamGradeId).HasColumnName("flashcard_exam_grade_id");
+            entity.Property(e => e.Answer)
+                .HasMaxLength(100)
+                .HasColumnName("answer");
+            entity.Property(e => e.FlashcardGradeStatus)
+                .HasMaxLength(50)
+                .HasColumnName("flashcard_grade_status");
+            entity.Property(e => e.FlashcardExamHistoryId).HasColumnName("flashcard_exam_history_id");
+            entity.Property(e => e.FlashcardDetailId).HasColumnName("flashcard_detail_id");
+            
+            entity.HasOne(e => e.FlashcardExamHistory).WithMany(e => e.FlashcardExamGrades)
+                .HasForeignKey(e => e.FlashcardExamHistoryId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_FlashcardExamGrade_History");
+            
+            entity.HasOne(e => e.FlashcardDetail).WithMany(e => e.FlashcardExamGrades)
+                .HasForeignKey(e => e.FlashcardDetailId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FlashcardExamGrade_FlashcardDetail");
+        });
+
+        modelBuilder.Entity<VocabularyUnitSchedule>(entity =>
+        {
+            entity.HasKey(e => e.VocabularyUnitScheduleId).HasName("vocabulary_unit_schedule_id");
+
+            entity.ToTable("Vocabulary_Unit_Schedule");
+
+            entity.Property(e => e.VocabularyUnitScheduleId).HasColumnName("vocabulary_unit_schedule_id");
+            entity.Property(e => e.Weekday)
+                .HasMaxLength(15)
+                .HasColumnName("weekday");
+            entity.Property(e => e.Comment)
+                .HasMaxLength(300)
+                .HasColumnName("comment");
+            entity.Property(e => e.CreateDate)
+                .HasColumnType("datetime")
+                .HasColumnName("create_date");
+            entity.Property(e => e.FlashcardDetailId).HasColumnName("flashcard_detail_id");
+            
+            entity.HasOne(e => e.FlashcardDetail).WithMany(e => e.VocabularyUnitSchedules)
+                .HasForeignKey(e => e.FlashcardDetailId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VocabularyUnitSchedule_FlashcardDetail");
         });
 
         modelBuilder.Entity<UserPremiumPackage>(entity =>

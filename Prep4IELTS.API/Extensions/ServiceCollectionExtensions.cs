@@ -44,11 +44,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPaymentTypeService, PaymentTypeService>();
         services.AddScoped<ISystemRoleService, SystemRoleService>();
         services.AddScoped<ISpeakingSampleService, SpeakingSampleService>();
+        services.AddScoped<IFlashcardService, FlashcardService>();
+        services.AddScoped<IFlashcardDetailService, FlashcardDetailService>();
+        services.AddScoped<IUserFlashcardService, UserFlashcardService>();
         // services.AddScoped<ITransactionService, TransactionService>();
-
+        
         // Register IHttpContextAccessor 
         services.AddHttpContextAccessor();
-
+        
         return services;
     }
 
@@ -67,7 +70,7 @@ public static class ServiceCollectionExtensions
         var typeAdapterConfig = TypeAdapterConfig.GlobalSettings;
         // Scans the assembly and gets the IRegister, adding the registration to the TypeAdapterConfig
         typeAdapterConfig.Scan(Assembly.GetExecutingAssembly());
-
+        
         // Additional mapping custom from API to Business layer
         typeAdapterConfig.NewConfig<QuestionAnswerSubmissionRequest, QuestionAnswerSubmissionModel>();
         typeAdapterConfig.NewConfig<CreateTestRequest, Test>();
@@ -80,7 +83,7 @@ public static class ServiceCollectionExtensions
         typeAdapterConfig.NewConfig<UpdateTestGradeRequest, TestGrade>();
         typeAdapterConfig.NewConfig<CreatePremiumPackageRequest, PremiumPackage>();
         typeAdapterConfig.NewConfig<UpdatePremiumPackageRequest, PremiumPackage>();
-
+        
         // Register the mapper as Singleton service for my application
         var mapperConfig = new Mapper(typeAdapterConfig);
         services.AddSingleton<IMapper>(mapperConfig);
@@ -99,15 +102,15 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
-    public static IServiceCollection EstablishApplicationConfiguration(this IServiceCollection services,
+    
+    public static IServiceCollection EstablishApplicationConfiguration(this IServiceCollection services, 
         IConfiguration configuration,
         IWebHostEnvironment env)
     {
         // Configure App settings
         services.Configure<AppSettings>(
             configuration.GetSection("AppSettings"));
-
+        
         // Configure PayOS
         var payOsConfigSection = configuration.GetSection("PayOS");
         var payOsConfig = payOsConfigSection.Get<PayOSConfiguration>();
@@ -120,9 +123,9 @@ public static class ServiceCollectionExtensions
             var confirmWebHookUrl = "https://api-merchant.payos.vn/confirm-webhook";
             var returnUrl = "http://localhost:3000/payment-return";
             var cancelUrl = "http://localhost:3000/payment-cancel";
-
+                            
             // var webHookUrl = "https://localhost:6000/api/payment/pay-os/webhook-return";
-
+            
             services.Configure<PayOSConfiguration>(options =>
             {
                 options.ClientId = payOsConfig.ClientId;
@@ -137,8 +140,34 @@ public static class ServiceCollectionExtensions
                 options.ConfirmWebHookUrl = confirmWebHookUrl;
             });
         }
+        else
+        {
+            var payGate = "https://api-merchant.payos.vn";
+            var paymentUrl = $"{payGate}/v2/payment-requests";
+            var getPaymentLinkInformation = "https://api-merchant.payos.vn/v2/payment-requests/{0}";
+            var cancelPaymentUrl = "https://api-merchant.payos.vn/v2/payment-requests/{0}/cancel";
+            var confirmWebHookUrl = "https://api-merchant.payos.vn/confirm-webhook";
+            var returnUrl = "https://prep4ielts.vercel.app/payment-return";
+            var cancelUrl = "https://prep4ielts.vercel.app/payment-cancel";
 
+            // var webHookUrl = "https://localhost:6000/api/payment/pay-os/webhook-return";
 
+            services.Configure<PayOSConfiguration>(options =>
+            {
+                options.ClientId = payOsConfig!.ClientId;
+                options.ApiKey = payOsConfig.ApiKey;
+                options.ChecksumKey = payOsConfig.ChecksumKey;
+                options.ReturnUrl = returnUrl;
+                options.CancelUrl = cancelUrl;
+                options.PaymentUrl = paymentUrl;
+                options.GetPaymentLinkInformationUrl = getPaymentLinkInformation;
+                options.CancelPaymentUrl = cancelPaymentUrl;
+                // options.WebHookUrl = webHookUrl;
+                options.ConfirmWebHookUrl = confirmWebHookUrl;
+            });
+        }
+        
+        
         // Configure Momo
         var momoConfigSection = configuration.GetSection("Momo");
         var momoConfig = momoConfigSection.Get<MomoConfiguration>();
@@ -166,7 +195,7 @@ public static class ServiceCollectionExtensions
                 options.PaymentMethodName = PaymentIssuerConstants.Momo;
             });
         }
-
+        
         return services;
     }
 }

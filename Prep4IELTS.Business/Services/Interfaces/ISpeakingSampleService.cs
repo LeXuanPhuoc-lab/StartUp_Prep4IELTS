@@ -14,6 +14,11 @@ public interface ISpeakingSampleService
         string? includeProperties,
         int? pageIndex, int? pageSize, Guid userId);
 
+    Task<List<SpeakingSampleDto>> FindAllWithConditionAsync(
+        Expression<Func<SpeakingSample, bool>> filter,
+        Func<IQueryable<SpeakingSample>, IOrderedQueryable<SpeakingSample>>? orderBy,
+        string? includeProperties, Guid userId);
+
     Task<int> CountTotalAsync();
     Task<bool> IsExistUserSpeakingSampleHistoryAsync(int speakingSampleId, Guid userId);
 }

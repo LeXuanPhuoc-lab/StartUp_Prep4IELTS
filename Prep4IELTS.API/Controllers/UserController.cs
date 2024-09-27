@@ -62,7 +62,7 @@ public class UserController(
         var adminRole = await roleService.FindByRoleNameAsync(SystemRole.Admin);
         
         // Progress get all with filter, order, and paging
-        var userDtos = await userService.FindAllWithConditionAndPagingAsync(
+        var userDtos = await userService.FindAllWithConditionAsync(
             filter: u => 
                 ( // Optional fields
                     // Search with fullname
@@ -77,11 +77,7 @@ public class UserController(
                 // Not allow to see other admin
                 u.RoleId != adminRole.RoleId, 
             orderBy: q => q.OrderBy(u => u.Id),
-            includeProperties: "Role",
-            // With page index
-            pageIndex: req.Page,
-            // With page size
-            pageSize: req.PageSize ?? _appSettings.PageSize);
+            includeProperties: "Role");
         
         
         // Sorting 
@@ -92,13 +88,12 @@ public class UserController(
         }
 
         // Total actual users
-        var actualTotal = await userService.CountTotalActiveAsync();
+        // var actualTotal = await userService.CountTotalActiveAsync();
         
         // Create paginated detail list 
-        var paginatedDetail = PaginatedDetailList<UserDto>.CreateInstance(userDtos,
+        var paginatedDetail = PaginatedList<UserDto>.Paginate(userDtos,
             pageIndex: req.Page ?? 1,
-            req.PageSize ?? _appSettings.PageSize,
-            actualItem: actualTotal);
+            req.PageSize ?? _appSettings.PageSize);
 
         return !userDtos.Any() // Not exist any user
             ? NotFound(new BaseResponse()
@@ -130,7 +125,7 @@ public class UserController(
         var searchTerm = req.Term?.Trim() ?? string.Empty;
         
         // Progress get all with filter, order, and paging
-        var userDtos = await userService.FindAllWithConditionAndPagingAsync(
+        var userDtos = await userService.FindAllWithConditionAsync(
             filter: u => 
                 (
                     // Search with fullname
@@ -143,11 +138,7 @@ public class UserController(
                 // is not active user
                 u.IsActive == false,
             orderBy: q => q.OrderBy(u => u.Id),
-            includeProperties: "Role",
-            // With page index
-            pageIndex: req.Page,
-            // With page size
-            pageSize: req.PageSize ?? _appSettings.PageSize);
+            includeProperties: "Role");
         
         
         // Sorting 
@@ -158,13 +149,12 @@ public class UserController(
         }
 
         // Total actual users
-        var actualTotal = await userService.CountTotalInActiveAsync();
+        // var actualTotal = await userService.CountTotalInActiveAsync();
         
         // Create paginated detail list 
-        var paginatedDetail = PaginatedDetailList<UserDto>.CreateInstance(userDtos,
+        var paginatedDetail = PaginatedList<UserDto>.Paginate(userDtos,
             pageIndex: req.Page ?? 1,
-            req.PageSize ?? _appSettings.PageSize,
-            actualItem: actualTotal);
+            req.PageSize ?? _appSettings.PageSize);
 
         return !userDtos.Any() // Not exist any user
             ? NotFound(new BaseResponse()
@@ -207,7 +197,7 @@ public class UserController(
             ModelState.AddModelError("email", $"Email already exist.");
             return UnprocessableEntity(ModelState);
         }
-        
+
         // Initiate user dto
         var toInsertUser = new UserDto(
             Id:0, UserId: Guid.Empty, ClerkId: string.Empty,
@@ -427,7 +417,7 @@ public class UserController(
                 CreateDate = userPremiumPackage.PremiumPackage.CreateDate,
                 Description = userPremiumPackage.PremiumPackage.Description,
                 ExpireDate = userPremiumPackage.ExpireDate,
-                IsPremiumActive = userPremiumPackage.ExpireDate >= currentDatetime,
+                IsPremiumActive = userPremiumPackage.ExpireDate >= currentDatetime && userPremiumPackage.IsActive,
             };
         }
 

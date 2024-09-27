@@ -202,6 +202,35 @@ public class TestService(
         return testEntities.Adapt<List<TestDto>>();
     }
 
+    public async Task<IList<TestDto>> FindAllWithConditionAsync(Expression<Func<Test, bool>>? filter, Func<IQueryable<Test>, IOrderedQueryable<Test>>? orderBy, string? includeProperties, Guid? userId)
+    {
+        var testEntities =
+            await unitOfWork.TestRepository.FindAllWithConditionAsync(
+                filter, orderBy, includeProperties);
+
+        // Check whether user do the test
+        var userTestHistories = await testHistoryService.FindAllWithConditionAsync(
+            th => th.UserId.Equals(userId) &&
+                  testEntities.Select(tst => tst.TestId.ToString()).Contains(th.TestId.ToString()));
+
+        if (userTestHistories.Any()) // Check whether exist any test history for user
+        {
+            foreach (var tst in testEntities)
+            {
+                var historyDtos = userTestHistories
+                    .Where(th => th.TestId.ToString().Equals(tst.TestId.ToString()))
+                    .ToList();
+                tst.TestHistories = historyDtos.Adapt<List<TestHistory>>();
+                // Remove all test in test history
+                foreach (var test in tst.TestHistories.Select(x => x.Test = null!))
+                {
+                }
+            }
+        }
+
+        return testEntities.Adapt<List<TestDto>>();
+    }
+
     // Additional
     public async Task<TestDto> FindByIdAsync(int id, Guid? userId)
     {

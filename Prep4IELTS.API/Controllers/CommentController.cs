@@ -21,26 +21,21 @@ public class CommentController(
     public async Task<IActionResult> GetAllByTestIdAsync([FromRoute] Guid testId, int? pageSize, int? page = 1)
     {
         // Get all by test id with particular total
-        var commentDtos = await commentService.FindAllWithConditionAndPagingAsync(
+        var commentDtos = await commentService.FindAllWithConditionAsync(
             // With conditions
             filter: cmt => cmt.TestId.Equals(testId),
             // order descending by comment date
             orderBy: new (cmt => cmt.OrderByDescending(x => x.CommentDate)),
             // Include nothing
-            includeProperties: "User",
-            // Get with particular pageIndex
-            pageIndex: page,
-            // With pageSize elements
-            pageSize: pageSize ?? _appSettings.PageSize);
+            includeProperties: "User");
 
         // Total actual tests
-        var actualTotal = await commentService.CountTotalByTestId(testId);
+        // var actualTotal = await commentService.CountTotalByTestId(testId);
         
         // Create paginated detail list 
-        var paginatedDetail = PaginatedDetailList<CommentDto>.CreateInstance(commentDtos,
+        var paginatedDetail = PaginatedList<CommentDto>.Paginate(commentDtos,
             pageIndex: page ?? 1,
-            pageSize ?? _appSettings.PageSize,
-            actualItem: actualTotal);
+            pageSize ?? _appSettings.PageSize);
         
         return !commentDtos.Any()
             ? NotFound(new BaseResponse()

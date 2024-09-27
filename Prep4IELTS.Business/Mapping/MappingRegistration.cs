@@ -1,7 +1,6 @@
 using Mapster;
 using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;
-using FlashcardDetail = Prep4IELTS.Data.Dtos.FlashcardDetail;
 
 namespace EXE202_Prep4IELTS.Mapping;
 
@@ -26,6 +25,9 @@ public class MappingRegistration : IRegister
         config.NewConfig<SystemRole, SystemRoleDto>();
         config.NewConfig<User, UserDto>();
         config.NewConfig<Flashcard, FlashcardDto>();
+        config.NewConfig<FlashcardDetail, FlashcardDetailDto>();
+        config.NewConfig<UserFlashcard, UserFlashcardDto>();
+        config.NewConfig<UserFlashcardProgress, UserFlashcardProgressDto>();
         config.NewConfig<Transaction, TransactionDto>();
         config.NewConfig<PaymentType, PaymentTypeDto>();
         config.NewConfig<PremiumPackage, PremiumPackageDto>();
@@ -33,6 +35,10 @@ public class MappingRegistration : IRegister
         config.NewConfig<SpeakingSample, SpeakingSampleDto>();
         config.NewConfig<SpeakingPart, SpeakingPartDto>();
         config.NewConfig<UserSpeakingSampleHistory, UserSpeakingSampleHistoryDto>();
+        config.NewConfig<FlashcardDetailTag, FlashcardDetailTagDto>();
+        config.NewConfig<FlashcardExamHistory, FlashcardExamHistoryDto>();
+        config.NewConfig<FlashcardExamGrade, FlashcardExamGradeDto>();
+        config.NewConfig<VocabularyUnitSchedule, VocabularyUnitScheduleDto>();
         // config.NewConfig<FlashcardDetail, FlashcardDetailDto>();
     }
 }

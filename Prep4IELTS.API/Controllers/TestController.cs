@@ -61,7 +61,7 @@ public class TestController(
     public async Task<IActionResult> GetAllTestAsync([FromQuery] TestFilterRequest req)
     {
         // Get all test
-        var testDtos = await testService.FindAllWithConditionAndPagingAsync(
+        var testDtos = await testService.FindAllWithConditionAsync(
             // With conditions
             // Search with test title
             filter: x => x.TestTitle.Contains(req.Term ?? "") &&
@@ -74,15 +74,11 @@ public class TestController(
             orderBy: x => x.OrderByDescending(t => t.CreateDate),
             // Include Tags
             includeProperties: "Tags",
-            // With page index
-            pageIndex: req.Page,
-            // With page size
-            pageSize: req.PageSize ?? _appSettings.PageSize,
             // Include user test histories (if any)
             userId: req.UserId);
 
         // Total actual tests
-        var actualTotal = await testService.CountTotalPublishAsync();
+        // var actualTotal = await testService.CountTotalPublishAsync();
 
         // Sorting 
         if (!string.IsNullOrEmpty(req.OrderBy))
@@ -92,10 +88,9 @@ public class TestController(
         }
 
         // Create paginated detail list 
-        var paginatedDetail = PaginatedDetailList<TestDto>.CreateInstance(testDtos,
+        var paginatedDetail = PaginatedList<TestDto>.Paginate(testDtos,
             pageIndex: req.Page ?? 1,
-            req.PageSize ?? _appSettings.PageSize,
-            actualItem: actualTotal);
+            req.PageSize ?? _appSettings.PageSize);
 
         return !testDtos.Any() // Not exist any test
             ? NotFound(new BaseResponse()
@@ -126,7 +121,7 @@ public class TestController(
         if (staffDto == null) return Unauthorized();
         
         // Get all test (draft) for particular staff
-        var testDtos = await testService.FindAllWithConditionAndPagingAsync(
+        var testDtos = await testService.FindAllWithConditionAsync(
             // With conditions
             // Search with test title
             filter: x => x.TestTitle.Contains(req.Term ?? "") &&
@@ -140,15 +135,8 @@ public class TestController(
             orderBy: null,
             // Include Tags
             includeProperties: "Tags",
-            // With page index
-            pageIndex: req.Page,
-            // With page size
-            pageSize: req.PageSize ?? _appSettings.PageSize,
             // Include user test histories (if any)
             userId: req.UserId);
-
-        // Total actual tests
-        var actualTotal = await testService.CountTotalDraftAsync();
 
         // Sorting 
         if (!string.IsNullOrEmpty(req.OrderBy))
@@ -158,10 +146,9 @@ public class TestController(
         }
 
         // Create paginated detail list 
-        var paginatedDetail = PaginatedDetailList<TestDto>.CreateInstance(testDtos,
+        var paginatedDetail = PaginatedList<TestDto>.Paginate(testDtos,
             pageIndex: req.Page ?? 1,
-            req.PageSize ?? _appSettings.PageSize,
-            actualItem: actualTotal);
+            req.PageSize ?? _appSettings.PageSize);
 
         return !testDtos.Any() // Not exist any test
             ? NotFound(new BaseResponse()

@@ -82,25 +82,702 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             // Tests
             if (!dbContext.Tests.Any()) await SeedTestAsync();
             // Tests History
-            if (!dbContext.TestHistories.Any()) await SeedTestHistoryAsync();
+            // if (!dbContext.TestHistories.Any()) await SeedTestHistoryAsync();
             // Tests Grade
-            if (!dbContext.TestGrades.Any()) await SeedTestGradeAsync();
+            // if (!dbContext.TestGrades.Any()) await SeedTestGradeAsync();
             // Premium package
             if (!dbContext.PremiumPackages.Any()) await SeedPremiumPackageAsync();
             // Payment Types
             if (!dbContext.PaymentTypes.Any()) await SeedPaymentTypeAsync();
             // Speaking samples
             if (!dbContext.SpeakingSamples.Any()) await SeedSpeakingSamples();
-            
+            // Flashcard
+            if (!dbContext.Flashcards.Any()) await SeedFlashcardAsync();
+
             await Task.CompletedTask;
         }
         catch (Exception ex)
-        {
+        {   
             Console.WriteLine(ex.Message);
         }
     }
-    
-    
+
+
+    //  Summary:
+    //      Seeding flashcard
+    private async Task SeedFlashcardAsync()
+    {
+        List<Flashcard> flashcards = new()
+        {
+            new()
+            {
+                Title = "Cambridge Vocabulary for IELTS (20 units)",
+                TotalWords = 10,
+                TotalView = 0,
+                CreateDate = DateTime.UtcNow,
+                IsPublic = true,
+                FlashcardDetails = new List<FlashcardDetail>()
+                {
+                    new()
+                    {
+                        WordText = "Ambitious",
+                        Definition = "Having a strong desire for success or achievement.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/æmˈbɪʃəs/",
+                        Example = "She is an ambitious young lawyer.",
+                        Description = "Ambitious people often aim for success in their career or personal life.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/ambitious.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Benevolent",
+                        Definition = "Well-meaning and kindly.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/bəˈnɛvələnt/",
+                        Example = "A benevolent smile spread across her face.",
+                        Description = "Often used to describe people who are generous or charitable.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Concur",
+                        Definition = "To agree or have the same opinion.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/kənˈkɜːr/",
+                        Example = "I concur with your assessment.",
+                        Description = "Common in formal contexts.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Diligent",
+                        Definition = "Showing care and effort in work or duties.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈdɪlɪdʒənt/",
+                        Example = "She was a diligent student, always completing her assignments on time.",
+                        Description = "Describes someone hardworking and attentive.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Eccentric",
+                        Definition = "Unconventional and slightly strange.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪkˈsɛntrɪk/",
+                        Example = "His eccentric behavior often caught people off guard.",
+                        Description = "Typically refers to quirky or odd behavior.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Feasible",
+                        Definition = "Possible to do easily or conveniently.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈfiːzəbl/",
+                        Example = "A feasible plan was quickly put into action.",
+                        Description = "Used when talking about something achievable or realistic.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Gratify",
+                        Definition = "Give pleasure or satisfaction.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˈɡrætɪfaɪ/",
+                        Example = "It gratified her to see the children so happy.",
+                        Description = "Often used when referring to fulfilling someone’s desires.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Harmonious",
+                        Definition = "Forming a pleasing or consistent whole.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/hɑːˈmoʊniəs/",
+                        Example = "They live in a harmonious neighborhood.",
+                        Description = "Used when referring to peace and balance.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Impeccable",
+                        Definition = "In accordance with the highest standards; faultless.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪmˈpɛkəbl/",
+                        Example = "Her manners were impeccable.",
+                        Description = "Describes someone or something flawless.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Juxtapose",
+                        Definition = "Place or deal with close together for contrasting effect.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˌdʒʌkstəˈpoʊz/",
+                        Example = "The art pieces were juxtaposed for comparison.",
+                        Description = "Often used when placing contrasting things together.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Keen",
+                        Definition = "Having or showing eagerness or enthusiasm.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/kiːn/",
+                        Example = "She was keen to start her new job.",
+                        Description = "Used to describe strong interest or desire.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Lucid",
+                        Definition = "Expressed clearly; easy to understand.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈluːsɪd/",
+                        Example = "She gave a clear and lucid explanation.",
+                        Description = "Describes something easy to follow or understand.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Meticulous",
+                        Definition = "Showing great attention to detail; very careful and precise.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/məˈtɪkjʊləs/",
+                        Example = "The event was planned with meticulous attention to detail.",
+                        Description = "Often used when referring to careful and thorough work.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Notorious",
+                        Definition = "Famous or well known, typically for some bad quality or deed.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/noʊˈtɔːriəs/",
+                        Example = "The city is notorious for its traffic jams.",
+                        Description = "Used to describe fame for negative reasons.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Obsolete",
+                        Definition = "No longer produced or used; out of date.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˌɒbsəˈliːt/",
+                        Example = "The company replaced its obsolete machinery.",
+                        Description = "Refers to something that is outdated or no longer in use.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    }
+                }
+            },
+            new()
+            {
+                Title = "Từ vựng tiếng Anh giao tiếp nâng cao",
+                TotalWords = 10,
+                TotalView = 0,
+                CreateDate = DateTime.UtcNow,
+                IsPublic = true,
+                FlashcardDetails = new List<FlashcardDetail>()
+                {
+                    new()
+                    {
+                        WordText = "Ambitious",
+                        Definition = "Having a strong desire for success or achievement.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/æmˈbɪʃəs/",
+                        Example = "She is an ambitious young lawyer.",
+                        Description = "Ambitious people often aim for success in their career or personal life.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Benevolent",
+                        Definition = "Well-meaning and kindly.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/bəˈnɛvələnt/",
+                        Example = "A benevolent smile spread across her face.",
+                        Description = "Often used to describe people who are generous or charitable.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Concur",
+                        Definition = "To agree or have the same opinion.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/kənˈkɜːr/",
+                        Example = "I concur with your assessment.",
+                        Description = "Common in formal contexts.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Diligent",
+                        Definition = "Showing care and effort in work or duties.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈdɪlɪdʒənt/",
+                        Example = "She was a diligent student, always completing her assignments on time.",
+                        Description = "Describes someone hardworking and attentive.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Eccentric",
+                        Definition = "Unconventional and slightly strange.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪkˈsɛntrɪk/",
+                        Example = "His eccentric behavior often caught people off guard.",
+                        Description = "Typically refers to quirky or odd behavior.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Feasible",
+                        Definition = "Possible to do easily or conveniently.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈfiːzəbl/",
+                        Example = "A feasible plan was quickly put into action.",
+                        Description = "Used when talking about something achievable or realistic.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Gratify",
+                        Definition = "Give pleasure or satisfaction.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˈɡrætɪfaɪ/",
+                        Example = "It gratified her to see the children so happy.",
+                        Description = "Often used when referring to fulfilling someone’s desires.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Harmonious",
+                        Definition = "Forming a pleasing or consistent whole.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/hɑːˈmoʊniəs/",
+                        Example = "They live in a harmonious neighborhood.",
+                        Description = "Used when referring to peace and balance.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Impeccable",
+                        Definition = "In accordance with the highest standards; faultless.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪmˈpɛkəbl/",
+                        Example = "Her manners were impeccable.",
+                        Description = "Describes someone or something flawless.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Juxtapose",
+                        Definition = "Place or deal with close together for contrasting effect.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˌdʒʌkstəˈpoʊz/",
+                        Example = "The art pieces were juxtaposed for comparison.",
+                        Description = "Often used when placing contrasting things together.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Keen",
+                        Definition = "Having or showing eagerness or enthusiasm.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/kiːn/",
+                        Example = "She was keen to start her new job.",
+                        Description = "Used to describe strong interest or desire.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Lucid",
+                        Definition = "Expressed clearly; easy to understand.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈluːsɪd/",
+                        Example = "She gave a clear and lucid explanation.",
+                        Description = "Describes something easy to follow or understand.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Meticulous",
+                        Definition = "Showing great attention to detail; very careful and precise.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/məˈtɪkjʊləs/",
+                        Example = "The event was planned with meticulous attention to detail.",
+                        Description = "Often used when referring to careful and thorough work.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Notorious",
+                        Definition = "Famous or well known, typically for some bad quality or deed.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/noʊˈtɔːriəs/",
+                        Example = "The city is notorious for its traffic jams.",
+                        Description = "Used to describe fame for negative reasons.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Obsolete",
+                        Definition = "No longer produced or used; out of date.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˌɒbsəˈliːt/",
+                        Example = "The company replaced its obsolete machinery.",
+                        Description = "Refers to something that is outdated or no longer in use.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    }
+                }
+            },
+            new()
+            {
+                Title = "Từ vựng tiếng Anh văn phòng",
+                TotalWords = 10,
+                TotalView = 0,
+                CreateDate = DateTime.UtcNow,
+                IsPublic = true,
+                FlashcardDetails = new List<FlashcardDetail>()
+                {
+                    new()
+                    {
+                        WordText = "Ambitious",
+                        Definition = "Having a strong desire for success or achievement.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/æmˈbɪʃəs/",
+                        Example = "She is an ambitious young lawyer.",
+                        Description = "Ambitious people often aim for success in their career or personal life.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Benevolent",
+                        Definition = "Well-meaning and kindly.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/bəˈnɛvələnt/",
+                        Example = "A benevolent smile spread across her face.",
+                        Description = "Often used to describe people who are generous or charitable.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Concur",
+                        Definition = "To agree or have the same opinion.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/kənˈkɜːr/",
+                        Example = "I concur with your assessment.",
+                        Description = "Common in formal contexts.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Diligent",
+                        Definition = "Showing care and effort in work or duties.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈdɪlɪdʒənt/",
+                        Example = "She was a diligent student, always completing her assignments on time.",
+                        Description = "Describes someone hardworking and attentive.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Eccentric",
+                        Definition = "Unconventional and slightly strange.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪkˈsɛntrɪk/",
+                        Example = "His eccentric behavior often caught people off guard.",
+                        Description = "Typically refers to quirky or odd behavior.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Feasible",
+                        Definition = "Possible to do easily or conveniently.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈfiːzəbl/",
+                        Example = "A feasible plan was quickly put into action.",
+                        Description = "Used when talking about something achievable or realistic.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Gratify",
+                        Definition = "Give pleasure or satisfaction.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˈɡrætɪfaɪ/",
+                        Example = "It gratified her to see the children so happy.",
+                        Description = "Often used when referring to fulfilling someone’s desires.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Harmonious",
+                        Definition = "Forming a pleasing or consistent whole.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/hɑːˈmoʊniəs/",
+                        Example = "They live in a harmonious neighborhood.",
+                        Description = "Used when referring to peace and balance.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Impeccable",
+                        Definition = "In accordance with the highest standards; faultless.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪmˈpɛkəbl/",
+                        Example = "Her manners were impeccable.",
+                        Description = "Describes someone or something flawless.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Juxtapose",
+                        Definition = "Place or deal with close together for contrasting effect.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˌdʒʌkstəˈpoʊz/",
+                        Example = "The art pieces were juxtaposed for comparison.",
+                        Description = "Often used when placing contrasting things together.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Keen",
+                        Definition = "Having or showing eagerness or enthusiasm.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/kiːn/",
+                        Example = "She was keen to start her new job.",
+                        Description = "Used to describe strong interest or desire.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Lucid",
+                        Definition = "Expressed clearly; easy to understand.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈluːsɪd/",
+                        Example = "She gave a clear and lucid explanation.",
+                        Description = "Describes something easy to follow or understand.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Meticulous",
+                        Definition = "Showing great attention to detail; very careful and precise.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/məˈtɪkjʊləs/",
+                        Example = "The event was planned with meticulous attention to detail.",
+                        Description = "Often used when referring to careful and thorough work.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Notorious",
+                        Definition = "Famous or well known, typically for some bad quality or deed.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/noʊˈtɔːriəs/",
+                        Example = "The city is notorious for its traffic jams.",
+                        Description = "Used to describe fame for negative reasons.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Obsolete",
+                        Definition = "No longer produced or used; out of date.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˌɒbsəˈliːt/",
+                        Example = "The company replaced its obsolete machinery.",
+                        Description = "Refers to something that is outdated or no longer in use.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "https://example.com/benevolent.jpg",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    }
+                }
+            }
+        };
+
+        await dbContext.Flashcards.AddRangeAsync(flashcards);
+        await dbContext.SaveChangesAsync();
+    }
+
     //  Summary:
     //      Seeding speaking samples
     private async Task SeedSpeakingSamples()
@@ -117,21 +794,24 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         SpeakingPartNumber = 1,
-                        SpeakingPartDescription = "<h3><strong>Computer and Tablet</strong></h3>\n<div>1. What do you most often use a computer or a tablet for? (Why/Why not?)</div>\n<div>2. Can you remember when you first started using a computer or tablet?(When/Why not?)</div>\n<div>3. Do you sometimes find computers or tablets difficult to use?( Why/Why not?)</div>\n<div>4. How would your life be different if there were no computers?(Why/Why not?)</div>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Computer and Tablet</strong></h3>\n<div>1. What do you most often use a computer or a tablet for? (Why/Why not?)</div>\n<div>2. Can you remember when you first started using a computer or tablet?(When/Why not?)</div>\n<div>3. Do you sometimes find computers or tablets difficult to use?( Why/Why not?)</div>\n<div>4. How would your life be different if there were no computers?(Why/Why not?)</div>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 2,
-                        SpeakingPartDescription = "<h3><strong>Describe something you own that you want to replace</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>What it is</li>\n<li>Where it is</li>\n<li>How you got it</li>\n<li>And explain why you want to replace it</li>\n</ul>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Describe something you own that you want to replace</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>What it is</li>\n<li>Where it is</li>\n<li>How you got it</li>\n<li>And explain why you want to replace it</li>\n</ul>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 3,
-                        SpeakingPartDescription = "<ol>\n<li>What are other things that you want to replace?&nbsp;</li>\n<li>What kinds of things do young people like to replace?</li>\n<li>Do old people in VietNam like to collect and store things?</li>\n<li>Who do you think will want new things, children or old people?</li>\n<li>What's the difference between new things and old things?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<ol>\n<li>What are other things that you want to replace?&nbsp;</li>\n<li>What kinds of things do young people like to replace?</li>\n<li>Do old people in VietNam like to collect and store things?</li>\n<li>Who do you think will want new things, children or old people?</li>\n<li>What's the difference between new things and old things?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     }
@@ -147,21 +827,24 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         SpeakingPartNumber = 1,
-                        SpeakingPartDescription = "<h3><strong>Free Time &amp; Weekend</strong></h3>\n<ol>\n<li> Do you like to go to the cinema/movies at weekends?(Why/Why not?)</li>\n<li> Who do you go with? Alone or with others?</li>\n<li> What do you enjoy doing most on weekends?( Why/Why not?)</li>\n<li> Are you planning to do anything special next weekend?( Why/Why not?)</li>\n<li> What kinds of activities do you often do in your spare time?</li>\n<li> How do you often relax yourself on weekends?</li>\n<li> How do your surrounding friends relax?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Free Time &amp; Weekend</strong></h3>\n<ol>\n<li> Do you like to go to the cinema/movies at weekends?(Why/Why not?)</li>\n<li> Who do you go with? Alone or with others?</li>\n<li> What do you enjoy doing most on weekends?( Why/Why not?)</li>\n<li> Are you planning to do anything special next weekend?( Why/Why not?)</li>\n<li> What kinds of activities do you often do in your spare time?</li>\n<li> How do you often relax yourself on weekends?</li>\n<li> How do your surrounding friends relax?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 2,
-                        SpeakingPartDescription = "<h3><strong>Describe a person who often buy at the street market at cheaper price</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Who this person is</li>\n<li>What this person likes to buy</li>\n<li>Where this person likes to buy things</li>\n<li>And explain why this person likes cheap goods</li>\n</ul>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Describe a person who often buy at the street market at cheaper price</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Who this person is</li>\n<li>What this person likes to buy</li>\n<li>Where this person likes to buy things</li>\n<li>And explain why this person likes cheap goods</li>\n</ul>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 3,
-                        SpeakingPartDescription = "<ol>\n<li>What are the differences between shopping in a shopping mall and in a street market?</li>\n<li>Which is more commonly visited in VietNam, shopping malls or street markets?</li>\n<li>Is advertising important?</li>\n<li>What are the disadvantages of shopping in a street market?</li>\n<li>How do you buy cheap products?</li>\n<li>Do you think things are more expensive in big shopping malls?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<ol>\n<li>What are the differences between shopping in a shopping mall and in a street market?</li>\n<li>Which is more commonly visited in VietNam, shopping malls or street markets?</li>\n<li>Is advertising important?</li>\n<li>What are the disadvantages of shopping in a street market?</li>\n<li>How do you buy cheap products?</li>\n<li>Do you think things are more expensive in big shopping malls?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     }
@@ -177,21 +860,24 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         SpeakingPartNumber = 1,
-                        SpeakingPartDescription = "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 2,
-                        SpeakingPartDescription = "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 3,
-                        SpeakingPartDescription = "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     }
@@ -207,27 +893,30 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         SpeakingPartNumber = 1,
-                        SpeakingPartDescription = "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 2,
-                        SpeakingPartDescription = "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 3,
-                        SpeakingPartDescription = "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     }
                 }
             },
-             new()
+            new()
             {
                 SpeakingSampleName = "Speaking Sample 5",
                 IsActive = true,
@@ -237,28 +926,31 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     new()
                     {
                         SpeakingPartNumber = 1,
-                        SpeakingPartDescription = "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<h3><strong>History</strong></h3>\n<ol>\n<li>Do you like history as a subject in your school? Why?</li>\n<li>When was the last time you read a book about history?</li>\n<li>Have you visited any history museums?</li>\n<li>Do you like watching documentaries/movies related to history?</li>\n<li>What historical event do you find most interesting?</li>\n<li>Do you think history is important?</li>\n<li>Do you like to watch programs on TV about history?</li>\n<li>Do you think the internet is a good place to learn about history?</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 2,
-                        SpeakingPartDescription = "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
+                        SpeakingPartDescription =
+                            "<h3><strong>Describe a historical building you have been to</strong></h3>\n<p><strong>You should say:</strong></p>\n<ul>\n<li>Where it is</li>\n<li>What it looks like</li>\n<li>What it is used for now</li>\n<li>What you learned there</li>\n<li>And explain how you felt about this historical building</li>\n</ul>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     },
                     new()
                     {
                         SpeakingPartNumber = 3,
-                        SpeakingPartDescription = "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
+                        SpeakingPartDescription =
+                            "<ol>\n<li>Should everyone know history?&nbsp;</li>\n<li>Why do people visit historical buildings?&nbsp;</li>\n<li>Do Vietnamese people like to visit historical buildings?&nbsp;</li>\n<li>Do most people agree to the government's funding to protect historical buildings?</li>\n<li>Is it necessary to protect historical buildings?&nbsp;</li>\n</ol>",
                         CreateDate = DateTime.UtcNow,
                         IsActive = true
                     }
                 }
             }
         };
-        
+
         await dbContext.SpeakingSamples.AddRangeAsync(speakingSamples);
         await dbContext.SaveChangesAsync();
     }
@@ -502,6 +1194,21 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         {
             new User
             {
+                UserId = Guid.Parse("be763aa5-9c46-479c-a694-7dd515f38281"),
+                ClerkId = "user_2mSp3nJ92WjUJfTeqwrCDJXRMCU",
+                FirstName = "Admin",
+                LastName = "Prep4Ielts",
+                Email = "admin.prep4ielts@gmail.com",
+                DateOfBirth = new DateTime(1990, 5, 15),
+                Phone = "0978112391",
+                IsActive = true,
+                CreateDate = DateTime.Now,
+                TestTakenDate = DateTime.Now.AddDays(-30),
+                TargetScore = "8.0",
+                RoleId = staffRoleId
+            },
+            new User
+            {
                 UserId = Guid.Parse("ee3da1ec-e2d1-458c-b6c9-23e76727da8d"),
                 ClerkId = "user_2ksTPdbJa8xQxojVQtM5FSPb5s1",
                 FirstName = "Admin",
@@ -742,11 +1449,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 PartitionTagDesc = Enum.PartitionTag.ReadingChoosingFromList.GetDescription(),
             }
         };
-        
+
         await dbContext.PartitionTags.AddRangeAsync(partitionTags);
         await dbContext.SaveChangesAsync();
     }
-    
+
     //  Summary:
     //      Seeding Test Categories
     private async Task SeedTestCategoryAsync()
@@ -786,14 +1493,14 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         var tags = await dbContext.Tags.ToListAsync();
 
         // Get all partition tag
-        var listeningPartitionTags = await dbContext.PartitionTags.Where(pt => 
-            pt.PartitionTagDesc != null && 
+        var listeningPartitionTags = await dbContext.PartitionTags.Where(pt =>
+            pt.PartitionTagDesc != null &&
             pt.PartitionTagDesc.Contains("[Listening]")).ToListAsync();
-        
-        var readingPartitionTags = await dbContext.PartitionTags.Where(pt => 
-            pt.PartitionTagDesc != null && 
+
+        var readingPartitionTags = await dbContext.PartitionTags.Where(pt =>
+            pt.PartitionTagDesc != null &&
             pt.PartitionTagDesc.Contains("[Reading]")).ToListAsync();
-        
+
         // Get all users
         var studentUsers = await dbContext.Users.Where(x =>
             x.Role != null &&
@@ -825,405 +1532,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                     ))).ToList(),
                 CreateDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
                 UserId = staffUsers[rnd.Next(staffUsers.Count)].UserId,
-                IsDraft = false,
-//                 TestSections = new List<TestSection>()
-//                 {
-//                     new ()
-//                     {
-//                         TestSectionName = "Passage 1",
-//                         TotalQuestion = 13,
-//                         ReadingDesc = @"<h2 style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:1.55rem;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;letter-spacing:normal;line-height:1.3;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"" id=""a-disaster-of-titanic-proportions""><strong style=""box-sizing:border-box;font-weight:bolder;"">A disaster of Titanic proportions</strong></h2>
-// <p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">At 11.39 p.m. on the evening of Sunday 14 April 1912, lookouts Frederick Fleet and Reginald Lee on the forward mast of the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;sighted an eerie, black mass coming into view directly in front of the ship. Fleet picked up the phone to the helm, waited for Sixth Officer Moody to answer, and yelled 'Iceberg, right ahead!' The greatest disaster in maritime history was about to be set in motion.</p>
-// <p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">Thirty-seven seconds later, despite the efforts of officers in the bridge and engine room to steer around the iceberg, the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;struck a piece of submerged ice, bursting rivets in the ship's hull and flooding the first five watertight compartments. The ship's designer, Thomas Andrews, carried out a visual inspection of the ship's damage and informed Captain Smith at midnight that the ship would sink in less than two hours. By 12.30 a.m., the lifeboats were being filled with women and children, after Smith had given the command for them to be uncovered and swung out 15 minutes earlier. The first lifeboat was successfully lowered 15 minutes later, with only 28 of its 65 seats occupied. By 1.15 a.m., the waterline was beginning to reach the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>'s name on the ship's bow, and over the next hour every lifeboat would be released as officers struggled to maintain order amongst the growing panic on board.</p>
-// <p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">The closing moments of the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>'s sinking began shortly after 2 a.m., as the last lifeboat was lowered and the ship's propellers lifted out of the water, leaving the 1,500 passengers still on board to surge towards the stern. At 2.17 a.m., Harold Bride and Jack Philips tapped out their last wireless message after being relieved of duty as the ship's wireless operators, and the ship's band stopped playing. Less than a minute later, occupants of the lifeboats witnessed the ship's lights flash once, then go black, and a huge roar signalled the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>'s contents plunging towards the bow, causing the front half of the ship to break off and go under. The&nbsp;<em style=""box-sizing:border-box;""><i>Titanic'</i></em>s stern bobbed up momentarily, and at 2.20 a.m., the ship finally disappeared beneath the frigid waters.</p>
-// <p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">What or who was responsible for the scale of this catastrophe? Explanations abound, some that focus on very small details. Due to a last minute change in the ship's officer line-up, iceberg lookouts Frederick Fleet and Reginald Lee were making do without a pair of binoculars that an officer transferred off the ship in Southampton had left in a cupboard onboard, unbeknownst to any of the ship's crew. Fleet, who survived the sinking, insisted at a subsequent inquiry that he could have identified the iceberg in time to avert disaster if he had been in possession of the binoculars.</p>
-// <p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">Less than an hour before the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;struck the iceberg, wireless operator Cyril Evans on the&nbsp;<em style=""box-sizing:border-box;""><i>Californian</i></em>&nbsp;, located just 20 miles to the north, tried to contact operator Jack Philips on the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;to warn him of pack ice in the area. 'Shut up, shut up, you're jamming my signal', Philips replied. 'I'm busy.' The&nbsp;<em style=""box-sizing:border-box;""><i>Titanic'</i></em>s wireless system had broken down for several hours earlier that day, and Philips was clearing a backlog of personal messages that passengers had requested to be sent to family and friends in the USA. Nevertheless, Captain Smith had maintained the ship's speed of 22 knots despite multiple earlier warnings of ice ahead. It has been suggested that Smith was under pressure to make headlines by arriving early in New York, but maritime historians such as Richard Howell have countered this perception, noting that Smith was simply following common procedure at the time, and not behaving recklessly.</p>
-// <p style=""-webkit-text-stroke-width:0px;background-color:rgb(22, 24, 23);box-sizing:border-box;clear:both;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-style:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;margin-bottom:1rem;margin-top:0px;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;"">One of the strongest explanations for the severe loss of life has been the fact that the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;did not carry enough lifeboats for everyone on board. Maritime regulations at the time tied lifeboat capacity to ship size, not to the number of passengers on board. This meant that the&nbsp;<em style=""box-sizing:border-box;""><i>Titanic</i></em>&nbsp;, with room for 1,178 of its 2,222 passengers, actually surpassed the Board of Trade's requirement that it carry lifeboats for 1,060 of its passengers. Nevertheless, with lifeboats being lowered less than half full in many cases, and only 712 passengers surviving despite a two and a half hour window of opportunity, more lifeboats would not have guaranteed more survivors in the absence of better training and preparation. Many passengers were confused about where to go after the order to launch lifeboats was given; a lifeboat drill scheduled for earlier on the same day that the Titanic struck the iceberg was cancelled by Captain Smith, in order to allow passengers to attend church.</p>",
-//                         TestSectionPartitions = new List<TestSectionPartition>()
-//                         {
-//                             new()
-//                             {
-//                                 PartitionDesc = @"<p><i>Complete the table below.</i><br><i>Choose&nbsp;<strong>NO MORE THAN TWO WORDS</strong>&nbsp;from the text for each answer.</i><br><i>Write your answers in boxes 1-6 on your answer sheet.</i></p>
-// <p>&nbsp;</p>
-// <figure class=""table"" style=""float:left;width:47.95%;"">
-//     <table class=""ck-table-resized"" style=""border-color:border;"">
-//         <colgroup>
-//             <col style=""width:16.71%;"">
-//             <col style=""width:15.48%;"">
-//             <col style=""width:17.34%;"">
-//             <col style=""width:50.47%;"">
-//         </colgroup>
-//         <tbody>
-//             <tr>
-//                 <td>
-//                     <p style=""text-align:center;""><strong>Time</strong></p>
-//                 </td>
-//                 <td>
-//                     <p style=""text-align:center;""><strong>Person</strong></p>
-//                 </td>
-//                 <td>
-//                     <p style=""text-align:center;""><strong>Position</strong></p>
-//                 </td>
-//                 <td>
-//                     <p style=""text-align:center;""><strong>Action</strong></p>
-//                 </td>
-//             </tr>
-//             <tr>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">11.39 p.m.</span></td>
-//                 <td><u>1&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u></td>
-//                 <td><u>2&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</u></td>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Reported sighting of iceberg</span></td>
-//             </tr>
-//             <tr>
-//                 <td><u>3&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u></td>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Andrews</span></td>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Ship's designer</span></td>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Reported how long the&nbsp;</span><i>Titanic&nbsp;</i><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">could</span><br><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">stay afloat</span></td>
-//             </tr>
-//             <tr>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">12.15 a.m.</span></td>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Smith</span></td>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Captain</span></td>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Ordered&nbsp;</span><u>4&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">to be released</span></td>
-//             </tr>
-//             <tr>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">2.17 a.m.</span></td>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Bride &amp; Philips</span></td>
-//                 <td><u>5&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</u></td>
-//                 <td><span style=""background-color:rgb(16,17,17);color:rgb(255,255,255);font-size:16px;"">Relayed final&nbsp;</span><u>6&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u></td>
-//             </tr>
-//         </tbody>
-//     </table>
-// </figure>",
-//                                 IsVerticalLayout = true,
-//                                 PartitionTagId = readingPartitionTags[
-//                                     rnd.Next(readingPartitionTags.Count)].PartitionTagId,
-//                                 Questions = new List<Question>()
-//                                 {
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 1,
-//                                         IsMultipleChoice = false,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "(FREDERICK) FLEET",
-//                                                 AnswerText = "FLEET",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "(FREDERICK) FLEET",
-//                                                 AnswerText = "FREDERICK FLEET",
-//                                                 IsTrue = true
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 2,
-//                                         IsMultipleChoice = false,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "LOOKOUT",
-//                                                 AnswerText = "LOOKOUT",
-//                                                 IsTrue = true
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 3,
-//                                         IsMultipleChoice = false,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "MIDNIGHT [OR] 12(.00) A.M./AM",
-//                                                 AnswerText = "MIDNIGHT",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "MIDNIGHT [OR] 12(.00) A.M./AM",
-//                                                 AnswerText = "12 A.M.",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "MIDNIGHT [OR] 12(.00) A.M./AM",
-//                                                 AnswerText = "12 AM",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "MIDNIGHT [OR] 12(.00) A.M./AM",
-//                                                 AnswerText = "12.00 A.M.",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "MIDNIGHT [OR] 12(.00) A.M./AM",
-//                                                 AnswerText = "12.00 AM",
-//                                                 IsTrue = true
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 4,
-//                                         IsMultipleChoice = false,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "LIFEBOATS",
-//                                                 AnswerText = "LIFEBOATS",
-//                                                 IsTrue = true
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 5,
-//                                         IsMultipleChoice = false,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "WIRELESS OPERATORS",
-//                                                 AnswerText = "WIRELESS OPERATORS",
-//                                                 IsTrue = true
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 6,
-//                                         IsMultipleChoice = false,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "(WIRELESS) MESSAGE",
-//                                                 AnswerText = "MESSAGE",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "(WIRELESS) MESSAGE",
-//                                                 AnswerText = "WIRELESS MESSAGE",
-//                                                 IsTrue = true
-//                                             }
-//                                         }
-//                                     }
-//                                 }
-//                             },
-//                             new()
-//                             {
-//                                 PartitionDesc = @"<p><em style=""-webkit-text-stroke-width:0px;background-color:rgb(16, 17, 17);box-sizing:border-box;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;""><i>Do the following statements agree with the information given in Reading Passage 1?&nbsp;In boxes 7-13 on your answer sheet, write</i></em><br><em style=""-webkit-text-stroke-width:0px;background-color:rgb(16, 17, 17);box-sizing:border-box;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;""><i><strong style=""box-sizing:border-box;font-weight:bolder;"">TRUE</strong>&nbsp;if the statement agrees with the information</i></em><br><em style=""-webkit-text-stroke-width:0px;background-color:rgb(16, 17, 17);box-sizing:border-box;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;""><i><strong style=""box-sizing:border-box;font-weight:bolder;"">FALSE</strong>&nbsp;if the statement contradicts the information</i></em><br><em style=""-webkit-text-stroke-width:0px;background-color:rgb(16, 17, 17);box-sizing:border-box;color:rgb(255, 255, 255);font-family:Roboto, Arial, sans-serif;font-size:16px;font-variant-caps:normal;font-variant-ligatures:normal;font-weight:400;letter-spacing:normal;orphans:2;text-align:left;text-decoration-color:initial;text-decoration-style:initial;text-decoration-thickness:initial;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;""><i><strong style=""box-sizing:border-box;font-weight:bolder;"">NOT GIVEN</strong>&nbsp;if there is no information on this</i></em></p>",
-//                                 IsVerticalLayout = true,
-//                                 PartitionTagId = readingPartitionTags[
-//                                     rnd.Next(readingPartitionTags.Count)].PartitionTagId,
-//                                 Questions = new List<Question>()
-//                                 {
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 7,
-//                                         QuestionDesc = "The binoculars for the men on watch had been left in a crew locker in Southampton.",
-//                                         IsMultipleChoice = true,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "TRUE",
-//                                                 AnswerText = "TRUE",
-//                                                 IsTrue = false
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "FALSE",
-//                                                 AnswerText = "FALSE",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "NOT GIVEN",
-//                                                 AnswerText = "NOT GIVEN",
-//                                                 IsTrue = false
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 8,
-//                                         QuestionDesc = "The missing binoculars were the major factor leading to the collision with the iceberg.",
-//                                         IsMultipleChoice = true,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "TRUE",
-//                                                 AnswerText = "TRUE",
-//                                                 IsTrue = false
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "FALSE",
-//                                                 AnswerText = "FALSE",
-//                                                 IsTrue = false
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "NOT GIVEN",
-//                                                 AnswerText = "NOT GIVEN",
-//                                                 IsTrue = true
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 9,
-//                                         QuestionDesc = "Captain Smith knew there was ice in the area.",
-//                                         IsMultipleChoice = true,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "TRUE",
-//                                                 AnswerText = "TRUE",
-//                                                 IsTrue = false
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "FALSE",
-//                                                 AnswerText = "FALSE",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "NOT GIVEN",
-//                                                 AnswerText = "NOT GIVEN",
-//                                                 IsTrue = false
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 10,
-//                                         QuestionDesc = "Captain Smith knew there was ice in the area.",
-//                                         IsMultipleChoice = true,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "TRUE",
-//                                                 AnswerText = "TRUE",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "FALSE",
-//                                                 AnswerText = "FALSE",
-//                                                 IsTrue = false
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "NOT GIVEN",
-//                                                 AnswerText = "NOT GIVEN",
-//                                                 IsTrue = false
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 11,
-//                                         QuestionDesc = "Howell believed the captains failure to reduce speed was an irresponsible action.",
-//                                         IsMultipleChoice = true,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "TRUE",
-//                                                 AnswerText = "TRUE",
-//                                                 IsTrue = false
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "FALSE",
-//                                                 AnswerText = "FALSE",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "NOT GIVEN",
-//                                                 AnswerText = "NOT GIVEN",
-//                                                 IsTrue = false
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 12,
-//                                         QuestionDesc = "The Titanic was able to seat more passengers in lifeboats than the Board of Trade required.",
-//                                         IsMultipleChoice = true,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "TRUE",
-//                                                 AnswerText = "TRUE",
-//                                                 IsTrue = true
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "FALSE",
-//                                                 AnswerText = "FALSE",
-//                                                 IsTrue = false
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "NOT GIVEN",
-//                                                 AnswerText = "NOT GIVEN",
-//                                                 IsTrue = false
-//                                             }
-//                                         }
-//                                     },
-//                                     new()
-//                                     {
-//                                         QuestionNumber = 13,
-//                                         QuestionDesc = "A lifeboat drill would have saved more lives.",
-//                                         IsMultipleChoice = true,
-//                                         QuestionAnswers = new List<QuestionAnswer>()
-//                                         {
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "TRUE",
-//                                                 AnswerText = "TRUE",
-//                                                 IsTrue = false
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "FALSE",
-//                                                 AnswerText = "FALSE",
-//                                                 IsTrue = false
-//                                             },
-//                                             new()
-//                                             {
-//                                                 AnswerDisplay = "NOT GIVEN",
-//                                                 AnswerText = "NOT GIVEN",
-//                                                 IsTrue = true
-//                                             }
-//                                         }
-//                                     }
-//                                 }
-//                             }
-//                         }
-//                     }
-                // }
+                IsDraft = false
             },
             new()
             {
@@ -2487,199 +2796,199 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             Console.WriteLine("Not found test 1 or 2 to seed history");
             return;
         }
-        
+
         var listeningTest1 = listeningTests.FirstOrDefault(x => x.TestTitle.Contains("Listening Test 1"));
         if (listeningTest1 != null)
         {
             var test1Sections = listeningTest1.TestSections.ToList();
-    
+
             listeningTest1.TestHistories.Add(new()
+            {
+                TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                TotalCompletionTime = rnd.Next(3600),
+                TotalRightAnswer = 26,
+                TotalWrongAnswer = 13,
+                TotalSkipAnswer = 1,
+                TotalQuestion = 40,
+                AccuracyRate = double.Parse("0.65"),
+                TestType = listeningTest1.TestType,
+                BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
+                ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
+                IsFull = rnd.Next(0, 1) == 1,
+                TestCategoryId = listeningTest1.TestCategoryId,
+                UserId = users[0].UserId,
+                TestId = listeningTest1.TestId,
+                PartitionHistories = new List<PartitionHistory>()
                 {
-                    TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
-                    TotalCompletionTime = rnd.Next(3600),
-                    TotalRightAnswer = 26,
-                    TotalWrongAnswer = 13,
-                    TotalSkipAnswer = 1,
-                    TotalQuestion = 40,
-                    AccuracyRate = double.Parse("0.65"),
-                    TestType = listeningTest1.TestType,
-                    BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
-                    ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
-                    IsFull = rnd.Next(0, 1) == 1,
-                    TestCategoryId = listeningTest1.TestCategoryId,
-                    UserId = users[0].UserId,
-                    TestId = listeningTest1.TestId,
-                    PartitionHistories = new List<PartitionHistory>()
+                    new()
                     {
-                        new()
-                        {
-                            TestSectionName = "Recording 1",
-                            TotalRightAnswer = 8,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.6"),
-                            TestSectionPartId = test1Sections[0].TestSectionPartitions.First().TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 2",
-                            TotalRightAnswer = 7,
-                            TotalWrongAnswer = 3,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.375"),
-                            TestSectionPartId = test1Sections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 2",
-                            TotalRightAnswer = 6,
-                            TotalWrongAnswer = 4,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.2"),
-                            TestSectionPartId = test1Sections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 3",
-                            TotalRightAnswer = 5,
-                            TotalWrongAnswer = 5,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.4"),
-                            TestSectionPartId = test1Sections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 3",
-                            TotalRightAnswer = 9,
-                            TotalWrongAnswer = 1,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.8"),
-                            TestSectionPartId = test1Sections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 4",
-                            TotalRightAnswer = 8,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.1"),
-                            TestSectionPartId = test1Sections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 4",
-                            TotalRightAnswer = 7,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 1,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.00"),
-                            TestSectionPartId = test1Sections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        }
+                        TestSectionName = "Recording 1",
+                        TotalRightAnswer = 8,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.6"),
+                        TestSectionPartId = test1Sections[0].TestSectionPartitions.First().TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 2",
+                        TotalRightAnswer = 7,
+                        TotalWrongAnswer = 3,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.375"),
+                        TestSectionPartId = test1Sections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 2",
+                        TotalRightAnswer = 6,
+                        TotalWrongAnswer = 4,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.2"),
+                        TestSectionPartId = test1Sections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 3",
+                        TotalRightAnswer = 5,
+                        TotalWrongAnswer = 5,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.4"),
+                        TestSectionPartId = test1Sections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 3",
+                        TotalRightAnswer = 9,
+                        TotalWrongAnswer = 1,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.8"),
+                        TestSectionPartId = test1Sections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 4",
+                        TotalRightAnswer = 8,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.1"),
+                        TestSectionPartId = test1Sections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 4",
+                        TotalRightAnswer = 7,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 1,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.00"),
+                        TestSectionPartId = test1Sections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
                     }
-                });
+                }
+            });
         }
-        
+
         var listeningTest2 = listeningTests.FirstOrDefault(x => x.TestTitle.Contains("Listening Test 2"));
         if (listeningTest2 != null)
         {
             var test2Sections = listeningTest2.TestSections.ToList();
-    
+
             listeningTest2.TestHistories.Add(new()
+            {
+                TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
+                TotalCompletionTime = rnd.Next(3600),
+                TotalRightAnswer = 26,
+                TotalWrongAnswer = 13,
+                TotalSkipAnswer = 1,
+                TotalQuestion = 40,
+                AccuracyRate = double.Parse("0.65"),
+                TestType = listeningTest2.TestType,
+                BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
+                ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
+                IsFull = rnd.Next(0, 1) == 1,
+                TestCategoryId = listeningTest2.TestCategoryId,
+                UserId = users[0].UserId,
+                TestId = listeningTest2.TestId,
+                PartitionHistories = new List<PartitionHistory>()
                 {
-                    TakenDate = DateTime.Now.AddDays(rnd.Next(-100, 100)),
-                    TotalCompletionTime = rnd.Next(3600),
-                    TotalRightAnswer = 26,
-                    TotalWrongAnswer = 13,
-                    TotalSkipAnswer = 1,
-                    TotalQuestion = 40,
-                    AccuracyRate = double.Parse("0.65"),
-                    TestType = listeningTest2.TestType,
-                    BandScore = scoreCalculations[rnd.Next(scoreCalculations.Count)].BandScore,
-                    ScoreCalculationId = scoreCalculations[rnd.Next(scoreCalculations.Count)].ScoreCalculationId,
-                    IsFull = rnd.Next(0, 1) == 1,
-                    TestCategoryId = listeningTest2.TestCategoryId,
-                    UserId = users[0].UserId,
-                    TestId = listeningTest2.TestId,
-                    PartitionHistories = new List<PartitionHistory>()
+                    new()
                     {
-                        new()
-                        {
-                            TestSectionName = "Recording 1",
-                            TotalRightAnswer = 8,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.6"),
-                            TestSectionPartId = test2Sections[0].TestSectionPartitions.First().TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 2",
-                            TotalRightAnswer = 7,
-                            TotalWrongAnswer = 3,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.375"),
-                            TestSectionPartId = test2Sections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 2",
-                            TotalRightAnswer = 6,
-                            TotalWrongAnswer = 4,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.2"),
-                            TestSectionPartId = test2Sections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 3",
-                            TotalRightAnswer = 5,
-                            TotalWrongAnswer = 5,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.4"),
-                            TestSectionPartId = test2Sections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 3",
-                            TotalRightAnswer = 9,
-                            TotalWrongAnswer = 1,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.8"),
-                            TestSectionPartId = test2Sections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 4",
-                            TotalRightAnswer = 8,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 0,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.1"),
-                            TestSectionPartId = test2Sections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
-                        },
-                        new()
-                        {
-                            TestSectionName = "Recording 4",
-                            TotalRightAnswer = 7,
-                            TotalWrongAnswer = 2,
-                            TotalSkipAnswer = 1,
-                            TotalQuestion = 10,
-                            AccuracyRate = double.Parse("0.00"),
-                            TestSectionPartId = test2Sections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
-                        }
+                        TestSectionName = "Recording 1",
+                        TotalRightAnswer = 8,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.6"),
+                        TestSectionPartId = test2Sections[0].TestSectionPartitions.First().TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 2",
+                        TotalRightAnswer = 7,
+                        TotalWrongAnswer = 3,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.375"),
+                        TestSectionPartId = test2Sections[1].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 2",
+                        TotalRightAnswer = 6,
+                        TotalWrongAnswer = 4,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.2"),
+                        TestSectionPartId = test2Sections[1].TestSectionPartitions.ToList()[1].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 3",
+                        TotalRightAnswer = 5,
+                        TotalWrongAnswer = 5,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.4"),
+                        TestSectionPartId = test2Sections[2].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 3",
+                        TotalRightAnswer = 9,
+                        TotalWrongAnswer = 1,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.8"),
+                        TestSectionPartId = test2Sections[2].TestSectionPartitions.ToList()[1].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 4",
+                        TotalRightAnswer = 8,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 0,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.1"),
+                        TestSectionPartId = test2Sections[3].TestSectionPartitions.ToList()[0].TestSectionPartId
+                    },
+                    new()
+                    {
+                        TestSectionName = "Recording 4",
+                        TotalRightAnswer = 7,
+                        TotalWrongAnswer = 2,
+                        TotalSkipAnswer = 1,
+                        TotalQuestion = 10,
+                        AccuracyRate = double.Parse("0.00"),
+                        TestSectionPartId = test2Sections[3].TestSectionPartitions.ToList()[1].TestSectionPartId
                     }
-                });
+                }
+            });
         }
 
         await dbContext.SaveChangesAsync();
@@ -2718,9 +3027,9 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
         foreach (var th in testHistories)
         {
             var partitionHistories = th!.PartitionHistories.ToList();
-            
-            if(!partitionHistories.Any()) continue;
-            
+
+            if (!partitionHistories.Any()) continue;
+
             List<TestGrade> testGrades = new()
             {
                 new()
@@ -3089,12 +3398,12 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             await dbContext.SaveChangesAsync();
         }
     }
-    
+
     // Summary:
     //      Seeding premium package
     private async Task SeedPremiumPackageAsync()
     {
-        var expiredAt = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, 
+        var expiredAt = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
             // Vietnam timezone
             TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
         List<PremiumPackage> premiumPackages = new()
@@ -3127,11 +3436,11 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 CreateDate = expiredAt,
             }
         };
-        
+
         await dbContext.PremiumPackages.AddRangeAsync(premiumPackages);
         await dbContext.SaveChangesAsync();
     }
-    
+
     //  Summary:
     //      Seeding Payment Type
     public async Task SeedPaymentTypeAsync()
@@ -3147,7 +3456,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 PaymentMethod = Enum.PaymentType.PayOs.GetDescription()
             }
         };
-        
+
         await dbContext.PaymentTypes.AddRangeAsync(paymentTypes);
         await dbContext.SaveChangesAsync();
     }

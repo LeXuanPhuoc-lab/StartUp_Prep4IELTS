@@ -52,10 +52,11 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
     {
         // Retrieve TestHistories with related PartitionHistories
         var testHistoryEntities = await _dbSet
+            .AsSplitQuery()
+            .OrderByDescending(x => x.TakenDate)
             .Where(th => th.UserId.Equals(userId))
             .Include(ph => ph.Test)
             .Include(ph => ph.PartitionHistories)
-            .AsSplitQuery()
             .ToListAsync();
 
         // Filter the PartitionHistories to ensure distinct TestSectionPartId
