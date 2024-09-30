@@ -45,6 +45,7 @@ public static class TestResponseExtensions
                 var firstTest = g.First().Test; 
                 return new TestResponse()
                 {
+                    Id = firstTest.Id,
                     TestTitle = g.Key,
                     TestId = firstTest.TestId,                
                     Duration = firstTest.Duration,           
