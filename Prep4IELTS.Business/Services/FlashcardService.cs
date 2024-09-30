@@ -6,10 +6,14 @@ using Prep4IELTS.Data;
 using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;
 using Prep4IELTS.Data.Enum;
+using Prep4IELTS.Data.Extensions;
 
 namespace Prep4IELTS.Business.Services;
 
-public class FlashcardService(UnitOfWork unitOfWork) : IFlashcardService
+public class FlashcardService(
+    UnitOfWork unitOfWork,
+    IUserFlashcardService userFlashcardService,
+    IFlashcardDetailService flashcardDetailService) : IFlashcardService
 {
     public async Task<bool> InsertAsync(FlashcardDto flashcard)
     {
@@ -119,7 +123,7 @@ public class FlashcardService(UnitOfWork unitOfWork) : IFlashcardService
         var flashcardEntity = await unitOfWork.FlashcardRepository.FindByIdAsync(flashcardId, userId);
         return flashcardEntity.Adapt<FlashcardDto>();
     }
-    
+
     public async Task<int> CountTotalAsync()
     {
         return await unitOfWork.FlashcardRepository.CountTotalAsync();

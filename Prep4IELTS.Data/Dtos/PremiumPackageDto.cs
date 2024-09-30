@@ -9,7 +9,8 @@ public record PremiumPackageDto(
     int DurationInMonths,
     bool IsActive,
     DateTime CreateDate,
-    string? Description)
+    string? Description,
+    string PackageType)
 {
     [JsonIgnore] public ICollection<UserPremiumPackageDto>? UserPremiumPackages = new List<UserPremiumPackageDto>();
 };

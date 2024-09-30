@@ -17,6 +17,7 @@ namespace EXE202_Prep4IELTS.Controllers
     public class ClerkController(
         IConfiguration configuration,
         ISystemRoleService roleService,
+        IUserPremiumPackageService userPremiumPackageService,
         IUserService userService) : ControllerBase
     {
         [HttpPost]
@@ -102,7 +103,7 @@ namespace EXE202_Prep4IELTS.Controllers
                     var studentRole = await roleService.FindByRoleNameAsync(SystemRole.Student);
                     // Create new user 
                     var toInsertUser = new UserDto(
-                        Id:0, UserId: Guid.Empty, ClerkId: clerkId,
+                        Id: 0, UserId: Guid.Empty, ClerkId: clerkId,
                         FirstName: string.Empty, LastName: string.Empty,
                         Email: email, Username: username ?? string.Empty, Phone: null,
                         AvatarImage: avatar, IsActive: null,
@@ -114,10 +115,22 @@ namespace EXE202_Prep4IELTS.Controllers
                     // Progress create new user 
                     isRowEffected = await userService.InsertAsync(toInsertUser);
                 }
-                
-                if(isRowEffected)
-                    //create user here
-                    return Ok(new { success = true, message = "User created", clerkId, email });
+
+                if (isRowEffected)
+                {
+                    // Add user premium package trial
+                    var isPremiumTrialAdded = await userPremiumPackageService.AddUserPremiumPackageTrialAsync(clerkId);
+
+                    return isPremiumTrialAdded
+                        ? Ok(new
+                        {
+                            success = true, message = "User created with premium package trials", clerkId, email
+                        })
+                        : Ok(new
+                        {
+                            success = true, message = "User created, but fail to add premium trials to", clerkId, email
+                        });
+                }
                 
                 // Invoke error while create or update user 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");

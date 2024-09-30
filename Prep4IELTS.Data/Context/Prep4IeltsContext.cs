@@ -204,7 +204,9 @@ public partial class Prep4IeltsContext : DbContext
             //     .IsUnicode(false)
             //     .HasColumnName("image_url");
             entity.Property(e => e.CloudResourceId).HasColumnName("cloud_resource_id");
-            entity.Property(e => e.FlashcardDetailTagId).HasColumnName("flashcard_detail_tag_id");
+            entity.Property(e => e.FlashcardDetailTagId)
+                .IsRequired(false)
+                .HasColumnName("flashcard_detail_tag_id");
             entity.Property(e => e.WordForm)
                 .HasMaxLength(50)
                 .HasColumnName("word_form");
@@ -305,6 +307,9 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("price");
+            entity.Property(e => e.PackageType)
+                .HasMaxLength(30)
+                .HasColumnName("package_type");
         });
 
         modelBuilder.Entity<Question>(entity =>
@@ -848,6 +853,10 @@ public partial class Prep4IeltsContext : DbContext
                 .HasColumnName("flashcard_grade_status");
             entity.Property(e => e.FlashcardExamHistoryId).HasColumnName("flashcard_exam_history_id");
             entity.Property(e => e.FlashcardDetailId).HasColumnName("flashcard_detail_id");
+            entity.Property(e => e.QuestionNumber).HasColumnName("question_number");
+            entity.Property(e => e.QuestionType)
+                .HasMaxLength(30)
+                .HasColumnName("question_type");
             
             entity.HasOne(e => e.FlashcardExamHistory).WithMany(e => e.FlashcardExamGrades)
                 .HasForeignKey(e => e.FlashcardExamHistoryId)
@@ -899,6 +908,7 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.PremiumPackageId).HasColumnName("premium_package_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.TotalTrials).HasColumnName("total_trials");
 
             entity.HasOne(d => d.PremiumPackage).WithMany(p => p.UserPremiumPackages)
                 .HasForeignKey(d => d.PremiumPackageId)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prep4IELTS.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDatabase : Migration
+    public partial class InititalMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -96,7 +96,8 @@ namespace Prep4IELTS.Data.Migrations
                     duration_in_months = table.Column<int>(type: "int", nullable: false),
                     is_active = table.Column<bool>(type: "bit", nullable: false),
                     create_date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                    description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    package_type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -354,7 +355,8 @@ namespace Prep4IELTS.Data.Migrations
                     user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     premium_package_id = table.Column<int>(type: "int", nullable: false),
                     expire_date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    is_active = table.Column<bool>(type: "bit", nullable: false)
+                    is_active = table.Column<bool>(type: "bit", nullable: false),
+                    total_trials = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -661,10 +663,12 @@ namespace Prep4IELTS.Data.Migrations
                 {
                     flashcard_exam_grade_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    question_number = table.Column<int>(type: "int", nullable: false),
                     answer = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     flashcard_grade_status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     flashcard_exam_history_id = table.Column<int>(type: "int", nullable: false),
-                    flashcard_detail_id = table.Column<int>(type: "int", nullable: false)
+                    flashcard_detail_id = table.Column<int>(type: "int", nullable: false),
+                    question_type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true)
                 },
                 constraints: table =>
                 {
