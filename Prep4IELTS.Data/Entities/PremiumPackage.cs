@@ -19,5 +19,7 @@ public partial class PremiumPackage
 
     public string? Description { get; set; }
 
+    public string PackageType { get; set; } = null!;
+
     public virtual ICollection<UserPremiumPackage> UserPremiumPackages { get; set; } = new List<UserPremiumPackage>();
 }

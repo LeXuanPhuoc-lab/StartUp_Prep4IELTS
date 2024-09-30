@@ -15,10 +15,17 @@ public class UserFlashcardService(UnitOfWork unitOfWork) : IUserFlashcardService
         return await unitOfWork.UserFlashcardRepository.SaveChangeWithTransactionAsync() > 0;
     }
 
-    public async Task<UserFlashcardDto?> GetUserPracticingProgressAsync(int flashcardId, Guid userId)
+    public async Task<UserFlashcardDto> FindByUserAndFlashcardIdAsync(int flashcardId, Guid userId)
     {
         var userFlashcardEntity = 
-            await unitOfWork.UserFlashcardRepository.GetUserPracticingProgressAsync(flashcardId,userId);
+            await unitOfWork.UserFlashcardRepository.FindByUserAndFlashcardIdAsync(flashcardId, userId);
+        return userFlashcardEntity.Adapt<UserFlashcardDto>();
+    }
+
+    public async Task<UserFlashcardDto?> FindUserPracticingProgressAsync(int flashcardId, Guid userId, bool? isTrackProgress = false)
+    {
+        var userFlashcardEntity = 
+            await unitOfWork.UserFlashcardRepository.FindUserPracticingProgressAsync(flashcardId,userId, isTrackProgress);
         return userFlashcardEntity.Adapt<UserFlashcardDto>();
     }
 
@@ -28,11 +35,11 @@ public class UserFlashcardService(UnitOfWork unitOfWork) : IUserFlashcardService
         await unitOfWork.UserFlashcardRepository.SaveChangeWithTransactionAsync();
     }
 
-    public async Task<UserFlashcardDto?> GetUserPracticingProgressWithStatusAsync(int flashcardId, Guid userId, 
+    public async Task<UserFlashcardDto?> FindUserPracticingProgressWithStatusAsync(int flashcardId, Guid userId, 
         List<FlashcardProgressStatus> statuses)
     {
         var userFlashcardEntity = 
-            await unitOfWork.UserFlashcardRepository.GetUserPracticingProgressWithStatusAsync(
+            await unitOfWork.UserFlashcardRepository.FindUserPracticingProgressWithStatusAsync(
                 flashcardId,userId, statuses);
         return userFlashcardEntity.Adapt<UserFlashcardDto>();
     }

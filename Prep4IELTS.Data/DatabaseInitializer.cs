@@ -2,7 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Prep4IELTS.Data.Context;
 using Prep4IELTS.Data.Entities;
+using Prep4IELTS.Data.Enum;
 using Prep4IELTS.Data.Extensions;
+using PartitionTag = Prep4IELTS.Data.Entities.PartitionTag;
+using PaymentType = Prep4IELTS.Data.Entities.PaymentType;
+using SystemRole = Prep4IELTS.Data.Entities.SystemRole;
+using Tag = Prep4IELTS.Data.Entities.Tag;
+using TestCategory = Prep4IELTS.Data.Entities.TestCategory;
 
 namespace Prep4IELTS.Data;
 
@@ -1240,7 +1246,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             new User
             {
                 UserId = Guid.Parse("fcfb4edc-6045-40eb-823b-50fc6eb108a7"),
-                ClerkId = "user_2lygVRLBQMwZMzVDPP5hKZ77tiK",
+                ClerkId = "user_2mcGUqIVGrLj32hjkoIFKtH0tzF",
                 FirstName = "Xuan",
                 LastName = "Phuoc",
                 Email = "xuan.phuoc@gmail.com",
@@ -3416,6 +3422,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 Price = 1000,
                 IsActive = true,
                 CreateDate = expiredAt,
+                PackageType = PremiumPackageType.Basic.GetDescription(),
             },
             new PremiumPackage()
             {
@@ -3425,6 +3432,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 Price = 2000,
                 IsActive = true,
                 CreateDate = expiredAt,
+                PackageType = PremiumPackageType.Medium.GetDescription(),
             },
             new PremiumPackage()
             {
@@ -3434,6 +3442,7 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
                 Price = 3000,
                 IsActive = true,
                 CreateDate = expiredAt,
+                PackageType = PremiumPackageType.Standard.GetDescription(),
             }
         };
 

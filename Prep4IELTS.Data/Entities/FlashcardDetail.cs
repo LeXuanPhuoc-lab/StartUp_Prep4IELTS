@@ -32,7 +32,7 @@ public partial class FlashcardDetail
 
     public virtual Flashcard Flashcard { get; set; } = null!;
     
-    public virtual FlashcardDetailTag FlashcardDetailTag { get; set; } = null!;
+    public virtual FlashcardDetailTag? FlashcardDetailTag { get; set; }
 
     [JsonIgnore]
     public virtual ICollection<UserFlashcardProgress> UserFlashcardProgresses { get; set; } = new List<UserFlashcardProgress>();

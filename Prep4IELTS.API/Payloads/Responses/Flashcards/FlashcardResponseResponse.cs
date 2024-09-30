@@ -3,7 +3,7 @@ using Prep4IELTS.Data.Dtos;
 
 namespace EXE202_Prep4IELTS.Payloads.Responses.Flashcards;
 
-public class FlashcardResponse
+public class FlashcardResponseResponse
 {
     public int FlashcardId { get; set; }
 
@@ -27,11 +27,11 @@ public class FlashcardResponse
 
 public static class FlashcardResponseExtensions
 {
-    public static async Task<FlashcardResponse> ToPrivacyFlashcardResponseAsync(
+    public static async Task<FlashcardResponseResponse> ToPrivacyFlashcardResponseAsync(
         this FlashcardDto flashcardDto, 
         List<UserFlashcardProgressDto> userFlashcardProgress)
     {
-        var flashcardForUserResponse = new FlashcardResponse()
+        var flashcardForUserResponse = new FlashcardResponseResponse()
         {
             FlashcardId = flashcardDto.FlashcardId,
             Title = flashcardDto.Title,
@@ -64,10 +64,10 @@ public static class FlashcardResponseExtensions
         return await Task.FromResult(flashcardForUserResponse);
     }
 
-    public static async Task<FlashcardResponse> ToPrivacyFlashcardResponseAsync(
+    public static async Task<FlashcardResponseResponse> ToPrivacyFlashcardResponseAsync(
         this FlashcardDto flashcardDto, int totalNew, int totalStudying, int totalProficient, int totalStarred)
     {
-        var flashcardForUserResponse = new FlashcardResponse()
+        var flashcardForUserResponse = new FlashcardResponseResponse()
         {
             FlashcardId = flashcardDto.FlashcardId,
             Title = flashcardDto.Title,

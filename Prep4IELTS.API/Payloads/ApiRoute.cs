@@ -123,7 +123,6 @@ public static class ApiRoute
 
     public static class Flashcard
     {
-        
         // Public 
         public const string GetAll = Base + "/flashcards";
         public const string GetById = Base + "/flashcards/{id}";
@@ -142,8 +141,10 @@ public static class ApiRoute
         public const string DeleteUser = Base + "/flashcards/{id}/delete-user/{userId}";
         public const string UpdateFlashcardProgress = Base + "/flashcards/{id}/update-progress";
         public const string Practice = Base + "/flashcards/{id}/practice";
-        public const string Exam = Base + "/flashcards/{id}/exam";
         public const string Reset = Base + "/flashcards/{id}/reset";
+        // Premium
+        public const string Exam = Base + "/flashcards/{id}/exam";
+        public const string ExamSubmission = Base + "/flashcards/exam/submission";
     }
 
     public static class FlashcardDetail

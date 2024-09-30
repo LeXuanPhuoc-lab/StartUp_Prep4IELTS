@@ -16,7 +16,7 @@ public record FlashcardDetailDto(
     int FlashcardId,
     int? FlashcardDetailTagId)
 {
-    public FlashcardDetailTagDto? FlashcardDetailTag { get; set; } = null!;
+    [JsonIgnore] public FlashcardDetailTagDto? FlashcardDetailTag { get; set; } = null!;
     [JsonIgnore] public FlashcardDto Flashcard = null!;
     [JsonIgnore] public ICollection<FlashcardExamGradeDto> FlashcardExamGrades { get; set; } = new List<FlashcardExamGradeDto>();
     [JsonIgnore]
