@@ -16,6 +16,8 @@ public partial class UserPremiumPackage
 
     public bool IsActive { get; set; }
 
+    public int TotalTrials { get; set; }
+    
     [JsonIgnore]
     public virtual PremiumPackage PremiumPackage { get; set; } = null!;
 

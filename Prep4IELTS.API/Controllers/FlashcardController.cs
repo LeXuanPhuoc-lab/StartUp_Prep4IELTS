@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using EXE202_Prep4IELTS.Attributes;
 using EXE202_Prep4IELTS.Payloads;
 using EXE202_Prep4IELTS.Payloads.Filters;
@@ -6,6 +7,7 @@ using EXE202_Prep4IELTS.Payloads.Responses;
 using EXE202_Prep4IELTS.Payloads.Responses.Flashcards;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Prep4IELTS.Business.Constants;
 using Prep4IELTS.Business.Models;
@@ -21,6 +23,7 @@ namespace EXE202_Prep4IELTS.Controllers;
 public class FlashcardController(
     IFlashcardService flashcardService, 
     IUserFlashcardService userFlashcardService,
+    IFlashcardExamHistoryService flashcardExamHistoryService,
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
 {
     private readonly AppSettings _appSettings = monitor.CurrentValue;
@@ -161,7 +164,7 @@ public class FlashcardController(
         }
 
         // Calculate user flashcard progress
-        List<FlashcardResponse> flashcardResponses = new();
+        List<FlashcardResponseResponse> flashcardResponses = new();
         foreach (var fCard in flashcardDtos)
         {
             var flashcardProgressData = 
@@ -174,7 +177,7 @@ public class FlashcardController(
         }
         
         // Create paginated detail list 
-        var paginatedDetail = PaginatedList<FlashcardResponse>.Paginate(flashcardResponses,
+        var paginatedDetail = PaginatedList<FlashcardResponseResponse>.Paginate(flashcardResponses,
             pageIndex: req.Page ?? 1,
             req.PageSize ?? _appSettings.PageSize);
         
@@ -207,8 +210,8 @@ public class FlashcardController(
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
         
+        // Check exist user flashcard 
         var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
-
         if (flashcardDto == null)
         {
             return NotFound(new BaseResponse()
@@ -275,6 +278,7 @@ public class FlashcardController(
     [ClerkAuthorize]
     [HttpGet(ApiRoute.Flashcard.Practice, Name = nameof(PracticeFlashcardAsync))]
     public async Task<IActionResult> PracticeFlashcardAsync([FromRoute] int id, 
+        [FromQuery] bool isTrackProgress,
         [FromQuery] List<FlashcardProgressStatus>? status)
     {
         // Check exist user 
@@ -297,13 +301,13 @@ public class FlashcardController(
 
         if (status != null && status.Any())
         {
-            userFlashcard = await userFlashcardService.GetUserPracticingProgressWithStatusAsync(
+            userFlashcard = await userFlashcardService.FindUserPracticingProgressWithStatusAsync(
                 id, userDto.UserId, status);
         }
         else
         {
-            userFlashcard = await userFlashcardService.GetUserPracticingProgressAsync(
-                id, userDto.UserId);
+            userFlashcard = await userFlashcardService.FindUserPracticingProgressAsync(
+                id, userDto.UserId, isTrackProgress);
         }
         
         return userFlashcard != null
@@ -383,8 +387,92 @@ public class FlashcardController(
     #region Premium Only
 
     // TRUE/FALSE, WRITTEN, MATCHING
-    // [HttpGet(ApiRoute.Flashcard.Exam, Name = nameof())]
-    
+    [ClerkAuthorize]
+    [PremiumAuthorize(Types = [PremiumPackageType.Standard], AllowPremiumTrial = true)]
+    [HttpGet(ApiRoute.Flashcard.Exam, Name = nameof(DoFlashcardExamAsync))]
+    public async Task<IActionResult> DoFlashcardExamAsync([FromRoute] int id, 
+        [FromQuery] ExamFlashcardFilterRequest req)
+    {
+        // Validation
+        if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+        
+        // Check exist user 
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if (userDto == null) return Unauthorized();
+        
+        // Check exist user flashcard 
+        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
+        if (flashcardDto == null || !flashcardDto.UserFlashcards.Any())
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found user in this flashcard"
+            });
+        }
+        
+        // Check exist flashcard details
+        if (!flashcardDto.FlashcardDetails.Any() 
+            // At least 3 details to create exam
+            || flashcardDto.FlashcardDetails.Count < 3)
+        {
+            // Response not found 
+            return BadRequest(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Flashcard must at least 3 details to create an exam"
+            });
+        }
+        
+        // Generate flashcard exam questions
+        var flashcardExamQuestions =
+            flashcardDto.FlashcardDetails.ToList().GenerateFlashcardExamQuestions(
+                totalQuestion: req.TotalQuestion,
+                isTermPattern: req.IsTermPattern,
+                questionTypes: req.QuestionTypes);
+
+        return flashcardExamQuestions.Any()
+            ? Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = flashcardExamQuestions
+            })
+            : StatusCode(StatusCodes.Status500InternalServerError);
+    }
+
+
+    [ClerkAuthorize]
+    [PremiumAuthorize(Types = [PremiumPackageType.Standard], AllowPremiumTrial = true, UpdateTrialValue = true)]
+    [HttpPost(ApiRoute.Flashcard.ExamSubmission, Name = nameof(FlashcardExamSubmissionAsync))]
+    public async Task<IActionResult> FlashcardExamSubmissionAsync([FromBody] FlashcardExamSubmissionRequest req)
+    {
+        // Check exist user 
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if (userDto == null) return Unauthorized();
+        
+        // Check exist user flashcard 
+        var userFlashcardDto = await userFlashcardService.FindByUserAndFlashcardIdAsync(req.FlashcardId, userDto.UserId);
+        if (userFlashcardDto == null!)
+        {
+            return BadRequest(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Not found any user in this flashcard to progress test submission"
+            });
+        }
+        
+        // Map flashcard exam submission request to flashcard exam history
+        var flashcardHistoryDto = req.ToFlashcardExamHistoryDto(userFlashcardDto.UserFlashcardId);
+        
+        // Progress add new flashcard exam history 
+        var isInserted = await flashcardExamHistoryService.InsertAsync(
+            flashcardExamHistoryDto: flashcardHistoryDto,
+            isTermPattern: req.IsTermPattern);
+        
+        return isInserted
+            ? NoContent()
+            : StatusCode(StatusCodes.Status500InternalServerError);
+    }
     
     #endregion
 }

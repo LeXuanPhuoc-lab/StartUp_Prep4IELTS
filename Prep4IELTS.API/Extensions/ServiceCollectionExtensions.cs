@@ -47,6 +47,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IFlashcardService, FlashcardService>();
         services.AddScoped<IFlashcardDetailService, FlashcardDetailService>();
         services.AddScoped<IUserFlashcardService, UserFlashcardService>();
+        services.AddScoped<IFlashcardExamHistoryService, FlashcardExamHistoryService>();
         // services.AddScoped<ITransactionService, TransactionService>();
         
         // Register IHttpContextAccessor 

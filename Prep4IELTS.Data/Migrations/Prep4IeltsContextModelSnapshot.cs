@@ -267,6 +267,15 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("flashcard_grade_status");
 
+                    b.Property<int>("QuestionNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("question_number");
+
+                    b.Property<string>("QuestionType")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
+                        .HasColumnName("question_type");
+
                     b.HasKey("FlashcardExamGradeId")
                         .HasName("flashcard_exam_grade_id");
 
@@ -440,6 +449,12 @@ namespace Prep4IELTS.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnName("is_active");
+
+                    b.Property<string>("PackageType")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
+                        .HasColumnName("package_type");
 
                     b.Property<string>("PremiumPackageName")
                         .IsRequired()
@@ -1237,6 +1252,10 @@ namespace Prep4IELTS.Data.Migrations
                     b.Property<int>("PremiumPackageId")
                         .HasColumnType("int")
                         .HasColumnName("premium_package_id");
+
+                    b.Property<int>("TotalTrials")
+                        .HasColumnType("int")
+                        .HasColumnName("total_trials");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier")

@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Prep4IELTS.Data.Entities;
 
 namespace Prep4IELTS.Data.Dtos;
 
@@ -12,7 +11,7 @@ public record FlashcardExamHistoryDto(
     double? AccuracyRate,
     DateTime TakenDate,
     int UserFlashcardId,
-    ICollection<FlashcardExamGrade> FlashcardExamGrades)
+    ICollection<FlashcardExamGradeDto> FlashcardExamGrades)
 {
     [JsonIgnore] public UserFlashcardDto UserFlashcard { get; set; } = null!;
 };

@@ -9,6 +9,7 @@ public record UserPremiumPackageDto(
     bool IsActive,
     Guid UserId, UserDto User,
     int PremiumPackageId,
+    int TotalTrials,
     PremiumPackageDto PremiumPackage)
 {
     [JsonIgnore] public ICollection<TransactionDto> Transactions = new List<TransactionDto>();
