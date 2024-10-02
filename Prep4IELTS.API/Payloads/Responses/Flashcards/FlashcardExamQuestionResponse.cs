@@ -9,7 +9,9 @@ public class FlashcardExamQuestionResponse
 
     public int QuestionNumber { get; set; }
     
-    public string QuestionDesc { get; set; } = string.Empty;
+    public string QuestionTitle { get; set; } = string.Empty;
+
+    public string? QuestionDesc { get; set; } = null!;
 
     public List<FlashcardExamQuestionAnswerResponse> QuestionAnswers { get; set; } = new();
 
@@ -99,7 +101,7 @@ public static class FlashcardExamQuestionResponseExtensions
                 //     Question = new()
                 //     {
                 //         FlashcardDetailId = fd.FlashcardDetailId,
-                //         QuestionDesc = questionDesc ?? string.Empty,
+                //         QuestionTitle = questionDesc ?? string.Empty,
                 //         QuestionNumber = ++matchingQuesIndex,
                 //         QuestionType = FlashcardExamTypeConstants.MatchingQuestion,
                 //     },
@@ -108,7 +110,7 @@ public static class FlashcardExamQuestionResponseExtensions
                 matchingQuestionExam.MatchingQuestions.Add(new()
                 {
                     FlashcardDetailId = fd.FlashcardDetailId,
-                    QuestionDesc = questionDesc ?? string.Empty,
+                    QuestionTitle = questionDesc ?? string.Empty,
                     QuestionNumber = ++matchingQuesIndex,
                     QuestionType = FlashcardExamTypeConstants.MatchingQuestion,
                 });
@@ -146,7 +148,7 @@ public static class FlashcardExamQuestionResponseExtensions
                     .First(x => !x.Equals(FlashcardExamTypeConstants.MatchingQuestion));
             }
             // Question desc
-            var questionDesc = isTermPattern ? fd.WordText : fd.Description;
+            var questionTitle = isTermPattern ? fd.WordText : fd.Description;
             // Correct answer text
             var correctAnswerText = isTermPattern ? fd.Definition : fd.WordText;
             
@@ -161,12 +163,12 @@ public static class FlashcardExamQuestionResponseExtensions
                     var falseAnswer = questionAnswers
                         .OrderBy(ans => rnd.Next())
                         .FirstOrDefault(e => !e.AnswerText.Equals(correctAnswerText));
-
+                    
                     var trueFalseQuestion = new FlashcardExamQuestionResponse()
                     {
                         FlashcardDetailId = fd.FlashcardDetailId,
                         QuestionNumber = ++questionIndex,
-                        QuestionDesc = questionDesc ?? string.Empty,
+                        QuestionTitle = questionTitle ?? string.Empty,
                         QuestionAnswers = new()
                         {
                             falseAnswer ?? null!,
@@ -178,6 +180,14 @@ public static class FlashcardExamQuestionResponseExtensions
                         },
                         QuestionType = FlashcardExamTypeConstants.TrueFalse,
                     };
+                    
+                    // Shuffle answer kust
+                    trueFalseQuestion.QuestionAnswers = 
+                        trueFalseQuestion.QuestionAnswers.OrderBy(qa => rnd.Next()).ToList();
+                    
+                    // Set question desc
+                    var questionDesc = trueFalseQuestion.QuestionAnswers.First().AnswerText;
+                    trueFalseQuestion.QuestionDesc = questionDesc;
                     
                     // Add new true false question type
                     flashcardExamQuestions.Add(trueFalseQuestion);
@@ -194,7 +204,7 @@ public static class FlashcardExamQuestionResponseExtensions
                             new FlashcardExamQuestionResponse()
                             {
                                 FlashcardDetailId = x.FlashcardDetailId,
-                                QuestionDesc = isTermPattern ? x.WordText : x.Definition,
+                                QuestionTitle = isTermPattern ? x.WordText : x.Definition,
                                 QuestionNumber = ++questionIndex,
                             })
                         .ToList();
@@ -221,7 +231,7 @@ public static class FlashcardExamQuestionResponseExtensions
                     flashcardExamQuestions.Add(new()
                     {
                         FlashcardDetailId = 0,
-                        QuestionDesc = string.Empty,
+                        QuestionTitle = string.Empty,
                         QuestionNumber = 0,
                         QuestionAnswers = answersForMatchingExam,
                         MatchingQuestions = matchingQuestions,
@@ -250,7 +260,7 @@ public static class FlashcardExamQuestionResponseExtensions
                     // Add new flashcard exam question
                     flashcardExamQuestions.Add(new()
                     {
-                        QuestionDesc = questionDesc ?? string.Empty,
+                        QuestionTitle = questionTitle ?? string.Empty,
                         // Shuffle the list
                         QuestionAnswers = multipleChoiceAnswers.OrderBy(qa =>
                             rnd.Next()).ToList(),
@@ -268,7 +278,7 @@ public static class FlashcardExamQuestionResponseExtensions
                     {
                         FlashcardDetailId = fd.FlashcardDetailId,
                         QuestionNumber = ++questionIndex,
-                        QuestionDesc = questionDesc ?? null!,
+                        QuestionTitle = questionTitle ?? null!,
                         QuestionAnswers = new()
                         {
                             new()

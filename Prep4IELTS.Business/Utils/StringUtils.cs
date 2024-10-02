@@ -13,4 +13,22 @@ public static class StringUtils
         
         return cleanedInput;
     }
+    
+    public static bool CompareAnswers(string correctAnswer, string userAnswer)
+    {
+        // Normalize both answers: remove special characters, normalize spaces, and convert to upper case
+        string normalizedCorrectAnswer = NormalizeAnswer(correctAnswer);
+        string normalizedUserAnswer = NormalizeAnswer(userAnswer);
+
+        return normalizedCorrectAnswer == normalizedUserAnswer;
+    }
+
+    private static string NormalizeAnswer(string answer)
+    {
+        // Remove special characters, normalize spaces, and convert to uppercase
+        return Regex.Replace(answer, @"[^a-zA-Z0-9\s]", "") // Remove special characters
+            .Trim()                                // Remove spaces
+            .ToUpper()                              // Convert to uppercase
+            .Replace("\\s+", " ");                  // Normalize all spaces to single spaces
+    }
 }

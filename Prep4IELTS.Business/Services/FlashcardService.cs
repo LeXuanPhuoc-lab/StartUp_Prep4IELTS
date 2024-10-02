@@ -11,9 +11,7 @@ using Prep4IELTS.Data.Extensions;
 namespace Prep4IELTS.Business.Services;
 
 public class FlashcardService(
-    UnitOfWork unitOfWork,
-    IUserFlashcardService userFlashcardService,
-    IFlashcardDetailService flashcardDetailService) : IFlashcardService
+    UnitOfWork unitOfWork) : IFlashcardService
 {
     public async Task<bool> InsertAsync(FlashcardDto flashcard)
     {

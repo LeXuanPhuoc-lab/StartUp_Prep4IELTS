@@ -80,8 +80,9 @@ public class PremiumAuthorizeAttribute : System.Attribute, IActionFilter
             Types.Any(ppt => 
                 ppt.GetDescription().Equals(userPremiumPackage.PremiumPackage.PackageType));
         
-        // Premium Authorized success 
-        if (allowToAccessAction) return;
+        // Premium Authorized success and user premium package trials still > 0
+        if (allowToAccessAction 
+            || userPremiumPackage.TotalTrials > 0) return;
         
         // Not allow to access action
         context.Result = new ForbidResult();

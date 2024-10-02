@@ -19,6 +19,8 @@ public partial class FlashcardExamHistory
     public DateTime TakenDate { get; set; }
 
     public int UserFlashcardId { get; set; }
+    
+    public bool IsTermPattern { get; set; }
 
     public UserFlashcard UserFlashcard { get; set; } = null!;
 

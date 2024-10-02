@@ -830,6 +830,7 @@ public partial class Prep4IeltsContext : DbContext
             entity.Property(e => e.TakenDate)
                 .HasColumnType("datetime")
                 .HasColumnName("taken_date");
+            entity.Property(e => e.IsTermPattern).HasColumnName("is_term_pattern");
             entity.Property(e => e.UserFlashcardId).HasColumnName("user_flashcard_id");
             
             entity.HasOne(e => e.UserFlashcard).WithMany(e => e.FlashcardExamHistories)
@@ -845,6 +846,9 @@ public partial class Prep4IeltsContext : DbContext
             entity.ToTable("Flashcard_Exam_Grade");
             
             entity.Property(e => e.FlashcardExamGradeId).HasColumnName("flashcard_exam_grade_id");
+            entity.Property(e => e.QuestionDesc)
+                .HasMaxLength(300)
+                .HasColumnName("question_desc");
             entity.Property(e => e.Answer)
                 .HasMaxLength(100)
                 .HasColumnName("answer");

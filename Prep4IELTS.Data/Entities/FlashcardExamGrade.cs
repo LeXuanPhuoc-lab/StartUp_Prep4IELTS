@@ -4,6 +4,8 @@ public partial class FlashcardExamGrade
 {
     public int FlashcardExamGradeId { get; set; }
 
+    public string? QuestionDesc { get; set; } = null!;
+
     public int QuestionNumber { get; set; }
     
     public string Answer { get; set; } = null!;

@@ -1,6 +1,7 @@
 using Mapster;
 using Prep4IELTS.Business.Constants;
 using Prep4IELTS.Business.Services.Interfaces;
+using Prep4IELTS.Business.Utils;
 using Prep4IELTS.Data;
 using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;
@@ -11,12 +12,12 @@ namespace Prep4IELTS.Business.Services;
 
 public class FlashcardExamHistoryService(
     IFlashcardDetailService flashcardDetailService,
-    
+    IVocabularyUnitScheduleService vocabularyUnitScheduleService,
     UnitOfWork unitOfWork) : IFlashcardExamHistoryService
 {
     public async Task<bool> InsertAsync(
         FlashcardExamHistoryDto flashcardExamHistoryDto,
-        bool isTermPattern)
+        bool isTermPattern, bool? isSaveWrongToVocabSchedule)
     {
         // Map to FlashcardExamHistory entity
         var flashcardExamHistoryEntity = flashcardExamHistoryDto.Adapt<FlashcardExamHistory>();
@@ -26,7 +27,7 @@ public class FlashcardExamHistoryService(
         {
             // Get flashcard detail
             var flashcardDetailDto = await flashcardDetailService.FindByIdAsync(eg.FlashcardDetailId);
-            if (flashcardDetailDto == null) return false;
+            if (flashcardDetailDto == null) return false; // TODO: use IServiceResult to handle this instead 
             
             // Progress grade status for flashcard exam grade
             if (string.IsNullOrEmpty(eg.Answer)) // Check answer is empty
@@ -42,7 +43,7 @@ public class FlashcardExamHistoryService(
                     : flashcardDetailDto.WordText;
                 // Check whether is correct 
                 var isCorrect = eg.QuestionType == FlashcardExamTypeConstants.Written
-                    ? correctAnswer.ToUpper() == eg.Answer.ToUpper()
+                    ? StringUtils.CompareAnswers(correctAnswer, eg.Answer)
                     : correctAnswer == eg.Answer;
                 // Update grade status 
                 eg.FlashcardGradeStatus = isCorrect 
@@ -51,6 +52,22 @@ public class FlashcardExamHistoryService(
                 // Increase total report figures
                 if (isCorrect) flashcardExamHistoryEntity.TotalRightAnswer++;
                 else flashcardExamHistoryEntity.TotalWrongAnswer++;
+                
+                // Check whether save wrong answer to vocab schedule
+                if (!isCorrect // Is wrong answer
+                    && isSaveWrongToVocabSchedule.HasValue && isSaveWrongToVocabSchedule.Value) // Save wrong required
+                {
+                    var vocabUnitScheduleDto = new VocabularyUnitScheduleDto(
+                        VocabularyUnitScheduleId: 0,
+                        FlashcardDetailId: flashcardDetailDto.FlashcardDetailId,
+                        CreateDate: TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
+                            TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")),
+                        Weekday: null!,
+                        Comment: null!,
+                        FlashcardDetail: null!);
+
+                    await vocabularyUnitScheduleService.InsertAsync(vocabUnitScheduleDto);
+                }
             }
         }
         
@@ -71,5 +88,13 @@ public class FlashcardExamHistoryService(
         // Progress insert flashcard exam history
         await unitOfWork.FlashcardExamHistoryRepository.InsertAsync(flashcardExamHistoryEntity);
         return await unitOfWork.FlashcardExamHistoryRepository.SaveChangeWithTransactionAsync() > 0;
+    }
+
+    public async Task<FlashcardExamHistoryDto?> FindByUserFlashcardIdAtTakenDateAsync(int userFlashcardId, DateTime takenDateTime)
+    {
+        var flashcardExamHisEntity =
+            await unitOfWork.FlashcardExamHistoryRepository.FindByUserFlashcardIdAtTakenDateAsync(userFlashcardId,
+                takenDateTime);
+        return flashcardExamHisEntity.Adapt<FlashcardExamHistoryDto>();
     }
 }

@@ -12,7 +12,7 @@ public class UserRepository : GenericRepository<User>
         : base(dbContext)
     {
     }
-
+    
     public async Task<bool> IsExistUserAsync(Guid userId)
     {
         return await _dbSet.AnyAsync(x => x.UserId.Equals(userId));

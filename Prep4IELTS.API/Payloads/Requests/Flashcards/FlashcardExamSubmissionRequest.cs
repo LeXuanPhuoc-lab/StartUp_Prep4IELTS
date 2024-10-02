@@ -8,6 +8,7 @@ public class FlashcardExamSubmissionRequest
     public int TotalCompletionTime { get; set; }
     public int FlashcardId { get; set; }
     public bool IsTermPattern { get; set; }
+    public bool? IsSaveWrongToVocabSchedule { get; set; } = false;
     public ICollection<FlashcardExamQuestionAnswerRequest> QuestionAnswers { get; set; } 
         = new List<FlashcardExamQuestionAnswerRequest>();
 }
@@ -25,6 +26,7 @@ public static class FlashcardExamSubmissionRequestExtensions
             flashcardExamGrades.Add(new(
                 FlashcardExamGradeId: 0,
                 QuestionNumber: eg.QuestionNumber,
+                QuestionDesc: eg.QuestionDesc,
                 Answer: eg.Answer ?? null!,
                 FlashcardGradeStatus: string.Empty,
                 FlashcardExamHistoryId: 0,
@@ -44,6 +46,7 @@ public static class FlashcardExamSubmissionRequestExtensions
             AccuracyRate: 0,
             TakenDate: request.TakenDate,
             UserFlashcardId: userFlashcardId,
+            IsTermPattern: request.IsTermPattern,
             FlashcardExamGrades: flashcardExamGrades);
     }
 }

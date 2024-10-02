@@ -417,6 +417,7 @@ public class UserController(
                 CreateDate = userPremiumPackage.PremiumPackage.CreateDate,
                 Description = userPremiumPackage.PremiumPackage.Description,
                 ExpireDate = userPremiumPackage.ExpireDate,
+                TotalTrials = userPremiumPackage.TotalTrials,
                 IsPremiumActive = userPremiumPackage.ExpireDate >= currentDatetime && userPremiumPackage.IsActive,
             };
         }
@@ -425,7 +426,7 @@ public class UserController(
         {
             StatusCode = StatusCodes.Status200OK,
             Message = userPremiumPackageResp == null! 
-                ? "User not premium package activated" 
+                ? "User premium package is de-activated" 
                 : string.Empty,
             Data = userPremiumPackageResp
         });

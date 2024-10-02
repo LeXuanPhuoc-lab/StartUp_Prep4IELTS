@@ -16,6 +16,7 @@ using Prep4IELTS.Business.Utils;
 using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Enum;
 using Prep4IELTS.Data.Extensions;
+using Svix.Model;
 
 namespace EXE202_Prep4IELTS.Controllers;
 
@@ -449,14 +450,14 @@ public class FlashcardController(
         // Check exist user 
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
-        
+    
         // Check exist user flashcard 
         var userFlashcardDto = await userFlashcardService.FindByUserAndFlashcardIdAsync(req.FlashcardId, userDto.UserId);
         if (userFlashcardDto == null!)
         {
-            return BadRequest(new BaseResponse()
+            return NotFound(new BaseResponse()
             {
-                StatusCode = StatusCodes.Status400BadRequest,
+                StatusCode = StatusCodes.Status404NotFound,
                 Message = "Not found any user in this flashcard to progress test submission"
             });
         }
@@ -467,11 +468,61 @@ public class FlashcardController(
         // Progress add new flashcard exam history 
         var isInserted = await flashcardExamHistoryService.InsertAsync(
             flashcardExamHistoryDto: flashcardHistoryDto,
-            isTermPattern: req.IsTermPattern);
+            isTermPattern: req.IsTermPattern,
+            isSaveWrongToVocabSchedule: req.IsSaveWrongToVocabSchedule);
         
         return isInserted
             ? NoContent()
             : StatusCode(StatusCodes.Status500InternalServerError);
+    }
+
+
+    [ClerkAuthorize]
+    [PremiumAuthorize(Types = [PremiumPackageType.Standard], AllowPremiumTrial = true)]
+    [HttpGet(ApiRoute.Flashcard.ExamResult, Name = nameof(GetLatestFlashcardExamResultAsync))]
+    public async Task<IActionResult> GetLatestFlashcardExamResultAsync(
+        [FromRoute] int id,
+        [FromQuery] DateTime takenDateTime)
+    {
+        // Check exist user 
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if(userDto == null) return Unauthorized();
+        
+        // Check exist user flashcard 
+        var userFlashcardDto = await userFlashcardService.FindByUserAndFlashcardIdAsync(id, userDto.UserId);
+        if (userFlashcardDto == null!)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found any user in this flashcard to progress showing exam result"
+            });
+        }
+        
+        // Get user exam history
+        var userFlashcardExamHisDto =
+            await flashcardExamHistoryService.FindByUserFlashcardIdAtTakenDateAsync(userFlashcardDto.UserFlashcardId,
+                takenDateTime);
+
+        if (userFlashcardExamHisDto == null)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message =
+                    "Not found user exam result, please check for the correctness of flashcardId and taken datetime"
+            });
+        }
+        
+        // Custom flashcard exam result 
+        var flashcardExamHistoryResp =
+            userFlashcardExamHisDto.ToFlashcardExamHistoryResponse();
+
+        return Ok(new BaseResponse()
+        {
+            StatusCode = StatusCodes.Status200OK,
+            Data = flashcardExamHistoryResp
+        });
     }
     
     #endregion

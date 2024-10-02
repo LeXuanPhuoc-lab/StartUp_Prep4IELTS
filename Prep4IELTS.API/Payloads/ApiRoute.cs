@@ -145,6 +145,7 @@ public static class ApiRoute
         // Premium
         public const string Exam = Base + "/flashcards/{id}/exam";
         public const string ExamSubmission = Base + "/flashcards/exam/submission";
+        public const string ExamResult = Base + "/flashcards/{id}/exam/result";
     }
 
     public static class FlashcardDetail

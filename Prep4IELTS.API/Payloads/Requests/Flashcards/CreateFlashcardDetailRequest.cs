@@ -11,15 +11,20 @@ public class CreateFlashcardDetailRequest
     public string WordText { get; set; } = null!;
 
     [Required(ErrorMessage = "Please enter description")]
+    [MaxLength(300, ErrorMessage = "Definition maximum length is 300 characters")]
     public string Definition { get; set; } = null!;
 
     [Required(ErrorMessage = "Please select word form")]
+    [MaxLength(100, ErrorMessage = "WordForm maximum length is 100 characters")]
     public string WordForm { get; set; } = null!;
-
+    
+    [MaxLength(100, ErrorMessage = "WordPronunciation maximum length is 100 characters")]
     public string? WordPronunciation { get; set; }
 
+    [MaxLength(500, ErrorMessage = "Example maximum length is 500 characters")]
     public string? Example { get; set; }
 
+    [MaxLength(200, ErrorMessage = "Description maximum length is 200 characters")]
     public string? Description { get; set; }
 
     [ImageFile]
