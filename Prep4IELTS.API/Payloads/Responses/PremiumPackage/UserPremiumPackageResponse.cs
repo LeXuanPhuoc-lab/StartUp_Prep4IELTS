@@ -8,4 +8,5 @@ public class UserPremiumPackageResponse
     public string? Description { get; set; }
     public DateTime ExpireDate { get; set; }
     public bool IsPremiumActive { get; set; }
+    public int? TotalTrials { get; set; }
 }

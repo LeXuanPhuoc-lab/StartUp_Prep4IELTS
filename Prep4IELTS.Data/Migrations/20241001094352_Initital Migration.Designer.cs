@@ -12,7 +12,7 @@ using Prep4IELTS.Data.Context;
 namespace Prep4IELTS.Data.Migrations
 {
     [DbContext(typeof(Prep4IeltsContext))]
-    [Migration("20240930133359_Initital Migration")]
+    [Migration("20241001094352_Initital Migration")]
     partial class InititalMigration
     {
         /// <inheritdoc />
@@ -270,6 +270,11 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("flashcard_grade_status");
 
+                    b.Property<string>("QuestionDesc")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)")
+                        .HasColumnName("question_desc");
+
                     b.Property<int>("QuestionNumber")
                         .HasColumnType("int")
                         .HasColumnName("question_number");
@@ -301,6 +306,10 @@ namespace Prep4IELTS.Data.Migrations
                     b.Property<double?>("AccuracyRate")
                         .HasColumnType("float")
                         .HasColumnName("accuracy_rate");
+
+                    b.Property<bool>("IsTermPattern")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_term_pattern");
 
                     b.Property<DateTime>("TakenDate")
                         .HasColumnType("datetime")
@@ -1312,7 +1321,6 @@ namespace Prep4IELTS.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VocabularyUnitScheduleId"));
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)")
                         .HasColumnName("comment");
@@ -1326,7 +1334,6 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnName("flashcard_detail_id");
 
                     b.Property<string>("Weekday")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)")
                         .HasColumnName("weekday");

@@ -11,6 +11,7 @@ public record FlashcardExamHistoryDto(
     double? AccuracyRate,
     DateTime TakenDate,
     int UserFlashcardId,
+    bool IsTermPattern,
     ICollection<FlashcardExamGradeDto> FlashcardExamGrades)
 {
     [JsonIgnore] public UserFlashcardDto UserFlashcard { get; set; } = null!;

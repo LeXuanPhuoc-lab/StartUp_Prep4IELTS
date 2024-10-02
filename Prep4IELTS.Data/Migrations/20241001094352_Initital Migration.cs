@@ -273,8 +273,8 @@ namespace Prep4IELTS.Data.Migrations
                 {
                     vocabulary_unit_schedule_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    weekday = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    comment = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    weekday = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    comment = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     create_date = table.Column<DateTime>(type: "datetime", nullable: false),
                     flashcard_detail_id = table.Column<int>(type: "int", nullable: false)
                 },
@@ -544,7 +544,8 @@ namespace Prep4IELTS.Data.Migrations
                     TotalCompletionTime = table.Column<int>(type: "int", nullable: true),
                     accuracy_rate = table.Column<double>(type: "float", nullable: true),
                     taken_date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    user_flashcard_id = table.Column<int>(type: "int", nullable: false)
+                    user_flashcard_id = table.Column<int>(type: "int", nullable: false),
+                    is_term_pattern = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -663,6 +664,7 @@ namespace Prep4IELTS.Data.Migrations
                 {
                     flashcard_exam_grade_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    question_desc = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     question_number = table.Column<int>(type: "int", nullable: false),
                     answer = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     flashcard_grade_status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),

@@ -4,9 +4,9 @@ public partial class VocabularyUnitSchedule
 {
     public int VocabularyUnitScheduleId { get; set; }
 
-    public string Weekday { get; set; } = null!;
+    public string? Weekday { get; set; } 
 
-    public string Comment { get; set; } = null!;
+    public string? Comment { get; set; } 
 
     public DateTime CreateDate { get; set; }
 
