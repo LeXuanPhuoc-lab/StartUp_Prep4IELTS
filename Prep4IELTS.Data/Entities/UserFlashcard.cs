@@ -20,4 +20,7 @@ public partial class UserFlashcard
     
     [JsonIgnore]
     public virtual ICollection<FlashcardExamHistory> FlashcardExamHistories { get; set; } = new List<FlashcardExamHistory>();
+    
+    [JsonIgnore]
+    public virtual ICollection<VocabularyUnitSchedule> VocabularyUnitSchedules { get; set; } = new List<VocabularyUnitSchedule>();
 }

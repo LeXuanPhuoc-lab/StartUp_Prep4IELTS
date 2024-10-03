@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Prep4IELTS.Data.Base;
 using Prep4IELTS.Data.Context;
 using Prep4IELTS.Data.Entities;
@@ -9,5 +10,17 @@ public class VocabularyUnitScheduleRepository : GenericRepository<VocabularyUnit
     public VocabularyUnitScheduleRepository(Prep4IeltsContext dbContext) 
         : base(dbContext)
     {
+    }
+
+    public async Task<IEnumerable<VocabularyUnitSchedule>> GetCalendarAsync(
+        Guid userId,
+        DateTime startDate, DateTime endDate)
+    {
+        return await _dbSet
+            .Where(vus => 
+                vus.UserFlashcard.UserId == userId &&
+                vus.CreateDate.Date >= startDate.Date && vus.CreateDate.Date <= endDate.Date)
+            .Include(vus => vus.FlashcardDetail)
+            .ToListAsync();
     }
 }

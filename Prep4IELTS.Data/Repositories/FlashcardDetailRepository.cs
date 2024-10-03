@@ -39,6 +39,9 @@ public class FlashcardDetailRepository : GenericRepository<FlashcardDetail>
         // Return <- Not exist user or flashcard 
         if(!existUserId || flashcardEntity == null) return;
         
+        // Update flashcard total words
+        flashcardEntity.TotalWords++;
+        
         // Check exist user flashcard
         var userFlashcard = await DbContext.UserFlashcards
             .Include(uf => uf.UserFlashcardProgresses)
@@ -85,6 +88,12 @@ public class FlashcardDetailRepository : GenericRepository<FlashcardDetail>
             .FirstOrDefaultAsync(f => f.FlashcardDetailId == flashcardDetailId);
         
         if(flashcardDetailEntity == null) return;
+        
+        // Update flashcard total word
+        var flashcardEntity = await DbContext.Flashcards.FirstOrDefaultAsync(f => 
+            f.FlashcardId == flashcardDetailEntity.FlashcardId);
+        if(flashcardEntity != null) flashcardEntity.TotalWords--; 
+        
         _dbSet.Remove(flashcardDetailEntity);
     }
 

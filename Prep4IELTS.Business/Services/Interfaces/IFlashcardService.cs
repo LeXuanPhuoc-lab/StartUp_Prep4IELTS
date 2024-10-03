@@ -12,20 +12,21 @@ public interface IFlashcardService
     Task<bool> InsertPrivacyAsync(FlashcardDto flashcard, Guid userId);
     Task<bool> AddFlashcardToUserAsync(int flashcardId, Guid userId);
     Task<bool> RemoveAsync(int flashcardId);
-    Task<bool> RemoveUserFlashcardAsync(int flashcardId, Guid userId);
+    Task<bool> RemovePrivacyAsync(int flashcardId, Guid userId);
     Task UpdateUserFlashcardProgressStatusAsync(
         int userFlashcardProgressId, FlashcardProgressStatus status);
     Task UpdateAsync(FlashcardDto flashcard);
+    Task UpdateFlashcardTotalViewAsync(int flashcardId);
     Task<IList<FlashcardDto>> FindAllAsync();
     Task<IList<FlashcardDto>> FindAllWithConditionAsync(
         Expression<Func<Flashcard, bool>>? filter = null,
         Func<IQueryable<Flashcard>, IOrderedQueryable<Flashcard>>? orderBy = null,
         string? includeProperties = "");
-    Task<IList<FlashcardDto>> FindAllPrivacyWithConditionAsync(
+    Task<IList<FlashcardDto>> FindAllWithConditionForUserAsync(
         Expression<Func<Flashcard, bool>>? filter,
         Func<IQueryable<Flashcard>, IOrderedQueryable<Flashcard>>? orderBy,
         string? includeProperties,
-        Guid userId);
+        Guid? userId);
     Task<IList<FlashcardDto>> FindAllWithConditionAndPagingAsync(
         Expression<Func<Flashcard, bool>>? filter,
         Func<IQueryable<Flashcard>, IOrderedQueryable<Flashcard>>? orderBy,

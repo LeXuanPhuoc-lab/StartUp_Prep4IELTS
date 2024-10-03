@@ -268,27 +268,6 @@ namespace Prep4IELTS.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vocabulary_Unit_Schedule",
-                columns: table => new
-                {
-                    vocabulary_unit_schedule_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    weekday = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
-                    comment = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    create_date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    flashcard_detail_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("vocabulary_unit_schedule_id", x => x.vocabulary_unit_schedule_id);
-                    table.ForeignKey(
-                        name: "FK_VocabularyUnitSchedule_FlashcardDetail",
-                        column: x => x.flashcard_detail_id,
-                        principalTable: "Flashcard_Detail",
-                        principalColumn: "flashcard_detail_id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Test",
                 columns: table => new
                 {
@@ -583,6 +562,33 @@ namespace Prep4IELTS.Data.Migrations
                         principalTable: "User_Flashcard",
                         principalColumn: "user_flashcard_id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vocabulary_Unit_Schedule",
+                columns: table => new
+                {
+                    vocabulary_unit_schedule_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    weekday = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    comment = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    create_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    flashcard_detail_id = table.Column<int>(type: "int", nullable: false),
+                    user_flashcard_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("vocabulary_unit_schedule_id", x => x.vocabulary_unit_schedule_id);
+                    table.ForeignKey(
+                        name: "FK_VocabularyUnitSchedule_FlashcardDetail",
+                        column: x => x.flashcard_detail_id,
+                        principalTable: "Flashcard_Detail",
+                        principalColumn: "flashcard_detail_id");
+                    table.ForeignKey(
+                        name: "FK_VocabularyUnitSchedule_UserFlashcard",
+                        column: x => x.user_flashcard_id,
+                        principalTable: "User_Flashcard",
+                        principalColumn: "user_flashcard_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1004,6 +1010,11 @@ namespace Prep4IELTS.Data.Migrations
                 name: "IX_Vocabulary_Unit_Schedule_flashcard_detail_id",
                 table: "Vocabulary_Unit_Schedule",
                 column: "flashcard_detail_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vocabulary_Unit_Schedule_user_flashcard_id",
+                table: "Vocabulary_Unit_Schedule",
+                column: "user_flashcard_id");
         }
 
         /// <inheritdoc />

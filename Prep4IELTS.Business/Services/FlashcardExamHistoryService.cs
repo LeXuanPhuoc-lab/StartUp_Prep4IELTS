@@ -16,7 +16,7 @@ public class FlashcardExamHistoryService(
     UnitOfWork unitOfWork) : IFlashcardExamHistoryService
 {
     public async Task<bool> InsertAsync(
-        FlashcardExamHistoryDto flashcardExamHistoryDto,
+        FlashcardExamHistoryDto flashcardExamHistoryDto, int userFlashcardId,
         bool isTermPattern, bool? isSaveWrongToVocabSchedule)
     {
         // Map to FlashcardExamHistory entity
@@ -60,11 +60,12 @@ public class FlashcardExamHistoryService(
                     var vocabUnitScheduleDto = new VocabularyUnitScheduleDto(
                         VocabularyUnitScheduleId: 0,
                         FlashcardDetailId: flashcardDetailDto.FlashcardDetailId,
-                        CreateDate: TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
-                            TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")),
+                        UserFlashcardId: userFlashcardId,
+                        CreateDate: flashcardExamHistoryDto.TakenDate,
                         Weekday: null!,
                         Comment: null!,
-                        FlashcardDetail: null!);
+                        FlashcardDetail: null!,
+                        UserFlashcard: null!);
 
                     await vocabularyUnitScheduleService.InsertAsync(vocabUnitScheduleDto);
                 }

@@ -8,4 +8,6 @@ public record VocabularyUnitScheduleDto(
     string? Comment,
     DateTime CreateDate,
     int FlashcardDetailId,
-    FlashcardDetailDto FlashcardDetail);
+    int UserFlashcardId,
+    FlashcardDetailDto FlashcardDetail,
+    UserFlashcardDto UserFlashcard);
