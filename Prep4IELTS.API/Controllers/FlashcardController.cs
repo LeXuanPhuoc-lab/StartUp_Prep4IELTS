@@ -6,6 +6,7 @@ using EXE202_Prep4IELTS.Payloads.Requests;
 using EXE202_Prep4IELTS.Payloads.Requests.Flashcards;
 using EXE202_Prep4IELTS.Payloads.Responses;
 using EXE202_Prep4IELTS.Payloads.Responses.Flashcards;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -15,6 +16,7 @@ using Prep4IELTS.Business.Models;
 using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Business.Utils;
 using Prep4IELTS.Data.Dtos;
+using Prep4IELTS.Data.Entities;
 using Prep4IELTS.Data.Enum;
 using Prep4IELTS.Data.Extensions;
 using Svix.Model;
@@ -83,12 +85,31 @@ public class FlashcardController(
                 }
             });
     }
-
+    
+    [ClerkAuthorize(Require = false)]
     [HttpGet(ApiRoute.Flashcard.GetById, Name = nameof(GetFlashcardByIdAsync))]
     public async Task<IActionResult> GetFlashcardByIdAsync([FromRoute] int id)
     {
+        var userDto = HttpContext.Items["User"] as UserDto;
+        
         // Get flashcard by id 
-        var flashcardDto = await flashcardService.FindByIdAsync(id);
+        FlashcardDto? flashcardDto = userDto != null 
+                ? await flashcardService.FindByIdAsync(id, userDto.UserId) 
+                : await flashcardService.FindByIdAsync(id);
+        
+        // Map to flashcard entity to clear all progress
+        if (flashcardDto != null && flashcardDto.UserFlashcards.Any())
+        {
+            var flashcardEntity = flashcardDto.Adapt<Flashcard>();
+            flashcardEntity.UserFlashcards.First().UserFlashcardProgresses.Clear();
+            
+            return Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Message = "Get data successfully",
+                Data = flashcardEntity.Adapt<FlashcardDto>()
+            });
+        }
 
         // Update flashcard total view
         await flashcardService.UpdateFlashcardTotalViewAsync(id);

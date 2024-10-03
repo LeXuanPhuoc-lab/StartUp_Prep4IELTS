@@ -190,13 +190,21 @@ public class FlashcardRepository : GenericRepository<Flashcard>
 
     public async Task RemoveUserFlashcardAsync(int flashcardId, Guid userId)
     {
-        var userFlashcard = await DbContext.UserFlashcards
+        var flashcardEntity = await _dbSet.FirstOrDefaultAsync(x =>
+            x.FlashcardId == flashcardId);
+        if (flashcardEntity == null) return;
+
+        UserFlashcard? userFlashcard;
+
+        // Remove progress & flashcard
+        userFlashcard = await DbContext.UserFlashcards
             .Include(uf => uf.UserFlashcardProgresses)
             .Include(uf => uf.Flashcard)
                 .ThenInclude(f => f.FlashcardDetails)
-                    .ThenInclude(f => f.CloudResource)
+                .ThenInclude(f => f.CloudResource)
+            .Include(uf => uf.VocabularyUnitSchedules)
             .FirstOrDefaultAsync(x => x.FlashcardId == flashcardId && x.UserId == userId);
-
+        
         if (userFlashcard != null)
         {
             if (DbContext.Entry(userFlashcard).State == EntityState.Detached)
@@ -204,6 +212,9 @@ public class FlashcardRepository : GenericRepository<Flashcard>
                 DbContext.Attach(userFlashcard);
             }
             DbContext.UserFlashcards.Remove(userFlashcard);
+            
+            // Perform remove flashcard if privacy
+            if(!flashcardEntity.IsPublic) DbContext.Flashcards.Remove(userFlashcard.Flashcard);
         }
     }
     
