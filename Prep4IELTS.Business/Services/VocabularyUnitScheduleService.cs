@@ -14,4 +14,11 @@ public class VocabularyUnitScheduleService(UnitOfWork unitOfWork) : IVocabularyU
             vocabularyUnitSchedule.Adapt<VocabularyUnitSchedule>());
         return await unitOfWork.VocabularyUnitScheduleRepository.SaveChangeWithTransactionAsync() > 0;
     }
+
+    public async Task<IList<VocabularyUnitScheduleDto>> GetCalendarAsync(Guid userId, DateTime startDate, DateTime endDate)
+    {
+        var vocabScheduleEntities =
+            await unitOfWork.VocabularyUnitScheduleRepository.GetCalendarAsync(userId, startDate, endDate);
+        return vocabScheduleEntities.Adapt<List<VocabularyUnitScheduleDto>>();
+    }
 }

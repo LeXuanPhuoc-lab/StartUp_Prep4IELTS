@@ -890,11 +890,17 @@ public partial class Prep4IeltsContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("create_date");
             entity.Property(e => e.FlashcardDetailId).HasColumnName("flashcard_detail_id");
+            entity.Property(e => e.UserFlashcardId).HasColumnName("user_flashcard_id");
             
             entity.HasOne(e => e.FlashcardDetail).WithMany(e => e.VocabularyUnitSchedules)
                 .HasForeignKey(e => e.FlashcardDetailId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_VocabularyUnitSchedule_FlashcardDetail");
+            
+            entity.HasOne(e => e.UserFlashcard).WithMany(e => e.VocabularyUnitSchedules)
+                .HasForeignKey(e => e.UserFlashcardId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VocabularyUnitSchedule_UserFlashcard");
         });
 
         modelBuilder.Entity<UserPremiumPackage>(entity =>

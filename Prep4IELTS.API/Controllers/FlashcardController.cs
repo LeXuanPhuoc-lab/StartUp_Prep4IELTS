@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using EXE202_Prep4IELTS.Attributes;
 using EXE202_Prep4IELTS.Payloads;
 using EXE202_Prep4IELTS.Payloads.Filters;
+using EXE202_Prep4IELTS.Payloads.Requests;
 using EXE202_Prep4IELTS.Payloads.Requests.Flashcards;
 using EXE202_Prep4IELTS.Payloads.Responses;
 using EXE202_Prep4IELTS.Payloads.Responses.Flashcards;
@@ -22,7 +23,7 @@ namespace EXE202_Prep4IELTS.Controllers;
 
 [ApiController]
 public class FlashcardController(
-    IFlashcardService flashcardService, 
+    IFlashcardService flashcardService,
     IUserFlashcardService userFlashcardService,
     IFlashcardExamHistoryService flashcardExamHistoryService,
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
@@ -30,24 +31,29 @@ public class FlashcardController(
     private readonly AppSettings _appSettings = monitor.CurrentValue;
 
     #region Public Flashcard
-    
+
+    [ClerkAuthorize(Require = false)]
     [HttpGet(ApiRoute.Flashcard.GetAll, Name = nameof(GetAllFlashcardAsync))]
     public async Task<IActionResult> GetAllFlashcardAsync([FromQuery] FlashcardFilterRequest req)
     {
-        // Validations
-        if(!ModelState.IsValid) return UnprocessableEntity(ModelState);
+        // Get user (if any) from token
+        var userDto = HttpContext.Items["User"] as UserDto;
         
+        // Validations
+        if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+
         // Initiate search term 
         var searchTerm = req.Term?.Trim() ?? string.Empty;
-        
+
         // Progress get all with filter, order, and paging
-        var flashcardDtos = await flashcardService.FindAllWithConditionAsync(
-            filter: u => 
+        var flashcardDtos = await flashcardService.FindAllWithConditionForUserAsync(
+            filter: u =>
                 // Search with title
                 u.Title.Contains(searchTerm) && u.IsPublic,
             orderBy: q => q.OrderBy(u => u.TotalView),
-            includeProperties: null);
-        
+            includeProperties: null,
+            userId: userDto?.UserId);
+
         // Sorting 
         if (!string.IsNullOrEmpty(req.OrderBy))
         {
@@ -81,8 +87,12 @@ public class FlashcardController(
     [HttpGet(ApiRoute.Flashcard.GetById, Name = nameof(GetFlashcardByIdAsync))]
     public async Task<IActionResult> GetFlashcardByIdAsync([FromRoute] int id)
     {
+        // Get flashcard by id 
         var flashcardDto = await flashcardService.FindByIdAsync(id);
 
+        // Update flashcard total view
+        await flashcardService.UpdateFlashcardTotalViewAsync(id);
+        
         return Ok(new BaseResponse()
         {
             StatusCode = StatusCodes.Status200OK,
@@ -99,7 +109,7 @@ public class FlashcardController(
         // Check exist user 
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
-        
+
         // Check flashcard exist
         var isExistFlashcard = await flashcardService.IsExistAsync(id);
         if (!isExistFlashcard)
@@ -110,7 +120,7 @@ public class FlashcardController(
                 Message = "Not found any flashcard match"
             });
         }
-        
+
         // Check exist user flashcard
         var isExistUserFlashcard = await flashcardService.IsExistUserFlashcardAsync(id, userDto.UserId);
         if (isExistUserFlashcard)
@@ -121,14 +131,14 @@ public class FlashcardController(
                 Message = "User already possess this flashcard. Cannot add more"
             });
         }
-        
+
         // Check exist user
         var isAddSuccess = await flashcardService.AddFlashcardToUserAsync(id, userDto.UserId);
-        return isAddSuccess 
-            ? NoContent() 
+        return isAddSuccess
+            ? NoContent()
             : StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
     }
-    
+
     #endregion
 
     #region Privacy Flashcard
@@ -138,25 +148,25 @@ public class FlashcardController(
     public async Task<IActionResult> GetAllPrivacyFlashcardAsync([FromQuery] FlashcardFilterRequest req)
     {
         // Validations
-        if(!ModelState.IsValid) return UnprocessableEntity(ModelState);
-        
+        if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+
         // Check exits user
         var userDto = HttpContext.Items["User"] as UserDto;
-        if(userDto == null) return Unauthorized();
-        
+        if (userDto == null) return Unauthorized();
+
         // Initiate search term 
         var searchTerm = req.Term?.Trim() ?? string.Empty;
-        
+
         // Progress get all with filter, order, and paging
-        var flashcardDtos = await flashcardService.FindAllPrivacyWithConditionAsync(
-            filter: u => 
+        var flashcardDtos = await flashcardService.FindAllWithConditionForUserAsync(
+            filter: u =>
                 // Search with title
-                u.Title.Contains(searchTerm) && 
+                u.Title.Contains(searchTerm) &&
                 u.UserFlashcards.Any(uf => uf.UserId == userDto.UserId),
             orderBy: q => q.OrderBy(u => u.TotalView),
             includeProperties: null,
             userId: userDto.UserId);
-        
+
         // Sorting 
         if (!string.IsNullOrEmpty(req.OrderBy))
         {
@@ -168,7 +178,7 @@ public class FlashcardController(
         List<FlashcardResponseResponse> flashcardResponses = new();
         foreach (var fCard in flashcardDtos)
         {
-            var flashcardProgressData = 
+            var flashcardProgressData =
                 await flashcardService.CalculateUserFlashcardProgressAsync(fCard.FlashcardId, userDto.UserId);
             flashcardResponses.Add(await fCard.ToPrivacyFlashcardResponseAsync(
                 flashcardProgressData.totalNew,
@@ -176,14 +186,14 @@ public class FlashcardController(
                 flashcardProgressData.totalProficient,
                 flashcardProgressData.totalStarred));
         }
-        
+
         // Create paginated detail list 
         var paginatedDetail = PaginatedList<FlashcardResponseResponse>.Paginate(flashcardResponses,
             pageIndex: req.Page ?? 1,
             req.PageSize ?? _appSettings.PageSize);
-        
+
         var userFlashcardProgress = await flashcardService.CalculateAllUserFlashcardProgressAsync(userDto.UserId);
-        
+
         return !flashcardDtos.Any() // Not exist any flashcard
             ? NotFound(new BaseResponse()
             {
@@ -202,7 +212,7 @@ public class FlashcardController(
                 }
             });
     }
-    
+
     [ClerkAuthorize]
     [HttpGet(ApiRoute.Flashcard.GetByIdPrivacy, Name = nameof(GetPrivacyFlashcardAsync))]
     public async Task<IActionResult> GetPrivacyFlashcardAsync([FromRoute] int id)
@@ -210,7 +220,7 @@ public class FlashcardController(
         // Check exist user 
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
-        
+
         // Check exist user flashcard 
         var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
         if (flashcardDto == null)
@@ -221,15 +231,15 @@ public class FlashcardController(
                 Message = "Not found user in this flashcard"
             });
         }
-        
+
         // Select many flashcard progress
-        var flashcardProgresses = 
+        var flashcardProgresses =
             flashcardDto.UserFlashcards.SelectMany(uf => uf.UserFlashcardProgresses).ToList();
-        
+
         // Customize flashcard for user resp
         var flashcardResp = await flashcardDto.ToPrivacyFlashcardResponseAsync(
             flashcardProgresses);
-        
+
         return Ok(new BaseResponse()
         {
             StatusCode = StatusCodes.Status200OK,
@@ -237,28 +247,101 @@ public class FlashcardController(
             Data = flashcardResp
         });
     }
-    
+
     [ClerkAuthorize]
     [HttpPost(ApiRoute.Flashcard.PrivacyCreate, Name = nameof(CreatePrivacyFlashcardAsync))]
     public async Task<IActionResult> CreatePrivacyFlashcardAsync([FromBody] CreatePrivacyFlashcardRequest req)
     {
-        if(!ModelState.IsValid) return UnprocessableEntity(ModelState);
-        
+        if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+
         // Check exist user 
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
-        
+
         // Map privacy flashcard request to flashcardDto
         var flashcardDto = req.ToFlashcardDto();
-        
+
         // Progress create new privacy flashcard
         var isCreated = await flashcardService.InsertPrivacyAsync(flashcardDto, userDto.UserId);
-        
+
         return isCreated
             ? NoContent()
             : StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
     }
 
+    [ClerkAuthorize]
+    [HttpDelete(ApiRoute.Flashcard.PrivacyDelete, Name = nameof(DeletePrivacyFlashcardAsync))]
+    public async Task<IActionResult> DeletePrivacyFlashcardAsync([FromRoute] int id)
+    {
+        // Check exist user 
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if (userDto == null) return Unauthorized();
+
+        // Check exist user flashcard
+        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
+        if (flashcardDto == null)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found user in this flashcard"
+            });
+        }
+        
+        // Progress delete privacy flashcard
+        var isRemoved = await flashcardService.RemovePrivacyAsync(id, userDto.UserId);
+        
+        return isRemoved
+            ? NoContent()
+            : StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
+    }
+
+    [ClerkAuthorize]
+    [HttpPut(ApiRoute.Flashcard.PrivacyUpdate, Name = nameof(UpdatePrivacyFlashcardAsync))]
+    public async Task<IActionResult> UpdatePrivacyFlashcardAsync([FromRoute] int id, [FromBody] UpdatePrivacyFlashcardRequest req)
+    {
+        // Check exist user 
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if (userDto == null) return Unauthorized();
+
+        // Check exist user flashcard
+        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
+        if (flashcardDto == null)
+        {
+            return NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found user in this flashcard"
+            });
+        }
+        
+        // Check whether is public flashcard
+        var isPublicFlashcard = flashcardDto.IsPublic;
+        if (!isPublicFlashcard)
+        {
+            // Progress update privacy flashcard
+            await flashcardService.UpdateAsync(
+                new FlashcardDto(
+                    FlashcardId: id, 
+                    Title: req.Title,
+                    TotalWords: 0,
+                    TotalView: 0,
+                    Description: req.Description,
+                    CreateDate: null,
+                    IsPublic: false,
+                    FlashcardDetails: null!,
+                    UserFlashcards: null!));
+
+            return NoContent();
+        }
+        
+        return BadRequest(new BaseResponse()
+        {
+            StatusCode = StatusCodes.Status400BadRequest,
+            Message = "You are not allowed to update this flashcard"
+        });
+    }
+    
     [HttpGet(ApiRoute.Flashcard.GetAllFlashcardStatus, Name = nameof(GetAllFlashcardStatusAsync))]
     public async Task<IActionResult> GetAllFlashcardStatusAsync()
     {
@@ -267,6 +350,7 @@ public class FlashcardController(
             FlashcardProgressStatus.New.GetDescription(),
             FlashcardProgressStatus.Studying.GetDescription(),
             FlashcardProgressStatus.Proficient.GetDescription(),
+            FlashcardProgressStatus.Starred.GetDescription(),
         };
 
         return await Task.FromResult(Ok(new BaseResponse()
@@ -431,7 +515,7 @@ public class FlashcardController(
                 totalQuestion: req.TotalQuestion,
                 isTermPattern: req.IsTermPattern,
                 questionTypes: req.QuestionTypes);
-
+        
         return flashcardExamQuestions.Any()
             ? Ok(new BaseResponse()
             {
@@ -468,6 +552,7 @@ public class FlashcardController(
         // Progress add new flashcard exam history 
         var isInserted = await flashcardExamHistoryService.InsertAsync(
             flashcardExamHistoryDto: flashcardHistoryDto,
+            userFlashcardId: userFlashcardDto.UserFlashcardId,
             isTermPattern: req.IsTermPattern,
             isSaveWrongToVocabSchedule: req.IsSaveWrongToVocabSchedule);
         

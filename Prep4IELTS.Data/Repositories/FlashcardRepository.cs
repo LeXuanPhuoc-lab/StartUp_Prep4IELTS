@@ -260,6 +260,15 @@ public class FlashcardRepository : GenericRepository<Flashcard>
         userFlashcardProgress.ProgressStatus = status.GetDescription();
     }
 
+    public async Task UpdateFlashcardTotalViewAsync(int flashcardId)
+    {
+        var flashcardEntity = await _dbSet.FirstOrDefaultAsync(x => x.FlashcardId == flashcardId);
+        if (flashcardEntity == null) return;
+            
+        // Increase total view 
+        flashcardEntity.TotalView++;
+    }
+    
     public async Task<bool> PublishAsync(int flashcardId)
     {
         var flashcard = await _dbSet.FirstOrDefaultAsync(f => f.FlashcardId == flashcardId);

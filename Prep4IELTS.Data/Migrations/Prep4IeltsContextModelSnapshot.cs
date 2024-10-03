@@ -1330,6 +1330,10 @@ namespace Prep4IELTS.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("flashcard_detail_id");
 
+                    b.Property<int>("UserFlashcardId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_flashcard_id");
+
                     b.Property<string>("Weekday")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)")
@@ -1339,6 +1343,8 @@ namespace Prep4IELTS.Data.Migrations
                         .HasName("vocabulary_unit_schedule_id");
 
                     b.HasIndex("FlashcardDetailId");
+
+                    b.HasIndex("UserFlashcardId");
 
                     b.ToTable("Vocabulary_Unit_Schedule", (string)null);
                 });
@@ -1747,7 +1753,15 @@ namespace Prep4IELTS.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_VocabularyUnitSchedule_FlashcardDetail");
 
+                    b.HasOne("Prep4IELTS.Data.Entities.UserFlashcard", "UserFlashcard")
+                        .WithMany("VocabularyUnitSchedules")
+                        .HasForeignKey("UserFlashcardId")
+                        .IsRequired()
+                        .HasConstraintName("FK_VocabularyUnitSchedule_UserFlashcard");
+
                     b.Navigation("FlashcardDetail");
+
+                    b.Navigation("UserFlashcard");
                 });
 
             modelBuilder.Entity("TestTag", b =>
@@ -1904,6 +1918,8 @@ namespace Prep4IELTS.Data.Migrations
                     b.Navigation("FlashcardExamHistories");
 
                     b.Navigation("UserFlashcardProgresses");
+
+                    b.Navigation("VocabularyUnitSchedules");
                 });
 
             modelBuilder.Entity("Prep4IELTS.Data.Entities.UserPremiumPackage", b =>

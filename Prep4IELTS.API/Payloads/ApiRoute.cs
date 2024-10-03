@@ -137,8 +137,9 @@ public static class ApiRoute
         public const string GetAllFlashcardStatus = Base + "/flashcard-statuses";
         public const string GetByIdPrivacy = Base + "/flashcards/{id}/privacy";
         public const string PrivacyCreate = Base + "/flashcards/privacy/create";
+        public const string PrivacyDelete = Base + "/flashcards/{id}/privacy/delete";
+        public const string PrivacyUpdate = Base + "/flashcards/{id}/privacy/update";
         public const string AddUser = Base + "/flashcards/{id}/add-user";
-        public const string DeleteUser = Base + "/flashcards/{id}/delete-user/{userId}";
         public const string UpdateFlashcardProgress = Base + "/flashcards/{id}/update-progress";
         public const string Practice = Base + "/flashcards/{id}/practice";
         public const string Reset = Base + "/flashcards/{id}/reset";
@@ -150,7 +151,6 @@ public static class ApiRoute
 
     public static class FlashcardDetail
     {
-        
         // Admin-staff only
         public const string Create = Base + "/flashcard-details/create";
         public const string Delete = Base + "/flashcard-details/{id}/delete";
@@ -160,5 +160,11 @@ public static class ApiRoute
         public const string PrivacyUpdate = Base + "/flashcard-details/{id}/privacy/update";
         public const string PrivacyDelete = Base + "/flashcard-details/{id}/privacy/delete";
         // public const string 
+    }
+
+    public static class VocabularySchedule
+    {
+        public const string GetDateRangeInYear = Base + "/vocabulary-schedules/get-date-range";
+        public const string GetCalendar = Base + "/vocabulary-schedules/calendar";
     }
 }

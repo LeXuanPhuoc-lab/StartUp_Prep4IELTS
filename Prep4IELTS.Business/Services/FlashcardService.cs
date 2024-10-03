@@ -35,12 +35,12 @@ public class FlashcardService(
         return await unitOfWork.FlashcardRepository.SaveChangeWithTransactionAsync() > 0;
     }
 
-    public async Task<bool> RemoveUserFlashcardAsync(int flashcardId, Guid userId)
+    public async Task<bool> RemovePrivacyAsync(int flashcardId, Guid userId)
     {
         await unitOfWork.FlashcardRepository.RemoveUserFlashcardAsync(flashcardId, userId);
         return await unitOfWork.FlashcardRepository.SaveChangeWithTransactionAsync() > 0;
     }
-    
+
     public async Task UpdateUserFlashcardProgressStatusAsync(int userFlashcardProgressId, FlashcardProgressStatus status)
     {
         await unitOfWork.FlashcardRepository.UpdateUserFlashcardProgressStatusAsync(
@@ -59,11 +59,15 @@ public class FlashcardService(
         
         // Update flashcard properties
         flashcardEntity.Title = flashcardDto.Title;
-        flashcardEntity.TotalWords = flashcardDto.TotalWords;
-        flashcardEntity.TotalView = flashcardDto.TotalView;
         flashcardEntity.Description = flashcardDto.Description;
         
         await unitOfWork.FlashcardRepository.UpdateAsync(flashcardEntity);
+        await unitOfWork.FlashcardRepository.SaveChangeWithTransactionAsync();
+    }
+
+    public async Task UpdateFlashcardTotalViewAsync(int flashcardId)
+    {
+        await unitOfWork.FlashcardRepository.UpdateFlashcardTotalViewAsync(flashcardId);
         await unitOfWork.FlashcardRepository.SaveChangeWithTransactionAsync();
     }
 
@@ -83,19 +87,22 @@ public class FlashcardService(
         return flashcardEntities.Adapt<List<FlashcardDto>>();
     }
 
-    public async Task<IList<FlashcardDto>> FindAllPrivacyWithConditionAsync(
+    public async Task<IList<FlashcardDto>> FindAllWithConditionForUserAsync(
         Expression<Func<Flashcard, bool>>? filter, 
         Func<IQueryable<Flashcard>, IOrderedQueryable<Flashcard>>? orderBy, 
         string? includeProperties, 
-        Guid userId)
+        Guid? userId)
     {
         var flashcardEntities = await unitOfWork.FlashcardRepository.FindAllWithConditionAsync(
             filter, orderBy, includeProperties);
         
         // Retrieve flashcard progresses
-        foreach (var fCard in flashcardEntities)
+        if (userId != null && userId != Guid.Empty)
         {
-            await unitOfWork.FlashcardRepository.FindUserFlashcardAsync(fCard.FlashcardId, userId);
+            foreach (var fCard in flashcardEntities)
+            {
+                await unitOfWork.FlashcardRepository.FindUserFlashcardAsync(fCard.FlashcardId, userId.Value);
+            }
         }
         
         return flashcardEntities.Adapt<List<FlashcardDto>>();
