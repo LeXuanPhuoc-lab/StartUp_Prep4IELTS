@@ -899,7 +899,8 @@ public partial class Prep4IeltsContext : DbContext
             
             entity.HasOne(e => e.UserFlashcard).WithMany(e => e.VocabularyUnitSchedules)
                 .HasForeignKey(e => e.UserFlashcardId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                // .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_VocabularyUnitSchedule_UserFlashcard");
         });
 
