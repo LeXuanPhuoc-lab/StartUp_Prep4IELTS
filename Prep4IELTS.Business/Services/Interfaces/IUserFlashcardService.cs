@@ -11,4 +11,5 @@ public interface IUserFlashcardService
     Task ResetFlashcardProgressAsync(int flashcardId, Guid userId);
     Task<UserFlashcardDto?> FindUserPracticingProgressWithStatusAsync(
         int flashcardId, Guid userId, List<FlashcardProgressStatus> statuses);
+    Task<bool> IsExistUserFlashcard(int flashcardId, Guid userId);
 }

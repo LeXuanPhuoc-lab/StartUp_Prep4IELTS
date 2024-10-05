@@ -15,6 +15,7 @@ namespace EXE202_Prep4IELTS.Controllers;
 public class FlashcardDetailController(
     IFlashcardService flashcardService,
     ICloudinaryService cloudinaryService,
+    IUserFlashcardService userFlashcardService,
     IFlashcardDetailService flashcardDetailService) : ControllerBase
 {
     #region Admin-Staff
@@ -27,7 +28,7 @@ public class FlashcardDetailController(
         // Validation
         if(!ModelState.IsValid) return UnprocessableEntity(ModelState);
         
-        // Check exist flashcard 
+        // Check exist user flashcard 
         var isExistFlashcard = await flashcardService.IsExistAsync(req.FlashcardId);
         if(!isExistFlashcard) return NotFound(new BaseResponse()
         {
@@ -82,12 +83,12 @@ public class FlashcardDetailController(
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
         
-        // Check exist flashcard 
-        var isExistFlashcard = await flashcardService.IsExistAsync(req.FlashcardId);
+        // Check exist user flashcard 
+        var isExistFlashcard = await userFlashcardService.IsExistUserFlashcard(req.FlashcardId, userDto.UserId);
         if(!isExistFlashcard) return NotFound(new BaseResponse()
         {
             StatusCode = StatusCodes.Status404NotFound,
-            Message = "Not found flashcard match"
+            Message = "Not found user in this flashcard"
         });
         
         // Check is public flashcard

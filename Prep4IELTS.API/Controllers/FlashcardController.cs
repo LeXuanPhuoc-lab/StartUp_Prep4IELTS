@@ -244,7 +244,7 @@ public class FlashcardController(
 
         // Check exist user flashcard 
         var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
-        if (flashcardDto == null)
+        if (flashcardDto == null || !flashcardDto.UserFlashcards.Any())
         {
             return NotFound(new BaseResponse()
             {
@@ -298,14 +298,22 @@ public class FlashcardController(
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
 
-        // Check exist user flashcard
-        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
-        if (flashcardDto == null)
+        // Check exist user flashcard 
+        var isExistFlashcard = await userFlashcardService.IsExistUserFlashcard(id, userDto.UserId);
+        if(!isExistFlashcard) return NotFound(new BaseResponse()
         {
-            return NotFound(new BaseResponse()
+            StatusCode = StatusCodes.Status404NotFound,
+            Message = "Not found user in this flashcard"
+        });
+        
+        // Check is public flashcard
+        var isPublicFlashcard = await flashcardService.IsPublicAsync(id);
+        if (isPublicFlashcard)
+        {
+            return BadRequest(new BaseResponse()
             {
-                StatusCode = StatusCodes.Status404NotFound,
-                Message = "Not found user in this flashcard"
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Not allow to delete this flashcard"
             });
         }
         
@@ -325,42 +333,39 @@ public class FlashcardController(
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
 
-        // Check exist user flashcard
-        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
-        if (flashcardDto == null)
+        // Check exist user flashcard 
+        var isExistFlashcard = await userFlashcardService.IsExistUserFlashcard(id, userDto.UserId);
+        if(!isExistFlashcard) return NotFound(new BaseResponse()
         {
-            return NotFound(new BaseResponse()
+            StatusCode = StatusCodes.Status404NotFound,
+            Message = "Not found user in this flashcard"
+        });
+        
+        // Check is public flashcard
+        var isPublicFlashcard = await flashcardService.IsPublicAsync(id);
+        if (isPublicFlashcard)
+        {
+            return BadRequest(new BaseResponse()
             {
-                StatusCode = StatusCodes.Status404NotFound,
-                Message = "Not found user in this flashcard"
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "You are not allowed to update this flashcard"
             });
         }
         
-        // Check whether is public flashcard
-        var isPublicFlashcard = flashcardDto.IsPublic;
-        if (!isPublicFlashcard)
-        {
-            // Progress update privacy flashcard
-            await flashcardService.UpdateAsync(
-                new FlashcardDto(
-                    FlashcardId: id, 
-                    Title: req.Title,
-                    TotalWords: 0,
-                    TotalView: 0,
-                    Description: req.Description,
-                    CreateDate: null,
-                    IsPublic: false,
-                    FlashcardDetails: null!,
-                    UserFlashcards: null!));
+        // Progress update privacy flashcard
+        await flashcardService.UpdateAsync(
+            new FlashcardDto(
+                FlashcardId: id, 
+                Title: req.Title,
+                TotalWords: 0,
+                TotalView: 0,
+                Description: req.Description,
+                CreateDate: null,
+                IsPublic: false,
+                FlashcardDetails: null!,
+                UserFlashcards: null!));
 
-            return NoContent();
-        }
-        
-        return BadRequest(new BaseResponse()
-        {
-            StatusCode = StatusCodes.Status400BadRequest,
-            Message = "You are not allowed to update this flashcard"
-        });
+        return NoContent();
     }
     
     [HttpGet(ApiRoute.Flashcard.GetAllFlashcardStatus, Name = nameof(GetAllFlashcardStatusAsync))]
@@ -391,16 +396,13 @@ public class FlashcardController(
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
     
-        // Check exist user flashcard
-        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
-        if (flashcardDto == null)
+        // Check exist user flashcard 
+        var isExistFlashcard = await userFlashcardService.IsExistUserFlashcard(id, userDto.UserId);
+        if(!isExistFlashcard) return NotFound(new BaseResponse()
         {
-            return NotFound(new BaseResponse()
-            {
-                StatusCode = StatusCodes.Status404NotFound,
-                Message = "Not found user in this flashcard"
-            });
-        }
+            StatusCode = StatusCodes.Status404NotFound,
+            Message = "Not found user in this flashcard"
+        });
         
         // Initiate user flashcard response
         UserFlashcardDto? userFlashcard = null;
@@ -438,16 +440,13 @@ public class FlashcardController(
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
 
-        // Check exist user flashcard
-        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
-        if (flashcardDto == null)
+        // Check exist user flashcard 
+        var isExistFlashcard = await userFlashcardService.IsExistUserFlashcard(id, userDto.UserId);
+        if(!isExistFlashcard) return NotFound(new BaseResponse()
         {
-            return NotFound(new BaseResponse()
-            {
-                StatusCode = StatusCodes.Status404NotFound,
-                Message = "Not found user in this flashcard"
-            });
-        }
+            StatusCode = StatusCodes.Status404NotFound,
+            Message = "Not found user in this flashcard"
+        });
 
         switch (status)
         {
@@ -470,16 +469,13 @@ public class FlashcardController(
         var userDto = HttpContext.Items["User"] as UserDto;
         if (userDto == null) return Unauthorized();
 
-        // Check exist user flashcard
-        var flashcardDto = await flashcardService.FindByIdAsync(id, userDto.UserId);
-        if (flashcardDto == null)
+        // Check exist user flashcard 
+        var isExistFlashcard = await userFlashcardService.IsExistUserFlashcard(id, userDto.UserId);
+        if(!isExistFlashcard) return NotFound(new BaseResponse()
         {
-            return NotFound(new BaseResponse()
-            {
-                StatusCode = StatusCodes.Status404NotFound,
-                Message = "Not found user in this flashcard"
-            });
-        }
+            StatusCode = StatusCodes.Status404NotFound,
+            Message = "Not found user in this flashcard"
+        });
         
         // Progress reset flashcard
         await userFlashcardService.ResetFlashcardProgressAsync(id, userDto.UserId);

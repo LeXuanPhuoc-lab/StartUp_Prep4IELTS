@@ -87,4 +87,9 @@ public class UserFlashcardRepository : GenericRepository<UserFlashcard>
             ufg.ProgressStatus = FlashcardProgressStatus.New.GetDescription();
         }
     }
+
+    public async Task<bool> IsExistUserFlashcard(int flashcardId, Guid userId)
+    {
+        return await _dbSet.AnyAsync(x => x.FlashcardId == flashcardId && x.UserId == userId);
+    }
 }
