@@ -43,4 +43,9 @@ public class UserFlashcardService(UnitOfWork unitOfWork) : IUserFlashcardService
                 flashcardId,userId, statuses);
         return userFlashcardEntity.Adapt<UserFlashcardDto>();
     }
+
+    public async Task<bool> IsExistUserFlashcard(int flashcardId, Guid userId)
+    {
+        return await unitOfWork.UserFlashcardRepository.IsExistUserFlashcard(flashcardId, userId);
+    }
 }
