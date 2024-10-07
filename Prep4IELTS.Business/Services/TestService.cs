@@ -492,4 +492,9 @@ public class TestService(
     {
         return await unitOfWork.TestRepository.IsExistAnyHistoryAsync(id);
     }
+
+    public async Task<string> FindTestSectionTranscriptAsync(int testSectionId)
+    {
+        return await unitOfWork.TestRepository.FindTestSectionTranscriptAsync(testSectionId);
+    }
 }

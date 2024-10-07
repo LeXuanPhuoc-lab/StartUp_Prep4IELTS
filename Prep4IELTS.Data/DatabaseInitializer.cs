@@ -27,24 +27,45 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
     {
         try
         {
-            // Check whether the database exists and can be connected to
+            //// Check whether the database exists and can be connected to
+            //if (!await dbContext.Database.CanConnectAsync())
+            //{
+            //    // Check for applied migrations
+            //    var appliedMigrations = await dbContext.Database.GetAppliedMigrationsAsync();
+            //    if (appliedMigrations.Any())
+            //    {
+            //        Console.WriteLine("Migrations have been applied.");
+            //        return;
+            //    }
+
+            //    // Perform migration if necessary
+            //    await dbContext.Database.MigrateAsync();
+            //    Console.WriteLine("Database initialized successfully");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Database cannot be connected");
+            //}
+
             if (!await dbContext.Database.CanConnectAsync())
             {
-                // Check for applied migrations
-                var appliedMigrations = await dbContext.Database.GetAppliedMigrationsAsync();
-                if (appliedMigrations.Any())
-                {
-                    Console.WriteLine("Migrations have been applied.");
-                    return;
-                }
-
-                // Perform migration if necessary
+                // Database cannot be connected, we need to create and apply migrations
                 await dbContext.Database.MigrateAsync();
                 Console.WriteLine("Database initialized successfully");
             }
             else
             {
-                Console.WriteLine("Database cannot be connected to.");
+                // Database exists, but ensure all migrations are applied
+                var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+                if (pendingMigrations.Any())
+                {
+                    await dbContext.Database.MigrateAsync();
+                    Console.WriteLine("Database updated with pending migrations.");
+                }
+                else
+                {
+                    Console.WriteLine("Database is up-to-date and can be connected.");
+                }
             }
         }
         catch (Exception ex)
@@ -118,6 +139,297 @@ public class DatabaseInitializer(Prep4IeltsContext dbContext) : IDatabaseInitial
             new()
             {
                 Title = "Cambridge Vocabulary for IELTS (20 units)",
+                TotalWords = 20,
+                TotalView = 0,
+                CreateDate = DateTime.UtcNow,
+                IsPublic = true,
+                FlashcardDetails = new List<FlashcardDetail>()
+                {
+                    new()
+                    {
+                        WordText = "Ambitious",
+                        Definition = "Having a strong desire for success or achievement.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/æmˈbɪʃəs/",
+                        Example = "She is an ambitious young lawyer.",
+                        Description = "Ambitious people often aim for success in their career or personal life.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Benevolent",
+                        Definition = "Well-meaning and kindly.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/bəˈnɛvələnt/",
+                        Example = "A benevolent smile spread across her face.",
+                        Description = "Often used to describe people who are generous or charitable.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Concur",
+                        Definition = "To agree or have the same opinion.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/kənˈkɜːr/",
+                        Example = "I concur with your assessment.",
+                        Description = "Common in formal contexts.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Diligent",
+                        Definition = "Showing care and effort in work or duties.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈdɪlɪdʒənt/",
+                        Example = "She was a diligent student, always completing her assignments on time.",
+                        Description = "Describes someone hardworking and attentive.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Eccentric",
+                        Definition = "Unconventional and slightly strange.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪkˈsɛntrɪk/",
+                        Example = "His eccentric behavior often caught people off guard.",
+                        Description = "Typically refers to quirky or odd behavior.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Feasible",
+                        Definition = "Possible to do easily or conveniently.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈfiːzəbl/",
+                        Example = "A feasible plan was quickly put into action.",
+                        Description = "Used when talking about something achievable or realistic.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Gratify",
+                        Definition = "Give pleasure or satisfaction.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˈɡrætɪfaɪ/",
+                        Example = "It gratified her to see the children so happy.",
+                        Description = "Often used when referring to fulfilling someone’s desires.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Harmonious",
+                        Definition = "Forming a pleasing or consistent whole.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/hɑːˈmoʊniəs/",
+                        Example = "They live in a harmonious neighborhood.",
+                        Description = "Used when referring to peace and balance.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Impeccable",
+                        Definition = "In accordance with the highest standards; faultless.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ɪmˈpɛkəbl/",
+                        Example = "Her manners were impeccable.",
+                        Description = "Describes someone or something flawless.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Juxtapose",
+                        Definition = "Place or deal with close together for contrasting effect.",
+                        WordForm = "Verb",
+                        WordPronunciation = "/ˌdʒʌkstəˈpoʊz/",
+                        Example = "The art pieces were juxtaposed for comparison.",
+                        Description = "Often used when placing contrasting things together.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Keen",
+                        Definition = "Having or showing eagerness or enthusiasm.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/kiːn/",
+                        Example = "She was keen to start her new job.",
+                        Description = "Used to describe strong interest or desire.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Lucid",
+                        Definition = "Expressed clearly; easy to understand.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈluːsɪd/",
+                        Example = "She gave a clear and lucid explanation.",
+                        Description = "Describes something easy to follow or understand.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Meticulous",
+                        Definition = "Showing great attention to detail; very careful and precise.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/məˈtɪkjʊləs/",
+                        Example = "The event was planned with meticulous attention to detail.",
+                        Description = "Often used when referring to careful and thorough work.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Notorious",
+                        Definition = "Famous or well known, typically for some bad quality or deed.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/noʊˈtɔːriəs/",
+                        Example = "The city is notorious for its traffic jams.",
+                        Description = "Used to describe fame for negative reasons.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Obsolete",
+                        Definition = "No longer produced or used; out of date.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˌɒbsəˈliːt/",
+                        Example = "The company replaced its obsolete machinery.",
+                        Description = "Refers to something that is outdated or no longer in use.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Plausible",
+                        Definition = "Seeming reasonable or probable.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈplɔːzəbl/",
+                        Example = "The explanation seemed plausible given the circumstances.",
+                        Description = "Often used when something appears believable or convincing.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Quintessential",
+                        Definition = "Representing the most perfect or typical example of a quality or class.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˌkwɪntɪˈsɛnʃəl/",
+                        Example = "She was the quintessential star, both talented and graceful.",
+                        Description = "Used to describe something as the perfect example.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Resilient",
+                        Definition = "Able to withstand or recover quickly from difficult conditions.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/rɪˈzɪlɪənt/",
+                        Example = "Children are often more resilient than adults.",
+                        Description = "Describes someone or something that bounces back from adversity.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Subtle",
+                        Definition = "So delicate or precise as to be difficult to analyze or describe.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/ˈsʌtl/",
+                        Example = "There was a subtle hint of mint in the dessert.",
+                        Description = "Used when something is not obvious or requires careful observation.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    },
+                    new()
+                    {
+                        WordText = "Tenacious",
+                        Definition = "Tending to keep a firm hold of something; persistent.",
+                        WordForm = "Adjective",
+                        WordPronunciation = "/təˈneɪʃəs/",
+                        Example = "She remained tenacious even in the face of adversity.",
+                        Description = "Describes someone who is determined and doesn't give up easily.",
+                        CloudResource = new CloudResource()
+                        {
+                            Url = "",
+                            CreateDate = DateTime.UtcNow
+                        }
+                    }
+                }
+            },
+            new()
+            {
+                Title = "Cambridge Vocabulary for IELTS (10 units)",
                 TotalWords = 10,
                 TotalView = 0,
                 CreateDate = DateTime.UtcNow,

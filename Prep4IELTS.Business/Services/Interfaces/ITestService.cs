@@ -50,6 +50,7 @@ public interface ITestService
     Task<TestDto> FindByIdForPracticeAsync(int id, int[] sectionIds);
     Task<TestDto> FindByIdForTestSimulationAsync(int id);
     Task<TestDto> FindByIdAndGetAllAnswerAsync(int id);
+    Task<string> FindTestSectionTranscriptAsync(int testSectionId);
     Task<bool> SubmitTestAsync(int totalCompletionTime, DateTime takenDate, 
         bool isFull, Guid userId, 
         int testId, List<QuestionAnswerSubmissionModel> questionAnswers);

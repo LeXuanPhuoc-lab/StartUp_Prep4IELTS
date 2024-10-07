@@ -16,6 +16,7 @@ namespace EXE202_Prep4IELTS.Controllers;
 [ApiController]
 public class TestHistoryController(
     ITestHistoryService testHistoryService,
+    ITestService testService,
     ITestPartitionHistoryService testPartitionHistoryService,
     IUserPremiumPackageService userPremiumPackageService,
     IOptionsMonitor<AppSettings> monitor) : ControllerBase
@@ -98,8 +99,14 @@ public class TestHistoryController(
                 // Assign cloud resource for section history
                 groupedSectionHistories[i].CloudResource = sectionResources[i];
             }
+            // SectionId
+            var sectionId = sections[i].TestSectionId;
+
             // Assign test section id
-            groupedSectionHistories[i].TestSectionId = sections[i].TestSectionId;
+            groupedSectionHistories[i].TestSectionId = sectionId;
+            // Get section transcript 
+            groupedSectionHistories[i].Transcript = 
+                await testService.FindTestSectionTranscriptAsync(sectionId);
         }
         
         
@@ -138,7 +145,8 @@ public class TestHistoryController(
         // Check for premium package
         var userPremiumPackage = await userPremiumPackageService.FindUserPremiumPackageAsync(userDto.UserId);
         // Has premium package and is activated
-        bool hasPremiumPackage = userPremiumPackage != null && userPremiumPackage.IsActive;
+        bool hasPremiumPackage = userPremiumPackage != null 
+            && (userPremiumPackage.IsActive || userPremiumPackage.TotalTrials > 0);
         
         var partitionHistoryDto = await testPartitionHistoryService.FindByIdAndGradeAsync(partitionId, testGradeId, hasPremiumPackage);
         
