@@ -434,6 +434,14 @@ public class TestRepository : GenericRepository<Test>
         return await DbContext.Comments.Where(cmt => cmt.TestId == id).ToListAsync();
     }
     
+    public async Task<string> FindTestSectionTranscriptAsync(int testSectionId)
+    {
+        var testSection = await DbContext.TestSections.FirstOrDefaultAsync(x =>
+            x.TestSectionId == testSectionId);
+        if (testSection == null) return string.Empty;
+        return testSection.SectionTranscript ?? string.Empty;
+    }
+
     public async Task<int> CountTotalAsync()
     {
         return await _dbSet.CountAsync();

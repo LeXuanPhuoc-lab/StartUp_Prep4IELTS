@@ -1,4 +1,6 @@
 using Prep4IELTS.Data.Dtos;
+using Prep4IELTS.Data.Entities;
+using System.Linq.Expressions;
 
 namespace Prep4IELTS.Business.Services.Interfaces;
 
@@ -10,4 +12,9 @@ public interface IFlashcardExamHistoryService
 
     Task<FlashcardExamHistoryDto?> FindByUserFlashcardIdAtTakenDateAsync(
         int userFlashcardId, DateTime takenDateTime);
+
+    Task<List<FlashcardExamHistoryDto>> FindAllByUserAsync(
+        Expression<Func<FlashcardExamHistory, bool>>? filter,
+        Func<IQueryable<FlashcardExamHistory>, IOrderedQueryable<FlashcardExamHistory>>? orderBy,
+        Guid userId);
 }

@@ -7,6 +7,8 @@ using Prep4IELTS.Data.Dtos;
 using Prep4IELTS.Data.Entities;
 using Prep4IELTS.Data.Enum;
 using Prep4IELTS.Data.Extensions;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Prep4IELTS.Business.Services;
 
@@ -97,5 +99,15 @@ public class FlashcardExamHistoryService(
             await unitOfWork.FlashcardExamHistoryRepository.FindByUserFlashcardIdAtTakenDateAsync(userFlashcardId,
                 takenDateTime);
         return flashcardExamHisEntity.Adapt<FlashcardExamHistoryDto>();
+    }
+
+    public async Task<List<FlashcardExamHistoryDto>> FindAllByUserAsync(
+        Expression<Func<FlashcardExamHistory, bool>>? filter, 
+        Func<IQueryable<FlashcardExamHistory>, IOrderedQueryable<FlashcardExamHistory>>? orderBy,
+        Guid userId)
+    {
+        var flashcardExamHisEntities =
+            await unitOfWork.FlashcardExamHistoryRepository.FindAllByUserAsync(filter, orderBy, userId);
+        return flashcardExamHisEntities.Adapt<List<FlashcardExamHistoryDto>>();
     }
 }

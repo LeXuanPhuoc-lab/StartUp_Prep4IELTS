@@ -12,11 +12,11 @@ public class VocabularyUnitScheduleRepository : GenericRepository<VocabularyUnit
     {
     }
 
-    public async Task<IEnumerable<VocabularyUnitSchedule>> GetCalendarAsync(
+    public async Task<IEnumerable<VocabularyUnitSchedule>> FindCalendarAsync(
         Guid userId,
         DateTime startDate, DateTime endDate)
     {
-        return await _dbSet
+        return await _dbSet.AsSplitQuery()
             .Where(vus => 
                 vus.UserFlashcard.UserId == userId &&
                 vus.CreateDate.Date >= startDate.Date && vus.CreateDate.Date <= endDate.Date)

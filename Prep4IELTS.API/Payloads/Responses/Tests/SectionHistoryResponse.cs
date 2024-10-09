@@ -6,6 +6,7 @@ public class SectionHistoryResponse
 {
     public int TestSectionId { get; set; }
     public string SectionName { get; set; } = string.Empty;
+    public string Transcript { get; set; } = string.Empty;
     public int? TotalRightAnswer { get; set; }
     public int? TotalWrongAnswer { get; set; }
     public int? TotalSkipAnswer { get; set; }

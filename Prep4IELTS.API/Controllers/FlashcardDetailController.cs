@@ -163,7 +163,7 @@ public class FlashcardDetailController(
         }
         
         string publicId = string.Empty;
-        string? imageUrl = string.Empty;
+        string? imageUrl = toUpdateFlashcard.CloudResource?.Url;
         int? fileBytes = 0;
         // Check whether update flashcard detail image
         if (req.Image != null)

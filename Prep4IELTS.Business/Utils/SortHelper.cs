@@ -1,3 +1,4 @@
+using Prep4IELTS.Business.Constants;
 using Prep4IELTS.Data.Dtos;
 
 namespace Prep4IELTS.Business.Utils;
@@ -115,4 +116,67 @@ public static class SortHelper
 
         return await Task.FromResult(sources);
     }
+
+    public static async Task<IEnumerable<FlashcardExamHistoryDto>> SortFlashcardExamByColumnAsync(this IEnumerable<FlashcardExamHistoryDto> sources,
+        string sortPattern)
+    {
+        var isDescending = sortPattern.StartsWith("-");
+        if (isDescending)
+        {
+            sortPattern = sortPattern.Trim('-');
+        }
+
+        // Define sorting pattern
+        var sortMappings = new Dictionary<string, Func<FlashcardExamHistoryDto, object>>()
+        {
+            {"CREATEDATE", u => u.TakenDate },
+        };
+
+        // Get sorting pattern
+        if (sortMappings.TryGetValue(sortPattern.ToUpper(),
+                out var sortExpression))
+        {
+            return await Task.FromResult(isDescending
+                ? sources.OrderByDescending(sortExpression)
+                : sources.OrderBy(sortExpression));
+        }
+
+        return await Task.FromResult(sources);
+    }
+
+    public static async Task<IEnumerable<VocabularyUnitScheduleDto>> SortVocabularySchduleByColumnAsync(this IEnumerable<VocabularyUnitScheduleDto> sources,
+        string sortPattern)
+    {
+        var isDescending = sortPattern.StartsWith("-");
+        if (isDescending)
+        {
+            sortPattern = sortPattern.Trim('-');
+        }
+
+        // Define sorting pattern
+        var sortMappings = new Dictionary<string, Func<VocabularyUnitScheduleDto, object>>()
+        {
+            {"CREATEDATE", u => u.CreateDate },
+            {"ALPHABET", u => u.FlashcardDetail.WordText },
+            {"MONDAY", u => u.Weekday != null && u.Weekday.Any(x => x.Equals(WeekDayConstants.Monday.ToString())) },
+            {"TUESDAY", u => u.Weekday != null && u.Weekday.Any(x => x.Equals(WeekDayConstants.Tuesday.ToString())) },
+            {"WEDNESDAY", u => u.Weekday != null && u.Weekday.Any(x => x.Equals(WeekDayConstants.Wednesday.ToString())) },
+            {"THURSDAY", u => u.Weekday != null && u.Weekday.Any(x => x.Equals(WeekDayConstants.Thursday.ToString())) },
+            {"FRIDAY", u => u.Weekday != null && u.Weekday.Any(x => x.Equals(WeekDayConstants.Friday.ToString())) },
+            {"SATURDAY", u => u.Weekday != null && u.Weekday.Any(x => x.Equals(WeekDayConstants.Saturday.ToString())) },
+            {"SUNDAY", u => u.Weekday != null && u.Weekday.Any(x => x.Equals(WeekDayConstants.Sunday.ToString())) }
+        };
+
+        // Get sorting pattern
+        if (sortMappings.TryGetValue(sortPattern.ToUpper(),
+                out var sortExpression))
+        {
+            return await Task.FromResult(isDescending
+                ? sources.OrderByDescending(sortExpression)
+                : sources.OrderBy(sortExpression));
+        }
+
+        return await Task.FromResult(sources);
+    }
+
 }

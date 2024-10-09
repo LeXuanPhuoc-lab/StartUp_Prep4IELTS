@@ -196,14 +196,26 @@ public class FlashcardRepository : GenericRepository<Flashcard>
 
         UserFlashcard? userFlashcard;
 
-        // Remove progress & flashcard
-        userFlashcard = await DbContext.UserFlashcards
-            .Include(uf => uf.UserFlashcardProgresses)
-            .Include(uf => uf.Flashcard)
-                .ThenInclude(f => f.FlashcardDetails)
-                .ThenInclude(f => f.CloudResource)
-            .Include(uf => uf.VocabularyUnitSchedules)
-            .FirstOrDefaultAsync(x => x.FlashcardId == flashcardId && x.UserId == userId);
+        // Check whether is public or not 
+        if (flashcardEntity.IsPublic)
+        {
+            // Remove user flashcad only
+            userFlashcard = await DbContext.UserFlashcards
+                .Include(uf => uf.VocabularyUnitSchedules)
+                .FirstOrDefaultAsync(x => x.FlashcardId == flashcardId && x.UserId == userId);
+        }
+        else
+        {
+            // Remove progress & flashcard
+            userFlashcard = await DbContext.UserFlashcards
+                .Include(uf => uf.UserFlashcardProgresses)
+                .Include(uf => uf.Flashcard)
+                    .ThenInclude(f => f.FlashcardDetails)
+                    .ThenInclude(f => f.CloudResource)
+                .Include(uf => uf.VocabularyUnitSchedules)
+                .FirstOrDefaultAsync(x => x.FlashcardId == flashcardId && x.UserId == userId);
+        }
+
         
         if (userFlashcard != null)
         {
