@@ -307,15 +307,15 @@ public class FlashcardController(
         });
         
         // Check is public flashcard
-        var isPublicFlashcard = await flashcardService.IsPublicAsync(id);
-        if (isPublicFlashcard)
-        {
-            return BadRequest(new BaseResponse()
-            {
-                StatusCode = StatusCodes.Status400BadRequest,
-                Message = "Not allow to delete this flashcard"
-            });
-        }
+        //var isPublicFlashcard = await flashcardService.IsPublicAsync(id);
+        //if (isPublicFlashcard)
+        //{
+        //    return BadRequest(new BaseResponse()
+        //    {
+        //        StatusCode = StatusCodes.Status400BadRequest,
+        //        Message = "Not allow to delete this flashcard"
+        //    });
+        //}
         
         // Progress delete privacy flashcard
         var isRemoved = await flashcardService.RemovePrivacyAsync(id, userDto.UserId);
@@ -627,5 +627,62 @@ public class FlashcardController(
         });
     }
     
+    
+    [ClerkAuthorize]
+    [PremiumAuthorize(Types = [PremiumPackageType.Standard], AllowPremiumTrial = true)]
+    [HttpGet(ApiRoute.Flashcard.GetAllUserExamHistory, Name = nameof(GetAllUserFlashcardExamHistoryAsync))]
+    public async Task<IActionResult> GetAllUserFlashcardExamHistoryAsync([FromQuery] FlashcardHistoryFilterRequest req)
+    {
+        // Validations
+        if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+
+        // Check exist user 
+        var userDto = HttpContext.Items["User"] as UserDto;
+        if (userDto == null) return Unauthorized();
+
+        // Initiate search term 
+        //var searchTerm = req.Term?.Trim() ?? string.Empty;
+
+        // Progress get all with filter, order, and paging
+        var flashcardHistoryDtos = await flashcardExamHistoryService.FindAllByUserAsync(
+            filter: null,
+            orderBy: q => q.OrderBy(fh => fh.TakenDate),
+            userId: userDto.UserId);
+
+        // Sorting 
+        if (!string.IsNullOrEmpty(req.OrderBy))
+        {
+            var sortingEnumerable = await flashcardHistoryDtos.SortFlashcardExamByColumnAsync(req.OrderBy);
+            flashcardHistoryDtos = sortingEnumerable.ToList();
+        }
+
+        // Custom list flashcard exam result 
+        //var flashcardExamHistoryListResp = flashcardHistoryDtos.Select(fhd => 
+        //    fhd.ToFlashcardExamHistoryResponse()).ToList();
+
+        // Create paginated detail list 
+        var paginatedDetail = PaginatedList<FlashcardExamHistoryDto>.Paginate(flashcardHistoryDtos,
+            pageIndex: req.Page ?? 1,
+            req.PageSize ?? _appSettings.PageSize);
+
+        return !flashcardHistoryDtos.Any() // Not exist any flashcard history
+            ? NotFound(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not found any flashcard exam history."
+            })
+            : Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    FlashcardHistories = paginatedDetail,
+                    Page = paginatedDetail.PageIndex,
+                    TotalPage = paginatedDetail.TotalPage
+                }
+            });
+    }
+    
+
     #endregion
 }

@@ -12,7 +12,6 @@ public partial class VocabularyUnitSchedule
 
     public int FlashcardDetailId { get; set; }
 
-    
     public int UserFlashcardId { get; set; }
     
     public virtual FlashcardDetail FlashcardDetail { get; set; } = null!;

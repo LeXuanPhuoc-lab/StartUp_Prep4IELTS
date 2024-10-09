@@ -332,20 +332,37 @@ public class TestService(
                         // Compare with answer text
                         isSelectedAnswerCorrect =
                             questionDto.QuestionAnswers.Any(x =>
-                                x.AnswerText.ToUpper().Equals(qa.SelectedAnswer.Trim().ToUpper()) && x.IsTrue);
+                                x.AnswerText.Trim().ToUpper().Equals(qa.SelectedAnswer.Trim().ToUpper()) && x.IsTrue);
                     }
                     else // Is multiple choice question
                     {
                         // Check is reading test  
                         var isReadingTest = singleTestEntity.TestType.Equals(TestType.Reading.GetDescription());
 
+                        /// TODO: This just temporary handle answer submission error
+                        if (isReadingTest)
+                        {
+                            switch (qa.SelectedAnswer.ToString())
+                            {
+                                case "A":
+                                    qa.SelectedAnswer = "TRUE";
+                                    break;
+                                case "B":
+                                    qa.SelectedAnswer = "FALSE";
+                                    break;
+                                case "C":
+                                    qa.SelectedAnswer = "NOT GIVEN";
+                                    break;
+                            }
+                        }
+
                         isSelectedAnswerCorrect = isReadingTest // Is reading test
                             // Compare with answer text
                             ? questionDto.QuestionAnswers.Any(x =>
-                                x.AnswerText.ToUpper().Equals(qa.SelectedAnswer.Trim().ToUpper()) && x.IsTrue)
+                                x.AnswerText.Trim().ToUpper().Equals(qa.SelectedAnswer.Trim().ToUpper()) && x.IsTrue)
                             // Compare with answer display
                             : questionDto.QuestionAnswers.Any(x =>
-                                x.AnswerDisplay.ToUpper().Equals(qa.SelectedAnswer.Trim().ToUpper()) && x.IsTrue); 
+                                x.AnswerDisplay.Trim().ToUpper().Equals(qa.SelectedAnswer.Trim().ToUpper()) && x.IsTrue); 
                     }
 
                     // Create grade status whether the selected answer is correct or not 

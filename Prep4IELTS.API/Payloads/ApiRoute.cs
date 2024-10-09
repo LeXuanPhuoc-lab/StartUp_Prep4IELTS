@@ -147,6 +147,7 @@ public static class ApiRoute
         public const string Exam = Base + "/flashcards/{id}/exam";
         public const string ExamSubmission = Base + "/flashcards/exam/submission";
         public const string ExamResult = Base + "/flashcards/{id}/exam/result";
+        public const string GetAllUserExamHistory = Base + "/flashcards/exam/history";
     }
 
     public static class FlashcardDetail
@@ -166,5 +167,8 @@ public static class ApiRoute
     {
         public const string GetDateRangeInYear = Base + "/vocabulary-schedules/get-date-range";
         public const string GetCalendar = Base + "/vocabulary-schedules/calendar";
+        public const string GetAll = Base + "/vocabulary-schedules";
+        public const string AddToWeekDay = Base + "/vocabulary-schedules/add";
+        //public const string RemoveFromWeekDay = Base + "/vocabulary-schedules/";
     }
 }

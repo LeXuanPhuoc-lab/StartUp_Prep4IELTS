@@ -74,14 +74,15 @@ public class TestHistoryRepository : GenericRepository<TestHistory>
 
     public async Task<IEnumerable<TestHistory>> FindAllByUserIdWithDaysRangeAsync(Guid userId, int days)
     {
-        var currentDate = DateTime.UtcNow;
+        var currentDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, 
+            TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));;
         var timeSpan = TimeSpan.FromDays(days);
         var backDate = currentDate.Subtract(timeSpan);
         
         // Retrieve TestHistories with related PartitionHistories
         var testHistoryEntities = await _dbSet
             .AsSplitQuery()
-            .Where(th => th.UserId.Equals(userId) &&
+            .Where(th => th.UserId.ToString().Equals(userId.ToString()) &&
                          // Filter taken date from backTime to currentTime
                          th.TakenDate >= backDate && th.TakenDate <= currentDate)
             .Select(th => new TestHistory()
