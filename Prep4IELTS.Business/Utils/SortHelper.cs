@@ -144,7 +144,7 @@ public static class SortHelper
         return await Task.FromResult(sources);
     }
 
-    public static async Task<IEnumerable<VocabularyUnitScheduleDto>> SortVocabularySchduleByColumnAsync(this IEnumerable<VocabularyUnitScheduleDto> sources,
+    public static async Task<IEnumerable<VocabularyUnitScheduleDto>> SortVocabularyScheduleByColumnAsync(this IEnumerable<VocabularyUnitScheduleDto> sources,
         string sortPattern)
     {
         var isDescending = sortPattern.StartsWith("-");
@@ -178,5 +178,38 @@ public static class SortHelper
 
         return await Task.FromResult(sources);
     }
+
+	public static async Task<IEnumerable<TransactionDto>> SortTransactionByColumnAsync(this IEnumerable<TransactionDto> sources,
+		string sortPattern)
+	{
+		var isDescending = sortPattern.StartsWith("-");
+		if (isDescending)
+		{
+			sortPattern = sortPattern.Trim('-');
+		}
+
+		// Define sorting pattern
+		var sortMappings = new Dictionary<string, Func<TransactionDto, object>>()
+		{
+			{"PAYMENTAMOUNT", u => u.PaymentAmount },
+			{"CREATEAT", u => u.CreateAt },
+			{"TRANSACTIONDATE", u => u.TransactionDate ?? null! },
+			{"TRANSACTIONSTATUS", u => u.TransactionStatus },
+			{"TRANSACTIONCODE", u => u.TransactionCode },
+			{"CANCELLATIONREASON", u => u.CancellationReason ?? null!},
+			{"CANCELLEDAT", u => u.CancelledAt ?? null!},
+		};
+
+		// Get sorting pattern
+		if (sortMappings.TryGetValue(sortPattern.ToUpper(),
+				out var sortExpression))
+		{
+			return await Task.FromResult(isDescending
+				? sources.OrderByDescending(sortExpression)
+				: sources.OrderBy(sortExpression));
+		}
+
+		return await Task.FromResult(sources);
+	}
 
 }

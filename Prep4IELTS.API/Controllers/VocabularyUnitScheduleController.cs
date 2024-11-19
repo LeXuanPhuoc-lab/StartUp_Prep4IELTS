@@ -113,7 +113,7 @@ public class VocabularyUnitScheduleController(
         // Sorting 
         if (!string.IsNullOrEmpty(req.OrderBy))
         {
-            var sortingEnumerable = await vocabScheduleDtos.SortVocabularySchduleByColumnAsync(req.OrderBy);
+            var sortingEnumerable = await vocabScheduleDtos.SortVocabularyScheduleByColumnAsync(req.OrderBy);
             vocabScheduleDtos = sortingEnumerable.ToList();
         }
 

@@ -45,6 +45,7 @@ public partial class User
 
     public virtual ICollection<Test> Tests { get; set; } = new List<Test>();
 
+    [JsonIgnore]
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     
     [JsonIgnore]
