@@ -1,4 +1,5 @@
 using Mapster;
+using Microsoft.EntityFrameworkCore;
 using Prep4IELTS.Business.Services.Interfaces;
 using Prep4IELTS.Data;
 using Prep4IELTS.Data.Dtos;
@@ -40,4 +41,18 @@ public class TransactionService(UnitOfWork unitOfWork) : ITransactionService
             await unitOfWork.TransactionRepository.FindTransactionByCodeAsync(transactionCode);
         return transactionEntity.Adapt<TransactionDto>();
     }
+
+	public async Task<List<TransactionDto>> FindAllAsync()
+	{
+        var transactions = 
+            await unitOfWork.TransactionRepository.FindAllWithConditionAndThenIncludeAsync(
+                includes: new()
+                {
+                    query => query.Include(t => t.PaymentType),
+                    query => query.Include(t => t.UserPremiumPackage)
+                        .ThenInclude(t => t.PremiumPackage)
+                        .Include(t => t.User)
+				});
+        return transactions.Adapt<List<TransactionDto>>();
+	}
 }

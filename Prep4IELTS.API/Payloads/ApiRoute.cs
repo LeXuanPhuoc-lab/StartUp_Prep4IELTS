@@ -171,4 +171,9 @@ public static class ApiRoute
         public const string AddToWeekDay = Base + "/vocabulary-schedules/add";
         //public const string RemoveFromWeekDay = Base + "/vocabulary-schedules/";
     }
+
+    public static class Transaction
+    {
+        public const string GetAll = Base + "/transactions";
+    }
 }

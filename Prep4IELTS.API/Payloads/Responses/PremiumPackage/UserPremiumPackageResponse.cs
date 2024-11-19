@@ -1,6 +1,7 @@
 namespace EXE202_Prep4IELTS.Payloads.Responses.PremiumPackage;
 
-public class UserPremiumPackageResponse
+public class 
+    UserPremiumPackageResponse
 {
     public int PremiumPackageId { get; set; }
     public string PremiumPackageName { get; set; } = null!;

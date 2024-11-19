@@ -11,7 +11,7 @@ public interface ITransactionService
     Task<bool> UpdateTransactionStatusAsync(
         string transactionCode, DateTime? transactionDate, decimal? paymentAmount,
         string? cancellationReason, DateTime? cancelledAt, TransactionStatus transactionStatus);
-
     Task<bool> IsExistTransactionByCodeAsync(string transactionCode);
     Task<TransactionDto?> FindTransactionByCodeAsync(string transactionCode);
+    Task<List<TransactionDto>> FindAllAsync();
 }

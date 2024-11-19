@@ -21,6 +21,7 @@ public partial class UserPremiumPackage
     [JsonIgnore]
     public virtual PremiumPackage PremiumPackage { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     
     [JsonIgnore]
